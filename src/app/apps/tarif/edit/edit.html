@@ -1,81 +1,94 @@
-�
 <div class="flex justify-center mt-4 mb-4">
     <div class="w-full md:w-5/6">
         <div class="card p-6 flex flex-col gap-5">
-
             <div class="text-xl font-semibold">Modification d'un Tarif</div>
 
             @if (isLoading()) {
-                <div class="flex flex-col gap-4">
-                    <p-skeleton width="100%" height="20rem"></p-skeleton>
-                </div>
+            <div class="flex flex-col gap-4">
+                <p-skeleton width="100%" height="20rem"></p-skeleton>
+            </div>
             } @else {
-                <form [formGroup]="form">
-                    
-                    <h5 class="font-bold text-lg mb-4">Prix et Statut</h5>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <div class="flex flex-col gap-2">
-                            <label for="priceDay">Prix par Jour</label>
-                            <input id="priceDay" type="number" pInputText formControlName="priceDay" [class.ng-invalid]="isInvalid('priceDay')" [class.ng-dirty]="isInvalid('priceDay')" />
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <label for="priceWeek">Prix par Semaine</label>
-                            <input id="priceWeek" type="number" pInputText formControlName="priceWeek" [class.ng-invalid]="isInvalid('priceWeek')" [class.ng-dirty]="isInvalid('priceWeek')" />
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <label for="priceMonth">Prix par Mois</label>
-                            <input id="priceMonth" type="number" pInputText formControlName="priceMonth" [class.ng-invalid]="isInvalid('priceMonth')" [class.ng-dirty]="isInvalid('priceMonth')" />
-                        </div>
-                        
+            <form [formGroup]="form">
+                <h5 class="font-bold text-lg mb-4">Prix et Statut</h5>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="flex flex-col gap-2">
+                        <label for="priceDay">Prix par Jour</label>
+                        <input id="priceDay" type="number" pInputText formControlName="priceDay" [class.ng-invalid]="isInvalid('priceDay')" [class.ng-dirty]="isInvalid('priceDay')" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label for="priceWeek">Prix par Semaine</label>
+                        <input id="priceWeek" type="number" pInputText formControlName="priceWeek" [class.ng-invalid]="isInvalid('priceWeek')" [class.ng-dirty]="isInvalid('priceWeek')" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label for="priceMonth">Prix par Mois</label>
+                        <input id="priceMonth" type="number" pInputText formControlName="priceMonth" [class.ng-invalid]="isInvalid('priceMonth')" [class.ng-dirty]="isInvalid('priceMonth')" />
+                    </div>
+                </div>
+
+                <h5 class="font-bold text-lg mb-4 outline-t pt-4 mt-2 border-t border-surface-200">Choix de la caractéristique</h5>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <!-- Category -->
+                    <div class="flex flex-col gap-2">
+                        <label for="idCategorie">Catégorie Panneaux</label>
+                        @if (loadingCategories()) {
+                        <p-skeleton width="100%" height="3rem"></p-skeleton>
+                        } @else {
+                        <p-select
+                            id="idCategorie"
+                            [options]="categories"
+                            optionLabel="categorie"
+                            optionValue="id"
+                            formControlName="idCategorie"
+                            class="w-full"
+                            [class.ng-invalid]="isInvalid('idCategorie')"
+                            [class.ng-dirty]="isInvalid('idCategorie')"
+                        ></p-select>
+                        }
                     </div>
 
-                    <h5 class="font-bold text-lg mb-4 outline-t pt-4 mt-2 border-t border-surface-200">Choix de la caractéristique</h5>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <!-- Category -->
-                        <div class="flex flex-col gap-2">
-                            <label for="idCategorie">Catégorie Panneaux</label>
-                            @if (loadingCategories()) {
-                                <p-skeleton width="100%" height="3rem"></p-skeleton>
-                            } @else {
-                                <p-select id="idCategorie" [options]="categories" optionLabel="categorie" optionValue="id" formControlName="idCategorie" class="w-full" [class.ng-invalid]="isInvalid('idCategorie')" [class.ng-dirty]="isInvalid('idCategorie')"></p-select>
-                            }
-                        </div>
-
-                        <!-- Caracteristique -->
-                        <div class="flex flex-col gap-2">
-                            <label for="idCaracteristiquePanneaux">Caractéristique Panneaux</label>
-                            @if (loadingCaracteristiques()) {
-                                <p-skeleton width="100%" height="3rem"></p-skeleton>
-                            } @else {
-                                <p-select id="idCaracteristiquePanneaux" [options]="caracteristiques" optionLabel="caracteristique" optionValue="id" formControlName="idCaracteristiquePanneaux" class="w-full" [class.ng-invalid]="isInvalid('idCaracteristiquePanneaux')" [class.ng-dirty]="isInvalid('idCaracteristiquePanneaux')"></p-select>
-                                @if (isInvalid('idCaracteristiquePanneaux')) { <small class="p-error">Le choix de la caractéristique est obligatoire.</small> }
-                            }
-                        </div>
+                    <!-- Caracteristique -->
+                    <div class="flex flex-col gap-2">
+                        <label for="idCaracteristiquePanneaux">Caractéristique Panneaux</label>
+                        @if (loadingCaracteristiques()) {
+                        <p-skeleton width="100%" height="3rem"></p-skeleton>
+                        } @else {
+                        <p-select
+                            id="idCaracteristiquePanneaux"
+                            [options]="caracteristiques"
+                            optionLabel="caracteristique"
+                            optionValue="id"
+                            formControlName="idCaracteristiquePanneaux"
+                            class="w-full"
+                            [class.ng-invalid]="isInvalid('idCaracteristiquePanneaux')"
+                            [class.ng-dirty]="isInvalid('idCaracteristiquePanneaux')"
+                        ></p-select>
+                        @if (isInvalid('idCaracteristiquePanneaux')) { <small class="p-error">Le choix de la caractéristique est obligatoire.</small> } }
                     </div>
+                </div>
 
-                    <!-- Button -->
-                    <div class="flex justify-end mt-8">
-                        <p-button label="Valider" severity="primary" (onClick)="submit()" [disabled]="form.invalid || isLoading()" />
-                    </div>
+                <!-- Button -->
+                <div class="flex justify-end mt-8">
+                    <p-button label="Valider" severity="primary" (onClick)="submit()" [disabled]="form.invalid || isLoading()" />
+                </div>
 
-                    <p-confirmdialog #cd>
-                        <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
-                            @if (message) {
-                                <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
-                                    <div class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
-                                        <i class="pi pi-question !text-5xl"></i>
-                                    </div>
-                                    <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
-                                    <p class="mb-0">{{ message.message }}</p>
-                                    <div class="flex items-center gap-2 mt-6">
-                                        <p-button label="Oui, confirmer" (onClick)="onAccept()"></p-button>
-                                        <p-button label="Annuler" [outlined]="true" (onClick)="onReject()" styleClass="w-32"></p-button>
-                                    </div>
-                                </div>
-                            }
-                        </ng-template>
-                    </p-confirmdialog>
-                </form>
+                <p-confirmdialog #cd>
+                    <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
+                        @if (message) {
+                        <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
+                            <div class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
+                                <i class="pi pi-question !text-5xl"></i>
+                            </div>
+                            <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
+                            <p class="mb-0">{{ message.message }}</p>
+                            <div class="flex items-center gap-2 mt-6">
+                                <p-button label="Oui, confirmer" (onClick)="onAccept()"></p-button>
+                                <p-button label="Annuler" [outlined]="true" (onClick)="onReject()" styleClass="w-32"></p-button>
+                            </div>
+                        </div>
+                        }
+                    </ng-template>
+                </p-confirmdialog>
+            </form>
             }
         </div>
     </div>

@@ -1,123 +1,103 @@
-�<p-toast />
+<p-toast />
 
 <div class="flex justify-center mt-4 mb-4">
     <div class="w-full md:w-5/6">
-
         <!-- Step indicator -->
         <div class="flex items-center gap-3 mb-6">
             <div class="flex items-center gap-2">
-                <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
-                      [class]="step() === 1 ? 'bg-primary text-primary-contrast' : 'bg-green-500 text-white'">
+                <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" [class]="step() === 1 ? 'bg-primary text-primary-contrast' : 'bg-green-500 text-white'">
                     @if (step() === 1) { 1 } @else { <i class="pi pi-check text-xs"></i> }
                 </span>
                 <span class="font-medium" [class.text-primary]="step() === 1">Informations du profil</span>
             </div>
             <div class="flex-1 h-px bg-surface-200"></div>
             <div class="flex items-center gap-2">
-                <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
-                      [class]="step() === 2 ? 'bg-primary text-primary-contrast' : 'bg-surface-200 text-surface-500'">
-                    2
-                </span>
-                <span class="font-medium" [class.text-primary]="step() === 2" [class.text-surface-400]="step() === 1">
-                    Affectation des permissions
-                </span>
+                <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" [class]="step() === 2 ? 'bg-primary text-primary-contrast' : 'bg-surface-200 text-surface-500'"> 2 </span>
+                <span class="font-medium" [class.text-primary]="step() === 2" [class.text-surface-400]="step() === 1"> Affectation des permissions </span>
             </div>
         </div>
 
         <!-- Step 1 : Informations -->
         @if (step() === 1) {
-            <div class="card p-6 flex flex-col gap-5">
-                <div class="text-xl font-semibold">Informations du profil</div>
+        <div class="card p-6 flex flex-col gap-5">
+            <div class="text-xl font-semibold">Informations du profil</div>
 
-                @if (loadingData()) {
-                    <div class="flex flex-col gap-4">
-                        <p-skeleton width="100%" height="3rem"></p-skeleton>
-                        <p-skeleton width="100%" height="5rem"></p-skeleton>
-                    </div>
-                } @else {
-                    <form [formGroup]="form" class="flex flex-col gap-5">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="flex flex-col gap-2">
-                                <label for="profil">Nom du profil <span class="text-red-500">*</span></label>
-                                <input id="profil" type="text" pInputText formControlName="profil"
-                                       [class.ng-invalid]="isInvalid('profil')"
-                                       [class.ng-dirty]="isInvalid('profil')" />
-                                @if (isInvalid('profil')) {
-                                    <small class="p-error">Le nom du profil est obligatoire.</small>
-                                }
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col gap-2">
-                            <label for="description">Description</label>
-                            <textarea id="description" pInputText formControlName="description"
-                                      rows="3" class="w-full"></textarea>
-                        </div>
-
-                        <div class="flex justify-between mt-4">
-                            <p-button label="Annuler" severity="secondary" [outlined]="true" [routerLink]="['/ogp/profils']" />
-                            <p-button label="Suivant" icon="pi pi-arrow-right" iconPos="right" severity="primary" (onClick)="goToStep2()" />
-                        </div>
-                    </form>
-                }
+            @if (loadingData()) {
+            <div class="flex flex-col gap-4">
+                <p-skeleton width="100%" height="3rem"></p-skeleton>
+                <p-skeleton width="100%" height="5rem"></p-skeleton>
             </div>
+            } @else {
+            <form [formGroup]="form" class="flex flex-col gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex flex-col gap-2">
+                        <label for="profil">Nom du profil <span class="text-red-500">*</span></label>
+                        <input id="profil" type="text" pInputText formControlName="profil" [class.ng-invalid]="isInvalid('profil')" [class.ng-dirty]="isInvalid('profil')" />
+                        @if (isInvalid('profil')) {
+                        <small class="p-error">Le nom du profil est obligatoire.</small>
+                        }
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <label for="description">Description</label>
+                    <textarea id="description" pInputText formControlName="description" rows="3" class="w-full"></textarea>
+                </div>
+
+                <div class="flex justify-between mt-4">
+                    <p-button label="Annuler" severity="secondary" [outlined]="true" [routerLink]="['/ogp/profils']" />
+                    <p-button label="Suivant" icon="pi pi-arrow-right" iconPos="right" severity="primary" (onClick)="goToStep2()" />
+                </div>
+            </form>
+            }
+        </div>
         }
 
         <!-- Step 2 : Permissions -->
         @if (step() === 2) {
-            <div class="card p-6 flex flex-col gap-5">
-                <div class="text-xl font-semibold">Affectation des permissions</div>
+        <div class="card p-6 flex flex-col gap-5">
+            <div class="text-xl font-semibold">Affectation des permissions</div>
 
-                @if (loadingData()) {
-                    <app-skeleton-table></app-skeleton-table>
-                } @else {
-                    <p-table [value]="permissionGroups" [tableStyle]="{ 'min-width': '40rem' }">
-                        <ng-template #header>
-                            <tr>
-                                <th>Permissions</th>
-                                <th class="text-center w-32">View Only</th>
-                                <th class="text-center w-32">Full Access</th>
-                                <th class="text-center w-24">Clear</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template #body let-group>
-                            <tr>
-                                <td>{{ group.displayedLabel }}</td>
-                                <td class="text-center">
-                                    @if (group.viewOnlyId) {
-                                        <p-radiobutton
-                                            [name]="group.module"
-                                            value="view_only"
-                                            [(ngModel)]="group.selection">
-                                        </p-radiobutton>
-                                    }
-                                </td>
-                                <td class="text-center">
-                                    @if (group.fullAccessId) {
-                                        <p-radiobutton
-                                            [name]="group.module"
-                                            value="full_access"
-                                            [(ngModel)]="group.selection">
-                                        </p-radiobutton>
-                                    }
-                                </td>
-                                <td class="text-center">
-                                    <span class="cursor-pointer text-surface-400 hover:text-red-500 text-xl font-light select-none"
-                                          (click)="group.selection = null">�</span>
-                                </td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                }
+            @if (loadingData()) {
+            <app-skeleton-table></app-skeleton-table>
+            } @else {
+            <p-table [value]="permissionGroups" [tableStyle]="{ 'min-width': '40rem' }">
+                <ng-template #header>
+                    <tr>
+                        <th>Permissions</th>
+                        <th class="text-center w-32">View Only</th>
+                        <th class="text-center w-32">Full Access</th>
+                        <th class="text-center w-24">Clear</th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-group>
+                    <tr>
+                        <td>{{ group.displayedLabel }}</td>
+                        <td class="text-center">
+                            @if (group.viewOnlyId) {
+                            <p-radiobutton [name]="group.module" value="view_only" [(ngModel)]="group.selection"> </p-radiobutton>
+                            }
+                        </td>
+                        <td class="text-center">
+                            @if (group.fullAccessId) {
+                            <p-radiobutton [name]="group.module" value="full_access" [(ngModel)]="group.selection"> </p-radiobutton>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <span class="cursor-pointer text-surface-400 hover:text-red-500 text-xl font-light select-none" (click)="group.selection = null"></span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            }
 
-                <div class="flex justify-between mt-4">
-                    <p-button label="Retour" icon="pi pi-arrow-left" severity="secondary" [outlined]="true" (onClick)="step.set(1)" />
-                    <p-button label="Sauvegarder les modifications" severity="primary" (onClick)="submit()" [loading]="isLoading()" />
-                </div>
+            <div class="flex justify-between mt-4">
+                <p-button label="Retour" icon="pi pi-arrow-left" severity="secondary" [outlined]="true" (onClick)="step.set(1)" />
+                <p-button label="Sauvegarder les modifications" severity="primary" (onClick)="submit()" [loading]="isLoading()" />
             </div>
+        </div>
 
-            <p-confirmdialog />
+        <p-confirmdialog />
         }
-
     </div>
 </div>

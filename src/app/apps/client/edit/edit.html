@@ -1,113 +1,116 @@
-�
 <div class="flex justify-center mt-4">
     <div class="w-full md:w-4/5">
         <div class="card p-6 flex flex-col gap-5">
-
             <div class="text-xl font-semibold">Modification</div>
 
             @if (isLoading()) {
-                <!-- SKELETON -->
-                <div class="flex flex-col gap-4">
-                    <p-skeleton width="100%" height="20rem"></p-skeleton>
-                </div>
+            <!-- SKELETON -->
+            <div class="flex flex-col gap-4">
+                <p-skeleton width="100%" height="20rem"></p-skeleton>
+            </div>
             } @else {
-                <form [formGroup]="form">
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <!-- Dénomination -->
-                        <div class="flex flex-col gap-2">
-                            <label for="denomination">Dénomination</label>
-                            <input id="denomination" type="text" pInputText formControlName="denomination" [class.ng-invalid]="isInvalid('denomination')" [class.ng-dirty]="isInvalid('denomination')" />
-                            @if (isInvalid('denomination')) { <small class="p-error">Ce champ est requis.</small> }
-                        </div>
-
-                        <!-- Sigle -->
-                        <div class="flex flex-col gap-2">
-                            <label for="sigle">Sigle</label>
-                            <input id="sigle" type="text" pInputText formControlName="sigle" [class.ng-invalid]="isInvalid('sigle')" [class.ng-dirty]="isInvalid('sigle')" />
-                            @if (isInvalid('sigle')) { <small class="p-error">Ce champ est requis.</small> }
-                        </div>
-
-                        <!-- Domaine d'activité -->
-                        <div class="flex flex-col gap-2">
-                            <label for="domaineActivite">Domaine d'activité</label>
-                            <input id="domaineActivite" type="text" pInputText formControlName="domaineActivite" [class.ng-invalid]="isInvalid('domaineActivite')" [class.ng-dirty]="isInvalid('domaineActivite')" />
-                            @if (isInvalid('domaineActivite')) { <small class="p-error">Ce champ est requis.</small> }
-                        </div>
-
-                        <!-- Type Client -->
-                        <div class="flex flex-col gap-2">
-                            <label for="idTypeClient">Type de client</label>
-                            @if (loadingTypesClient()) {
-                                <p-skeleton width="100%" height="2rem"></p-skeleton>
-                            } @else {
-                                <p-select id="idTypeClient" [options]="typesClient" optionLabel="typeClient" optionValue="id" formControlName="idTypeClient" class="w-full" [class.ng-invalid]="isInvalid('idTypeClient')" [class.ng-dirty]="isInvalid('idTypeClient')" />
-                            }
-                            @if (isInvalid('idTypeClient')) { <small class="p-error">Ce champ est requis.</small> }
-                        </div>
-
-                        <!-- Nom Responsable -->
-                        <div class="flex flex-col gap-2">
-                            <label for="nomResponsable">Nom du responsable</label>
-                            <input id="nomResponsable" type="text" pInputText formControlName="nomResponsable" [class.ng-invalid]="isInvalid('nomResponsable')" [class.ng-dirty]="isInvalid('nomResponsable')" />
-                            @if (isInvalid('nomResponsable')) { <small class="p-error">Ce champ est requis.</small> }
-                        </div>
-
-                        <!-- Prénom Responsable -->
-                        <div class="flex flex-col gap-2">
-                            <label for="prenomResponsable">Prénom du responsable</label>
-                            <input id="prenomResponsable" type="text" pInputText formControlName="prenomResponsable" [class.ng-invalid]="isInvalid('prenomResponsable')" [class.ng-dirty]="isInvalid('prenomResponsable')" />
-                            @if (isInvalid('prenomResponsable')) { <small class="p-error">Ce champ est requis.</small> }
-                        </div>
-
-                        <!-- Email Responsable -->
-                        <div class="flex flex-col gap-2">
-                            <label for="emailResponsable">Email du responsable</label>
-                            <input id="emailResponsable" type="email" pInputText formControlName="emailResponsable" [class.ng-invalid]="isInvalid('emailResponsable')" [class.ng-dirty]="isInvalid('emailResponsable')" />
-                            @if (isInvalid('emailResponsable')) { <small class="p-error">Email invalide ou requis.</small> }
-                        </div>
-
-                        <!-- Téléphone Responsable -->
-                        <div class="flex flex-col gap-2">
-                            <label for="telephoneResponsable">Téléphone du responsable</label>
-                            <input id="telephoneResponsable" type="text" pInputText formControlName="telephoneResponsable" [class.ng-invalid]="isInvalid('telephoneResponsable')" [class.ng-dirty]="isInvalid('telephoneResponsable')" />
-                            @if (isInvalid('telephoneResponsable')) { <small class="p-error">Ce champ est requis.</small> }
-                        </div>
-
-                        <!-- Adresse -->
-                        <div class="flex flex-col gap-2 col-span-1 md:col-span-2">
-                            <label for="adresse">Adresse</label>
-                            <input id="adresse" type="text" pInputText formControlName="adresse" [class.ng-invalid]="isInvalid('adresse')" [class.ng-dirty]="isInvalid('adresse')" />
-                            @if (isInvalid('adresse')) { <small class="p-error">Ce champ est requis.</small> }
-                        </div>
-
+            <form [formGroup]="form">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <!-- Dénomination -->
+                    <div class="flex flex-col gap-2">
+                        <label for="denomination">Dénomination</label>
+                        <input id="denomination" type="text" pInputText formControlName="denomination" [class.ng-invalid]="isInvalid('denomination')" [class.ng-dirty]="isInvalid('denomination')" />
+                        @if (isInvalid('denomination')) { <small class="p-error">Ce champ est requis.</small> }
                     </div>
 
-                    <!-- Button -->
-                    <div class="flex justify-end">
-                        <p-button label="Valider" severity="primary" (onClick)="submit()" [disabled]="form.invalid" />
+                    <!-- Sigle -->
+                    <div class="flex flex-col gap-2">
+                        <label for="sigle">Sigle</label>
+                        <input id="sigle" type="text" pInputText formControlName="sigle" [class.ng-invalid]="isInvalid('sigle')" [class.ng-dirty]="isInvalid('sigle')" />
+                        @if (isInvalid('sigle')) { <small class="p-error">Ce champ est requis.</small> }
                     </div>
 
-                    <!-- Dialog (hors loading pour éviter bug UI) -->
-                    <p-confirmdialog #cd>
-                        <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
-                            @if (message) {
-                                <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
-                                    <div class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
-                                        <i class="pi pi-question !text-5xl"></i>
-                                    </div>
-                                    <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
-                                    <p class="mb-0">{{ message.message }}</p>
-                                    <div class="flex items-center gap-2 mt-6">
-                                        <p-button label="Oui, confirmer" (onClick)="onAccept()"></p-button>
-                                        <p-button label="Annuler" [outlined]="true" (onClick)="onReject()" styleClass="w-32"></p-button>
-                                    </div>
-                                </div>
-                            }
-                        </ng-template>
-                    </p-confirmdialog>
+                    <!-- Domaine d'activité -->
+                    <div class="flex flex-col gap-2">
+                        <label for="domaineActivite">Domaine d'activité</label>
+                        <input id="domaineActivite" type="text" pInputText formControlName="domaineActivite" [class.ng-invalid]="isInvalid('domaineActivite')" [class.ng-dirty]="isInvalid('domaineActivite')" />
+                        @if (isInvalid('domaineActivite')) { <small class="p-error">Ce champ est requis.</small> }
+                    </div>
 
-                </form>
+                    <!-- Type Client -->
+                    <div class="flex flex-col gap-2">
+                        <label for="idTypeClient">Type de client</label>
+                        @if (loadingTypesClient()) {
+                        <p-skeleton width="100%" height="2rem"></p-skeleton>
+                        } @else {
+                        <p-select
+                            id="idTypeClient"
+                            [options]="typesClient"
+                            optionLabel="typeClient"
+                            optionValue="id"
+                            formControlName="idTypeClient"
+                            class="w-full"
+                            [class.ng-invalid]="isInvalid('idTypeClient')"
+                            [class.ng-dirty]="isInvalid('idTypeClient')"
+                        />
+                        } @if (isInvalid('idTypeClient')) { <small class="p-error">Ce champ est requis.</small> }
+                    </div>
+
+                    <!-- Nom Responsable -->
+                    <div class="flex flex-col gap-2">
+                        <label for="nomResponsable">Nom du responsable</label>
+                        <input id="nomResponsable" type="text" pInputText formControlName="nomResponsable" [class.ng-invalid]="isInvalid('nomResponsable')" [class.ng-dirty]="isInvalid('nomResponsable')" />
+                        @if (isInvalid('nomResponsable')) { <small class="p-error">Ce champ est requis.</small> }
+                    </div>
+
+                    <!-- Prénom Responsable -->
+                    <div class="flex flex-col gap-2">
+                        <label for="prenomResponsable">Prénom du responsable</label>
+                        <input id="prenomResponsable" type="text" pInputText formControlName="prenomResponsable" [class.ng-invalid]="isInvalid('prenomResponsable')" [class.ng-dirty]="isInvalid('prenomResponsable')" />
+                        @if (isInvalid('prenomResponsable')) { <small class="p-error">Ce champ est requis.</small> }
+                    </div>
+
+                    <!-- Email Responsable -->
+                    <div class="flex flex-col gap-2">
+                        <label for="emailResponsable">Email du responsable</label>
+                        <input id="emailResponsable" type="email" pInputText formControlName="emailResponsable" [class.ng-invalid]="isInvalid('emailResponsable')" [class.ng-dirty]="isInvalid('emailResponsable')" />
+                        @if (isInvalid('emailResponsable')) { <small class="p-error">Email invalide ou requis.</small> }
+                    </div>
+
+                    <!-- Téléphone Responsable -->
+                    <div class="flex flex-col gap-2">
+                        <label for="telephoneResponsable">Téléphone du responsable</label>
+                        <input id="telephoneResponsable" type="text" pInputText formControlName="telephoneResponsable" [class.ng-invalid]="isInvalid('telephoneResponsable')" [class.ng-dirty]="isInvalid('telephoneResponsable')" />
+                        @if (isInvalid('telephoneResponsable')) { <small class="p-error">Ce champ est requis.</small> }
+                    </div>
+
+                    <!-- Adresse -->
+                    <div class="flex flex-col gap-2 col-span-1 md:col-span-2">
+                        <label for="adresse">Adresse</label>
+                        <input id="adresse" type="text" pInputText formControlName="adresse" [class.ng-invalid]="isInvalid('adresse')" [class.ng-dirty]="isInvalid('adresse')" />
+                        @if (isInvalid('adresse')) { <small class="p-error">Ce champ est requis.</small> }
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="flex justify-end">
+                    <p-button label="Valider" severity="primary" (onClick)="submit()" [disabled]="form.invalid" />
+                </div>
+
+                <!-- Dialog (hors loading pour éviter bug UI) -->
+                <p-confirmdialog #cd>
+                    <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
+                        @if (message) {
+                        <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
+                            <div class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
+                                <i class="pi pi-question !text-5xl"></i>
+                            </div>
+                            <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
+                            <p class="mb-0">{{ message.message }}</p>
+                            <div class="flex items-center gap-2 mt-6">
+                                <p-button label="Oui, confirmer" (onClick)="onAccept()"></p-button>
+                                <p-button label="Annuler" [outlined]="true" (onClick)="onReject()" styleClass="w-32"></p-button>
+                            </div>
+                        </div>
+                        }
+                    </ng-template>
+                </p-confirmdialog>
+            </form>
 
             }
         </div>

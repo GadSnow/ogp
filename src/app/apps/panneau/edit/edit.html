@@ -1,148 +1,153 @@
-�
 <div class="flex justify-center mt-4 mb-4">
     <div class="w-full md:w-5/6">
         <div class="card p-6 flex flex-col gap-5">
-
             <div class="text-xl font-semibold">Modification d'un Panneau</div>
 
             @if (isLoading()) {
-                <div class="flex flex-col gap-4">
-                    <p-skeleton width="100%" height="30rem"></p-skeleton>
-                </div>
+            <div class="flex flex-col gap-4">
+                <p-skeleton width="100%" height="30rem"></p-skeleton>
+            </div>
             } @else {
-                <form [formGroup]="form">
-                    
-                    <h5 class="font-bold text-lg mb-4">Informations Principales</h5>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <!-- Reference -->
-                        <div class="flex flex-col gap-2">
-                            <label for="reference">Référence</label>
-                            <input id="reference" type="text" pInputText formControlName="reference" [class.ng-invalid]="isInvalid('reference')" [class.ng-dirty]="isInvalid('reference')" />
-                            @if (isInvalid('reference')) { <small class="p-error">Ce champ est requis.</small> }
-                        </div>
-
-                        <!-- Caracteristique -->
-                        <div class="flex flex-col gap-2">
-                            <label for="idCaracteristiquePanneau">Caractéristique</label>
-                            <p-select id="idCaracteristiquePanneau" [options]="caracteristiques" optionLabel="caracteristique" optionValue="id" formControlName="idCaracteristiquePanneau" class="w-full" [class.ng-invalid]="isInvalid('idCaracteristiquePanneau')" [class.ng-dirty]="isInvalid('idCaracteristiquePanneau')"></p-select>
-                            @if (isInvalid('idCaracteristiquePanneau')) { <small class="p-error">Ce champ est requis.</small> }
-                        </div>
-
-                        <!-- Latitude -->
-                        <div class="flex flex-col gap-2">
-                            <label for="latitude">Latitude</label>
-                            <input id="latitude" type="number" pInputText formControlName="latitude" [class.ng-invalid]="isInvalid('latitude')" [class.ng-dirty]="isInvalid('latitude')" step="any" />
-                        </div>
-
-                        <!-- Longitude -->
-                        <div class="flex flex-col gap-2">
-                            <label for="longitude">Longitude</label>
-                            <input id="longitude" type="number" pInputText formControlName="longitude" [class.ng-invalid]="isInvalid('longitude')" [class.ng-dirty]="isInvalid('longitude')" step="any" />
-                        </div>
+            <form [formGroup]="form">
+                <h5 class="font-bold text-lg mb-4">Informations Principales</h5>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <!-- Reference -->
+                    <div class="flex flex-col gap-2">
+                        <label for="reference">Référence</label>
+                        <input id="reference" type="text" pInputText formControlName="reference" [class.ng-invalid]="isInvalid('reference')" [class.ng-dirty]="isInvalid('reference')" />
+                        @if (isInvalid('reference')) { <small class="p-error">Ce champ est requis.</small> }
                     </div>
 
-                    @if (form.get('hasSpecialPrice')?.value) {
-                        <h5 class="font-bold text-lg mb-4 mt-2">Prix et Statut</h5>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                            <div class="flex flex-col gap-2">
-                                <label for="priceDay">Prix par Jour</label>
-                                <input id="priceDay" type="number" pInputText formControlName="priceDay" />
+                    <!-- Caracteristique -->
+                    <div class="flex flex-col gap-2">
+                        <label for="idCaracteristiquePanneau">Caractéristique</label>
+                        <p-select
+                            id="idCaracteristiquePanneau"
+                            [options]="caracteristiques"
+                            optionLabel="caracteristique"
+                            optionValue="id"
+                            formControlName="idCaracteristiquePanneau"
+                            class="w-full"
+                            [class.ng-invalid]="isInvalid('idCaracteristiquePanneau')"
+                            [class.ng-dirty]="isInvalid('idCaracteristiquePanneau')"
+                        ></p-select>
+                        @if (isInvalid('idCaracteristiquePanneau')) { <small class="p-error">Ce champ est requis.</small> }
+                    </div>
+
+                    <!-- Latitude -->
+                    <div class="flex flex-col gap-2">
+                        <label for="latitude">Latitude</label>
+                        <input id="latitude" type="number" pInputText formControlName="latitude" [class.ng-invalid]="isInvalid('latitude')" [class.ng-dirty]="isInvalid('latitude')" step="any" />
+                    </div>
+
+                    <!-- Longitude -->
+                    <div class="flex flex-col gap-2">
+                        <label for="longitude">Longitude</label>
+                        <input id="longitude" type="number" pInputText formControlName="longitude" [class.ng-invalid]="isInvalid('longitude')" [class.ng-dirty]="isInvalid('longitude')" step="any" />
+                    </div>
+                </div>
+
+                @if (form.get('hasSpecialPrice')?.value) {
+                <h5 class="font-bold text-lg mb-4 mt-2">Prix et Statut</h5>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="flex flex-col gap-2">
+                        <label for="priceDay">Prix par Jour</label>
+                        <input id="priceDay" type="number" pInputText formControlName="priceDay" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label for="priceWeek">Prix par Semaine</label>
+                        <input id="priceWeek" type="number" pInputText formControlName="priceWeek" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label for="priceMonth">Prix par Mois</label>
+                        <input id="priceMonth" type="number" pInputText formControlName="priceMonth" />
+                    </div>
+                </div>
+                }
+
+                <h5 class="font-bold text-lg mb-4 mt-2">Statut</h5>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <!-- Checkboxes -->
+                    <div class="flex items-center gap-2 mt-4">
+                        <p-checkbox id="btValide" formControlName="btValide" [binary]="true"></p-checkbox>
+                        <label for="btValide" class="font-medium cursor-pointer">Valide</label>
+                    </div>
+                    <div class="flex items-center gap-2 mt-4">
+                        <p-checkbox id="btAvailable" formControlName="btAvailable" [binary]="true"></p-checkbox>
+                        <label for="btAvailable" class="font-medium cursor-pointer">Disponible</label>
+                    </div>
+                    <div class="flex items-center gap-2 mt-4">
+                        <p-checkbox id="hasSpecialPrice" formControlName="hasSpecialPrice" [binary]="true"></p-checkbox>
+                        <label for="hasSpecialPrice" class="font-medium cursor-pointer">Prix spécial</label>
+                    </div>
+                </div>
+
+                <h5 class="font-bold text-lg mb-4 outline-t pt-4 mt-2 border-t border-surface-200">Localisation en cascade</h5>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <!-- Region -->
+                    <div class="flex flex-col gap-2">
+                        <label for="idRegion">Région</label>
+                        @if (loadingRegions()) {
+                        <p-skeleton width="100%" height="2.8rem" borderRadius="6px"></p-skeleton>
+                        } @else {
+                        <p-select id="idRegion" [options]="regions" optionLabel="region" optionValue="id" formControlName="idRegion" class="w-full"></p-select>
+                        }
+                    </div>
+
+                    <!-- Commune -->
+                    <div class="flex flex-col gap-2">
+                        <label for="idCommune">Commune</label>
+                        @if (loadingCommunes()) {
+                        <p-skeleton width="100%" height="2.8rem" borderRadius="6px"></p-skeleton>
+                        } @else {
+                        <p-select id="idCommune" [options]="communes" optionLabel="commune" optionValue="id" formControlName="idCommune" class="w-full"></p-select>
+                        }
+                    </div>
+
+                    <!-- Quartier -->
+                    <div class="flex flex-col gap-2">
+                        <label for="idQuartier">Quartier</label>
+                        @if (loadingQuartiers()) {
+                        <p-skeleton width="100%" height="2.8rem" borderRadius="6px"></p-skeleton>
+                        } @else {
+                        <p-select id="idQuartier" [options]="quartiers" optionLabel="quartier" optionValue="id" formControlName="idQuartier" class="w-full"></p-select>
+                        }
+                    </div>
+
+                    <!-- Secteur -->
+                    <div class="flex flex-col gap-2">
+                        <label for="idSecteur">Secteur final</label>
+                        @if (loadingSecteurs()) {
+                        <p-skeleton width="100%" height="2.8rem" borderRadius="6px"></p-skeleton>
+                        } @else {
+                        <p-select id="idSecteur" [options]="secteurs" optionLabel="secteur" optionValue="id" formControlName="idSecteur" class="w-full" [class.ng-invalid]="isInvalid('idSecteur')" [class.ng-dirty]="isInvalid('idSecteur')"></p-select>
+                        } @if (isInvalid('idSecteur')) { <small class="p-error">Le choix du secteur est obligatoire final.</small> }
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="flex justify-end mt-8">
+                    <p-button label="Valider" severity="primary" (onClick)="submit()" [disabled]="form.invalid || isLoading()" />
+                </div>
+
+                <p-confirmdialog #cd>
+                    <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
+                        @if (message) {
+                        <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
+                            <div class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
+                                <i class="pi pi-question !text-5xl"></i>
                             </div>
-                            <div class="flex flex-col gap-2">
-                                <label for="priceWeek">Prix par Semaine</label>
-                                <input id="priceWeek" type="number" pInputText formControlName="priceWeek" />
-                            </div>
-                            <div class="flex flex-col gap-2">
-                                <label for="priceMonth">Prix par Mois</label>
-                                <input id="priceMonth" type="number" pInputText formControlName="priceMonth" />
+                            <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
+                            <p class="mb-0">{{ message.message }}</p>
+                            <div class="flex items-center gap-2 mt-6">
+                                <p-button label="Oui, confirmer" (onClick)="onAccept()"></p-button>
+                                <p-button label="Annuler" [outlined]="true" (onClick)="onReject()" styleClass="w-32"></p-button>
                             </div>
                         </div>
-                    }
-
-                    <h5 class="font-bold text-lg mb-4 mt-2">Statut</h5>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <!-- Checkboxes -->
-                        <div class="flex items-center gap-2 mt-4">
-                            <p-checkbox id="btValide" formControlName="btValide" [binary]="true"></p-checkbox>
-                            <label for="btValide" class="font-medium cursor-pointer">Valide</label>
-                        </div>
-                        <div class="flex items-center gap-2 mt-4">
-                            <p-checkbox id="btAvailable" formControlName="btAvailable" [binary]="true"></p-checkbox>
-                            <label for="btAvailable" class="font-medium cursor-pointer">Disponible</label>
-                        </div>
-                        <div class="flex items-center gap-2 mt-4">
-                            <p-checkbox id="hasSpecialPrice" formControlName="hasSpecialPrice" [binary]="true"></p-checkbox>
-                            <label for="hasSpecialPrice" class="font-medium cursor-pointer">Prix spécial</label>
-                        </div>
-                    </div>
-
-                    <h5 class="font-bold text-lg mb-4 outline-t pt-4 mt-2 border-t border-surface-200">Localisation en cascade</h5>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <!-- Region -->
-                        <div class="flex flex-col gap-2">
-                            <label for="idRegion">Région</label>
-                            @if (loadingRegions()) {
-                                <p-skeleton width="100%" height="2.8rem" borderRadius="6px"></p-skeleton>
-                            } @else {
-                                <p-select id="idRegion" [options]="regions" optionLabel="region" optionValue="id" formControlName="idRegion" class="w-full"></p-select>
-                            }
-                        </div>
-
-                        <!-- Commune -->
-                        <div class="flex flex-col gap-2">
-                            <label for="idCommune">Commune</label>
-                            @if (loadingCommunes()) {
-                                <p-skeleton width="100%" height="2.8rem" borderRadius="6px"></p-skeleton>
-                            } @else {
-                                <p-select id="idCommune" [options]="communes" optionLabel="commune" optionValue="id" formControlName="idCommune" class="w-full"></p-select>
-                            }
-                        </div>
-
-                        <!-- Quartier -->
-                        <div class="flex flex-col gap-2">
-                            <label for="idQuartier">Quartier</label>
-                            @if (loadingQuartiers()) {
-                                <p-skeleton width="100%" height="2.8rem" borderRadius="6px"></p-skeleton>
-                            } @else {
-                                <p-select id="idQuartier" [options]="quartiers" optionLabel="quartier" optionValue="id" formControlName="idQuartier" class="w-full"></p-select>
-                            }
-                        </div>
-
-                        <!-- Secteur -->
-                        <div class="flex flex-col gap-2">
-                            <label for="idSecteur">Secteur final</label>
-                            @if (loadingSecteurs()) {
-                                <p-skeleton width="100%" height="2.8rem" borderRadius="6px"></p-skeleton>
-                            } @else {
-                                <p-select id="idSecteur" [options]="secteurs" optionLabel="secteur" optionValue="id" formControlName="idSecteur" class="w-full" [class.ng-invalid]="isInvalid('idSecteur')" [class.ng-dirty]="isInvalid('idSecteur')"></p-select>
-                            }
-                            @if (isInvalid('idSecteur')) { <small class="p-error">Le choix du secteur est obligatoire final.</small> }
-                        </div>
-                    </div>
-
-                    <!-- Button -->
-                    <div class="flex justify-end mt-8">
-                        <p-button label="Valider" severity="primary" (onClick)="submit()" [disabled]="form.invalid || isLoading()" />
-                    </div>
-
-                    <p-confirmdialog #cd>
-                        <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
-                            @if (message) {
-                                <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
-                                    <div class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
-                                        <i class="pi pi-question !text-5xl"></i>
-                                    </div>
-                                    <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
-                                    <p class="mb-0">{{ message.message }}</p>
-                                    <div class="flex items-center gap-2 mt-6">
-                                        <p-button label="Oui, confirmer" (onClick)="onAccept()"></p-button>
-                                        <p-button label="Annuler" [outlined]="true" (onClick)="onReject()" styleClass="w-32"></p-button>
-                                    </div>
-                                </div>
-                            }
-                        </ng-template>
-                    </p-confirmdialog>
-                </form>
+                        }
+                    </ng-template>
+                </p-confirmdialog>
+            </form>
             }
         </div>
     </div>
