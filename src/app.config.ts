@@ -8,6 +8,7 @@ import { appRoutes } from './app.routes';
 import { authInterceptor } from '@/app/core/interceptors/auth.interceptor';
 import { apiResponseInterceptor } from '@/app/core/interceptors/api-response.interceptor';
 import { MessageService } from 'primeng/api';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 const MyPreset = definePreset(Aura, {
     semantic: {
@@ -38,5 +39,6 @@ export const appConfig: ApplicationConfig = {
         provideHttpClient(withInterceptorsFromDi(), withInterceptors([authInterceptor, apiResponseInterceptor])),
         provideZonelessChangeDetection(),
         providePrimeNG({ theme: { preset: MyPreset, options: { darkModeSelector: '.app-dark' } } }),
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
     ]
 };
