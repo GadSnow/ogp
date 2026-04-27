@@ -17,7 +17,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:application",
                     "options": {
-                        "outputPath": "dist/avalon-ng",
+                        "outputPath": "dist/ogp",
                         "index": "src/index.html",
                         "browser": "src/main.ts",
                         "tsConfig": "tsconfig.app.json",
@@ -84,7 +84,7 @@
                     "options": {
                         "tsConfig": "tsconfig.spec.json",
                         "inlineStyleLanguage": "scss",
-                         "assets": [
+                        "assets": [
                             "src/favicon.ico",
                             "src/assets"
                         ],
@@ -98,6 +98,6 @@
         }
     },
     "cli": {
-      "analytics": false
+        "analytics": false
     }
 }
