@@ -1,0 +1,21 @@
+<div
+  class="bg-card border border-gray-200 rounded-xl shadow-md overflow-hidden"
+>
+  <table class="w-full border-collapse">
+    <tbody>
+      @for (row of rowsArray; track $index) {
+      <tr class="border-b last:border-b-0">
+        @for (col of columnsArray; track $index) {
+        <td class="px-4 py-3">
+          <p-skeleton
+            width="100%"
+            height="1.25rem"
+            styleClass="rounded-md"
+          ></p-skeleton>
+        </td>
+        }
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

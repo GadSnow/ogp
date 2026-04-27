@@ -1,0 +1,148 @@
+<p-toast />
+
+<div class="flex justify-center mt-4 mb-4">
+    <div class="w-full md:w-5/6">
+        <div class="card p-6 flex flex-col gap-8">
+
+            <div class="text-xl font-semibold uppercase tracking-tight">Nouveau Devis</div>
+
+            <!-- Section Campagne -->
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-2 border-b border-surface-200 pb-2">
+                    <i class="pi pi-megaphone text-primary"></i>
+                    <h4 class="text-base font-semibold">Campagne</h4>
+                </div>
+
+                @if (loadingCampagnes()) {
+                    <p-skeleton width="50%" height="3rem"></p-skeleton>
+                } @else {
+                    <p-select
+                        [options]="campagnes"
+                        [(ngModel)]="selectedCampagneId"
+                        optionValue="id"
+                        [filter]="true"
+                        filterBy="nomCampagne"
+                        [showClear]="true"
+                        (ngModelChange)="onCampagneChange($event)"
+                        class="w-full md:w-1/2"
+                    >
+                        <ng-template #selectedItem let-item>
+                            <span>{{ item.nomCampagne }}</span>
+                        </ng-template>
+                        <ng-template #item let-item>
+                            <div class="flex flex-col py-1">
+                                <span class="font-medium">{{ item.nomCampagne }}</span>
+                                <span class="text-xs text-surface-400">{{ item.client?.denomination }}</span>
+                            </div>
+                        </ng-template>
+                    </p-select>
+                }
+
+                @if (loadingCampagneDetails()) {
+                    <p-skeleton width="100%" height="7rem"></p-skeleton>
+                } @else if (campagneDetails) {
+                    <div class="border border-surface-200 rounded-lg p-4 bg-surface-50">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs text-surface-400">Client</span>
+                                <span class="font-medium">{{ campagneDetails.campagne.client?.denomination }}</span>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs text-surface-400">Date début</span>
+                                <span class="font-medium">{{ campagneDetails.campagne.dateDebut | date:'dd/MM/yyyy' }}</span>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs text-surface-400">Date fin</span>
+                                <span class="font-medium">{{ campagneDetails.campagne.dateFin | date:'dd/MM/yyyy' }}</span>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs text-surface-400">Cycle</span>
+                                <span class="font-medium">{{ campagneDetails.campagne.cycle }}</span>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs text-surface-400">Statut</span>
+                                <span class="font-medium">{{ campagneDetails.campagne.statut }}</span>
+                            </div>
+                        </div>
+
+                        @if (campagneDetails.panneaux?.length) {
+                            <div class="mt-4 pt-3 border-t border-surface-200">
+                                <span class="text-xs text-surface-400 mb-2 block">Panneaux ({{ campagneDetails.panneaux.length }})</span>
+                                <div class="flex flex-wrap gap-2">
+                                    @for (p of campagneDetails.panneaux; track p.id) {
+                                        <p-tag [value]="p.reference" severity="secondary" />
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Section Remise -->
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-2 border-b border-surface-200 pb-2">
+                    <i class="pi pi-percentage text-primary"></i>
+                    <h4 class="text-base font-semibold">
+                        Remise
+                        <span class="text-sm font-normal text-surface-400 ml-1">(optionnelle)</span>
+                    </h4>
+                </div>
+
+                @if (loadingRemises()) {
+                    <p-skeleton width="50%" height="3rem"></p-skeleton>
+                } @else {
+                    <p-select
+                        [options]="remises"
+                        [(ngModel)]="selectedRemiseId"
+                        optionValue="id"
+                        [filter]="true"
+                        filterBy="typeRemise"
+                        [showClear]="true"
+                        (ngModelChange)="onRemiseChange($event)"
+                        class="w-full md:w-1/2"
+                    >
+                        <ng-template #selectedItem let-item>
+                            <span>{{ item.typeRemise }} — {{ item.valeurRemise }}%</span>
+                        </ng-template>
+                        <ng-template #item let-item>
+                            <div class="flex flex-col py-1">
+                                <span class="font-medium">{{ item.typeRemise }}</span>
+                                <span class="text-xs text-surface-400">{{ item.valeurRemise }}%</span>
+                            </div>
+                        </ng-template>
+                    </p-select>
+                }
+
+                @if (selectedRemise) {
+                    <div class="border border-surface-200 rounded-lg p-4 bg-surface-50">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs text-surface-400">Type</span>
+                                <span class="font-medium">{{ selectedRemise.typeRemise }}</span>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs text-surface-400">Valeur</span>
+                                <span class="font-medium">{{ selectedRemise.valeurRemise }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-end gap-3">
+                <p-button label="Annuler" severity="secondary" [outlined]="true" [routerLink]="['/ogp/campagne']" />
+                <p-button
+                    label="Générer le devis"
+                    severity="primary"
+                    (onClick)="submit()"
+                    [disabled]="!selectedCampagneId || isLoading()"
+                    [loading]="isLoading()" />
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<p-confirmdialog />

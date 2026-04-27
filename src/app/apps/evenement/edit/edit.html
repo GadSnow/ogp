@@ -1,0 +1,129 @@
+<div class="flex justify-center mt-4 mb-4">
+    <div class="w-full md:w-5/6">
+        <div class="card p-6 flex flex-col gap-5">
+            <div class="text-xl font-semibold">Modification d'un Événement</div>
+
+            @if (isLoading()) {
+            <div class="flex flex-col gap-4">
+                <p-skeleton width="100%" height="30rem"></p-skeleton>
+            </div>
+            } @else {
+            <form [formGroup]="form">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <!-- Date -->
+                    <div class="flex flex-col gap-2">
+                        <label for="dateEvenement">Date de l'événement</label>
+                        <p-datepicker
+                            id="dateEvenement"
+                            formControlName="dateEvenement"
+                            [showIcon]="true"
+                            class="w-full"
+                            [class.ng-invalid]="isInvalid('dateEvenement')"
+                            [class.ng-dirty]="isInvalid('dateEvenement')"
+                        ></p-datepicker>
+                        @if (isInvalid('dateEvenement')) { <small class="p-error">Ce champ est requis.</small> }
+                    </div>
+
+                    <!-- Coût total -->
+                    <div class="flex flex-col gap-2">
+                        <label for="coutTotal">Coût total</label>
+                        <input id="coutTotal" type="number" pInputText formControlName="coutTotal"
+                               [class.ng-invalid]="isInvalid('coutTotal')"
+                               [class.ng-dirty]="isInvalid('coutTotal')" />
+                    </div>
+
+                    <!-- Type d'événement -->
+                    <div class="flex flex-col gap-2">
+                        <label for="idTypeEvenement">Type d'événement</label>
+                        <p-select
+                            id="idTypeEvenement"
+                            [options]="typesEvenement"
+                            optionLabel="type"
+                            optionValue="id"
+                            formControlName="idTypeEvenement"
+                            class="w-full"
+                            [class.ng-invalid]="isInvalid('idTypeEvenement')"
+                            [class.ng-dirty]="isInvalid('idTypeEvenement')"
+                        ></p-select>
+                        @if (isInvalid('idTypeEvenement')) { <small class="p-error">Ce champ est requis.</small> }
+                    </div>
+
+                    <!-- Panneau -->
+                    <div class="flex flex-col gap-2">
+                        <label for="idPanneau">Panneau concerné</label>
+                        <p-select
+                            id="idPanneau"
+                            [options]="panneaux"
+                            optionLabel="reference"
+                            optionValue="id"
+                            formControlName="idPanneau"
+                            class="w-full"
+                            [class.ng-invalid]="isInvalid('idPanneau')"
+                            [class.ng-dirty]="isInvalid('idPanneau')"
+                        ></p-select>
+                        @if (isInvalid('idPanneau')) { <small class="p-error">Ce champ est requis.</small> }
+                    </div>
+
+                    <!-- Intervenant -->
+                    <div class="flex flex-col gap-2">
+                        <label for="idUser">Intervenant <span class="text-red-500">*</span></label>
+                        <p-select
+                            id="idUser"
+                            [options]="users"
+                            optionValue="id"
+                            formControlName="idUser"
+                            [filter]="true"
+                            filterBy="msisdn,nom,prenom"
+                            [loading]="loadingUsers()"
+                            [showClear]="true"
+                            class="w-full"
+                            [class.ng-invalid]="isInvalid('idUser')"
+                            [class.ng-dirty]="isInvalid('idUser')"
+                        >
+                            <ng-template #selectedItem let-user>
+                                <span>{{ user.nom }} {{ user.prenom }} — {{ user.msisdn }}</span>
+                            </ng-template>
+                            <ng-template #item let-user>
+                                <div class="flex flex-col">
+                                    <span class="font-medium">{{ user.nom }} {{ user.prenom }}</span>
+                                    <span class="text-sm text-surface-500">{{ user.msisdn }}</span>
+                                </div>
+                            </ng-template>
+                        </p-select>
+                        @if (isInvalid('idUser')) { <small class="p-error">L'intervenant est obligatoire.</small> }
+                    </div>
+                </div>
+
+                <!-- Commentaire -->
+                <div class="flex flex-col gap-2 mb-6">
+                    <label for="commentaire">Commentaire</label>
+                    <textarea id="commentaire" pInputText formControlName="commentaire" rows="3" class="w-full"></textarea>
+                </div>
+
+                <!-- Button -->
+                <div class="flex justify-end mt-8">
+                    <p-button label="Valider" severity="primary" (onClick)="submit()" [disabled]="form.invalid || isLoading()" />
+                </div>
+
+                <p-confirmdialog #cd>
+                    <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
+                        @if (message) {
+                        <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
+                            <div class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
+                                <i class="pi pi-question text-5xl"></i>
+                            </div>
+                            <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
+                            <p class="mb-0">{{ message.message }}</p>
+                            <div class="flex items-center gap-2 mt-6">
+                                <p-button label="Oui, confirmer" (onClick)="onAccept()"></p-button>
+                                <p-button label="Annuler" [outlined]="true" (onClick)="onReject()" styleClass="w-32"></p-button>
+                            </div>
+                        </div>
+                        }
+                    </ng-template>
+                </p-confirmdialog>
+            </form>
+            }
+        </div>
+    </div>
+</div>

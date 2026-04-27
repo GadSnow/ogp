@@ -1,0 +1,47 @@
+<p-toast />
+
+<div>
+    <div custom-card>
+        <h3 card-title>Profils</h3>
+        <div card-action>
+            <p-button label="Ajouter" [routerLink]="['add']" />
+        </div>
+
+        @if (isLoading()) {
+        <app-skeleton-table></app-skeleton-table>
+        } @else {
+        <div>
+            @if (profils.length > 0) {
+            <p-table [value]="profils" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]" [tableStyle]="{ 'min-width': '50rem' }">
+                <ng-template #header>
+                    <tr>
+                        <th>#</th>
+                        <th>Profil</th>
+                        <th>Action</th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-profil let-rowIndex="rowIndex">
+                    <tr>
+                        <td>{{ rowIndex + 1 }}</td>
+                        <td>
+                            <a [routerLink]="['detail', profil.id]" class="text-primary hover:underline cursor-pointer font-medium">
+                                {{ profil.profil }}
+                            </a>
+                        </td>
+                        <td class="flex gap-2">
+                            <p-button label="Modifier" [text]="true" size="small" [routerLink]="['edit', profil.id]" />
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            } @else {
+            <div class="bg-card flex justify-center items-center h-72">
+                <h1 class="font-bold text-3xl">Aucun profil trouvé</h1>
+            </div>
+            }
+        </div>
+        }
+    </div>
+
+    <p-confirmdialog />
+</div>

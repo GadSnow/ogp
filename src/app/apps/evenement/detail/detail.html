@@ -1,0 +1,175 @@
+<div class="flex justify-center mt-4 mb-4">
+    <div class="w-full md:w-5/6">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6">
+            @if (evenement) {
+                <h2 class="text-2xl font-bold uppercase tracking-wide">
+                    {{ evenement.typeEvenement?.type }} — {{ evenement.panneau?.reference }}
+                </h2>
+            } @else {
+                <p-skeleton width="18rem" height="2rem"></p-skeleton>
+            }
+            <a [routerLink]="['/ogp/evenement']" class="flex items-center gap-1 text-sm text-surface-500 hover:text-primary cursor-pointer">
+                <i class="pi pi-angle-left"></i> Retour à la liste
+            </a>
+        </div>
+
+        <div class="card p-6">
+
+            @if (isLoading()) {
+                <div class="flex flex-col gap-3">
+                    <p-skeleton width="8rem" height="1.5rem"></p-skeleton>
+                    <p-skeleton width="100%" height="20rem"></p-skeleton>
+                </div>
+            } @else {
+                <p-tabs value="0">
+                    <p-tablist>
+                        <p-tab value="0">Événement</p-tab>
+                        <p-tab value="1">Intervenant</p-tab>
+                        <p-tab value="2">Panneau</p-tab>
+                    </p-tablist>
+
+                    <p-tabpanels>
+
+                        <!-- Tab Événement -->
+                        <p-tabpanel value="0">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Date</span>
+                                    <span class="font-medium">{{ evenement?.dateEvenement | date:'dd/MM/yyyy' }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Type d'événement</span>
+                                    <span class="font-medium">{{ evenement?.typeEvenement?.type }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Coût total (GNF)</span>
+                                    <span class="font-medium">{{ evenement?.coutTotal | number }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Créé le</span>
+                                    <span class="font-medium">{{ evenement?.dtCreated | date:'dd/MM/yyyy HH:mm' }}</span>
+                                </div>
+
+                                @if (evenement?.commentaire) {
+                                    <div class="flex flex-col gap-1 md:col-span-2">
+                                        <span class="text-sm text-surface-500">Commentaire</span>
+                                        <span class="font-medium">{{ evenement?.commentaire }}</span>
+                                    </div>
+                                }
+
+                            </div>
+                        </p-tabpanel>
+
+                        <!-- Tab Intervenant -->
+                        <p-tabpanel value="1">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Nom</span>
+                                    <span class="font-medium">{{ evenement?.user?.nom }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Prénom</span>
+                                    <span class="font-medium">{{ evenement?.user?.prenom }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Email</span>
+                                    <span class="font-medium">{{ evenement?.user?.email }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Téléphone</span>
+                                    <span class="font-medium">{{ evenement?.user?.msisdn }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Rôle</span>
+                                    <span class="font-medium">{{ evenement?.user?.role }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Profil</span>
+                                    <span class="font-medium">{{ evenement?.user?.profils?.profil }}</span>
+                                </div>
+
+                            </div>
+                        </p-tabpanel>
+
+                        <!-- Tab Panneau -->
+                        <p-tabpanel value="2">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Référence</span>
+                                    <span class="font-medium">{{ evenement?.panneau?.reference }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Catégorie</span>
+                                    <span class="font-medium">{{ evenement?.panneau?.caracteristiquePanneaux?.categoriePanneaux?.categorie }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Type</span>
+                                    <span class="font-medium">{{ evenement?.panneau?.caracteristiquePanneaux?.type }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Dimensions</span>
+                                    <span class="font-medium">{{ evenement?.panneau?.caracteristiquePanneaux?.longeur }} × {{ evenement?.panneau?.caracteristiquePanneaux?.largeur }} m</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Disponible</span>
+                                    <p-tag
+                                        [value]="evenement?.panneau?.btAvailable ? 'Disponible' : 'Indisponible'"
+                                        [severity]="evenement?.panneau?.btAvailable ? 'success' : 'danger'" />
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Validé</span>
+                                    <p-tag
+                                        [value]="evenement?.panneau?.btValide ? 'Validé' : 'Non validé'"
+                                        [severity]="evenement?.panneau?.btValide ? 'success' : 'warn'" />
+                                </div>
+
+                                <div class="flex flex-col gap-1 md:col-span-2 border-t border-surface-200 pt-4 mt-2">
+                                    <span class="text-sm font-semibold text-surface-600 mb-2">Localisation</span>
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-xs text-surface-400">Région</span>
+                                            <span class="font-medium">{{ evenement?.panneau?.secteur?.quartier?.commune?.region?.region }}</span>
+                                        </div>
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-xs text-surface-400">Commune</span>
+                                            <span class="font-medium">{{ evenement?.panneau?.secteur?.quartier?.commune?.commune }}</span>
+                                        </div>
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-xs text-surface-400">Quartier</span>
+                                            <span class="font-medium">{{ evenement?.panneau?.secteur?.quartier?.quartier }}</span>
+                                        </div>
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-xs text-surface-400">Secteur</span>
+                                            <span class="font-medium">{{ evenement?.panneau?.secteur?.secteur }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </p-tabpanel>
+
+                    </p-tabpanels>
+                </p-tabs>
+            }
+        </div>
+
+    </div>
+</div>

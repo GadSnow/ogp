@@ -1,0 +1,107 @@
+<p-toast />
+
+<div class="flex justify-center mt-4 mb-4">
+    <div class="w-full md:w-5/6">
+
+        <div class="card p-6 flex flex-col gap-5">
+            <div class="text-xl font-semibold">Modifier l'utilisateur</div>
+
+            @if (loadingData()) {
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    @for (_ of [1,2,3,4,5,6,7]; track $index) {
+                        <div class="flex flex-col gap-2">
+                            <p-skeleton width="8rem" height="1rem"></p-skeleton>
+                            <p-skeleton width="100%" height="2.5rem"></p-skeleton>
+                        </div>
+                    }
+                </div>
+            } @else {
+                <form [formGroup]="form" class="flex flex-col gap-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                        <div class="flex flex-col gap-2">
+                            <label for="nom">Nom <span class="text-red-500">*</span></label>
+                            <input id="nom" type="text" pInputText formControlName="nom"
+                                   [class.ng-invalid]="isInvalid('nom')"
+                                   [class.ng-dirty]="isInvalid('nom')" />
+                            @if (isInvalid('nom')) {
+                                <small class="p-error">Le nom est obligatoire.</small>
+                            }
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label for="prenom">Prénom <span class="text-red-500">*</span></label>
+                            <input id="prenom" type="text" pInputText formControlName="prenom"
+                                   [class.ng-invalid]="isInvalid('prenom')"
+                                   [class.ng-dirty]="isInvalid('prenom')" />
+                            @if (isInvalid('prenom')) {
+                                <small class="p-error">Le prénom est obligatoire.</small>
+                            }
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label for="email">Email <span class="text-red-500">*</span></label>
+                            <input id="email" type="email" pInputText formControlName="email"
+                                   [class.ng-invalid]="isInvalid('email')"
+                                   [class.ng-dirty]="isInvalid('email')" />
+                            @if (isInvalid('email')) {
+                                <small class="p-error">Un email valide est obligatoire.</small>
+                            }
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label for="msisdn">Téléphone <span class="text-red-500">*</span></label>
+                            <input id="msisdn" type="text" pInputText formControlName="msisdn"
+                                   [class.ng-invalid]="isInvalid('msisdn')"
+                                   [class.ng-dirty]="isInvalid('msisdn')" />
+                            @if (isInvalid('msisdn')) {
+                                <small class="p-error">Le téléphone est obligatoire.</small>
+                            }
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label for="password">Mot de passe <span class="text-red-500">*</span></label>
+                            <input id="password" type="password" pInputText formControlName="password"
+                                   [class.ng-invalid]="isInvalid('password')"
+                                   [class.ng-dirty]="isInvalid('password')" />
+                            @if (isInvalid('password')) {
+                                <small class="p-error">Le mot de passe est obligatoire.</small>
+                            }
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label for="role">Rôle <span class="text-red-500">*</span></label>
+                            <input id="role" type="text" pInputText formControlName="role"
+                                   [class.ng-invalid]="isInvalid('role')"
+                                   [class.ng-dirty]="isInvalid('role')" />
+                            @if (isInvalid('role')) {
+                                <small class="p-error">Le rôle est obligatoire.</small>
+                            }
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label for="idProfile">Profil <span class="text-red-500">*</span></label>
+                            <p-select id="idProfile" formControlName="idProfile"
+                                      [options]="profils"
+                                      optionLabel="profil"
+                                      optionValue="id"
+                                      [class.ng-invalid]="isInvalid('idProfile')"
+                                      class="w-full" />
+                            @if (isInvalid('idProfile')) {
+                                <small class="p-error">Le profil est obligatoire.</small>
+                            }
+                        </div>
+
+                    </div>
+
+                    <div class="flex justify-between mt-4">
+                        <p-button label="Annuler" severity="secondary" [outlined]="true" [routerLink]="['/ogp/users']" />
+                        <p-button label="Sauvegarder les modifications" severity="primary" (onClick)="submit()" [loading]="isLoading()" />
+                    </div>
+                </form>
+            }
+        </div>
+
+        <p-confirmdialog />
+    </div>
+</div>

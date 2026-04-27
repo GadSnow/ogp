@@ -1,0 +1,56 @@
+
+<div custom-card>
+    <h3 card-title>Clients</h3>
+    <div card-action>
+        <p-button label="Ajouter" [routerLink]="['add']" />
+    </div>
+
+    @if (isLoading()) {
+        <app-skeleton-table></app-skeleton-table>
+    } @else {
+        <div>
+            @if (clients.length > 0) {
+                <p-table [value]="clients" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]"
+                         [tableStyle]="{ 'min-width': '75rem' }">
+                    <ng-template #header>
+                        <tr>
+                            <th>#</th>
+                            <th>Dénomination</th>
+                            <th>Sigle</th>
+                            <th>Domaine d'activité</th>
+                            <th>Responsable</th>
+                            <th>Téléphone</th>
+                            <th>Type de client</th>
+                            <th>Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template #body let-client let-rowIndex="rowIndex">
+                        <tr>
+                            <td>{{ rowIndex + 1 }}</td>
+                            <td>
+                                <a [routerLink]="['detail', client.id]" class="text-primary hover:underline cursor-pointer font-medium">
+                                    {{ client.denomination }}
+                                </a>
+                            </td>
+                            <td>{{ client.sigle }}</td>
+                            <td>{{ client.domaineActivite }}</td>
+                            <td>{{ client.nomResponsable }} {{ client.prenomResponsable }}</td>
+                            <td>{{ client.telephoneResponsable }}</td>
+                            <td>{{ client.typeClient?.typeClient }}</td>
+                            <td>
+                                <p-button label="Modifier" [text]="true" size="small"
+                                          [routerLink]="['edit', client.id]" />
+
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            } @else {
+                <div class="bg-card flex justify-center items-center h-72">
+                    <h1 class="font-bold text-3xl">Aucune donnée trouvée</h1>
+                </div>
+            }
+        </div>
+    }
+
+</div>

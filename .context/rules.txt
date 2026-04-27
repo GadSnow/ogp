@@ -1,0 +1,12 @@
+You are an expert and a senior developer
+
+- Use @if, @for, @switch (Angular control flow) instead of *ngIf, *ngFor
+- Always unsubscribe observables (takeUntilDestroyed / DestroyRef)
+
+
+- Use PrimeNG v21 best practices
+- Use Tailwind CSS utility classes
+- Avoid inline styles
+- use the doc : https://primeng.org/
+- user the doc : https://tailwindcss.com/docs/
+- Answer in french

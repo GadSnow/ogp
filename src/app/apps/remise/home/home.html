@@ -1,0 +1,53 @@
+
+
+<div>
+    <div custom-card>
+        <h3 card-title>Remises</h3>
+        <div card-action>
+            <p-button label="Ajouter" [routerLink]="['add']" />
+        </div>
+
+        @if (isLoading()) {
+            <app-skeleton-table></app-skeleton-table>
+        } @else {
+            <div>
+                @if (remises.length > 0) {
+                    <p-table [value]="remises" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]"
+                             [tableStyle]="{ 'min-width': '50rem' }">
+                        <ng-template #header>
+                            <tr>
+                                <th>#</th>
+                                <th>Type</th>
+                                <th>Valeur</th>
+                                <th>Date Création</th>
+                                <th>Dernière MAJ</th>
+                                <th>Action</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template #body let-remise let-rowIndex="rowIndex">
+                            <tr>
+                                <td>{{ rowIndex + 1 }}</td>
+                                <td>{{ remise.typeRemise }}</td>
+                                <td>{{ remise.valeurRemise }}</td>
+                                <td>{{ remise.dtCreated | date:'dd/MM/yyyy HH:mm' }}</td>
+                                <td>{{ remise.dtLastUpdate | date:'dd/MM/yyyy HH:mm' }}</td>
+                                <td>
+                                    <p-button label="Modifier" [text]="true" size="small"
+                                              [routerLink]="['edit', remise.id]" />
+
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+
+                } @else {
+                    <div class="bg-card flex justify-center items-center h-72">
+                        <h1 class="font-bold text-3xl">Aucune donnée trouvée</h1>
+                    </div>
+                }
+
+            </div>
+        }
+    </div>
+
+</div>

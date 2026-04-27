@@ -1,0 +1,116 @@
+<div class="flex justify-center mt-4 mb-4">
+    <div class="w-full md:w-5/6">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6">
+            @if (devis) {
+                <h2 class="text-2xl font-bold uppercase tracking-wide">
+                    Devis — {{ devis.campagne?.nomCampagne }}
+                </h2>
+            } @else {
+                <p-skeleton width="18rem" height="2rem"></p-skeleton>
+            }
+            <a [routerLink]="['/ogp/devis']" class="flex items-center gap-1 text-sm text-surface-500 hover:text-primary cursor-pointer">
+                <i class="pi pi-angle-left"></i> Retour à la liste
+            </a>
+        </div>
+
+        <div class="card p-6">
+
+            @if (isLoading()) {
+                <div class="flex flex-col gap-3">
+                    <p-skeleton width="8rem" height="1.5rem"></p-skeleton>
+                    <p-skeleton width="100%" height="20rem"></p-skeleton>
+                </div>
+            } @else {
+                <p-tabs value="0">
+                    <p-tablist>
+                        <p-tab value="0">Campagne</p-tab>
+                        <p-tab value="1">Remise</p-tab>
+                    </p-tablist>
+
+                    <p-tabpanels>
+
+                        <!-- Tab Campagne -->
+                        <p-tabpanel value="0">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Nom</span>
+                                    <span class="font-medium">{{ devis?.campagne?.nomCampagne }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Client</span>
+                                    <span class="font-medium">{{ devis?.campagne?.client?.denomination }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Date début</span>
+                                    <span class="font-medium">{{ devis?.campagne?.dateDebut | date:'dd/MM/yyyy' }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Date fin</span>
+                                    <span class="font-medium">{{ devis?.campagne?.dateFin | date:'dd/MM/yyyy' }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Cycle</span>
+                                    <span class="font-medium">{{ devis?.campagne?.cycle }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Statut</span>
+                                    <span class="font-medium">{{ devis?.campagne?.statut }}</span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-surface-500">Créé le</span>
+                                    <span class="font-medium">{{ devis?.dtCreated | date:'dd/MM/yyyy HH:mm' }}</span>
+                                </div>
+
+                                @if (devis?.panneaux?.length) {
+                                    <div class="flex flex-col gap-2 md:col-span-2 border-t border-surface-200 pt-4 mt-2">
+                                        <span class="text-sm text-surface-500">Panneaux ({{ devis?.panneaux?.length }})</span>
+                                        <div class="flex flex-wrap gap-2">
+                                            @for (p of devis?.panneaux; track p.id) {
+                                                <p-tag [value]="p.reference" severity="secondary" />
+                                            }
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+                        </p-tabpanel>
+
+                        <!-- Tab Remise -->
+                        <p-tabpanel value="1">
+                            @if (devis?.remise) {
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+
+                                    <div class="flex flex-col gap-1">
+                                        <span class="text-sm text-surface-500">Type</span>
+                                        <span class="font-medium">{{ devis?.remise?.typeRemise }}</span>
+                                    </div>
+
+                                    <div class="flex flex-col gap-1">
+                                        <span class="text-sm text-surface-500">Valeur</span>
+                                        <span class="font-medium">{{ devis?.remise?.valeurRemise }}%</span>
+                                    </div>
+
+                                </div>
+                            } @else {
+                                <div class="flex justify-center items-center h-32 text-surface-400 pt-4">
+                                    <span class="italic">Aucune remise appliquée</span>
+                                </div>
+                            }
+                        </p-tabpanel>
+
+                    </p-tabpanels>
+                </p-tabs>
+            }
+
+        </div>
+    </div>
+</div>

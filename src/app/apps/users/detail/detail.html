@@ -1,0 +1,110 @@
+<div class="flex justify-center mt-4 mb-4">
+    <div class="w-full md:w-5/6">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6">
+            @if (user) {
+            <h2 class="text-2xl font-bold uppercase tracking-wide">{{ user.nom }} {{ user.prenom }}</h2>
+            } @else {
+            <p-skeleton width="14rem" height="2rem"></p-skeleton>
+            }
+            <a [routerLink]="['/ogp/users']" class="flex items-center gap-1 text-sm text-surface-500 hover:text-primary cursor-pointer"> <i class="pi pi-angle-left"></i> Retour à la liste </a>
+        </div>
+
+        <div class="card p-6">
+            @if (isLoading()) {
+            <div class="flex flex-col gap-3">
+                <p-skeleton width="8rem" height="1.5rem"></p-skeleton>
+                <p-skeleton width="100%" height="20rem"></p-skeleton>
+            </div>
+            } @else {
+            <p-tabs value="0">
+                <p-tablist>
+                    <p-tab value="0">Informations</p-tab>
+                    <p-tab value="1">Permissions</p-tab>
+                </p-tablist>
+
+                <p-tabpanels>
+                    <!-- Tab Informations -->
+                    <p-tabpanel value="0">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Nom</span>
+                                <span class="font-medium">{{ user?.nom }}</span>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Prénom</span>
+                                <span class="font-medium">{{ user?.prenom }}</span>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Email</span>
+                                <span class="font-medium">{{ user?.email }}</span>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Téléphone</span>
+                                <span class="font-medium">{{ user?.msisdn }}</span>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Rôle</span>
+                                <span class="font-medium">{{ user?.role }}</span>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Profil</span>
+                                <span class="font-medium">{{ user?.profils?.profil }}</span>
+                            </div>
+                        </div>
+                    </p-tabpanel>
+
+                    <!-- Tab Permissions -->
+                    <p-tabpanel value="1">
+                        <p-table [value]="permissionRows" [tableStyle]="{ 'min-width': '30rem' }" class="mt-2">
+                            <ng-template #header>
+                                <tr>
+                                    <th>Permissions</th>
+                                    <th class="text-center w-36">View Only</th>
+                                    <th class="text-center w-36">Full Access</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template #body let-row>
+                                <tr>
+                                    <td>{{ row.displayedLabel }}</td>
+                                    <td class="text-center">
+                                        @if (row.viewOnlyExists) { @if (row.viewOnlyAssigned) {
+                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-500">
+                                            <i class="pi pi-check text-white text-[0.65rem]"></i>
+                                        </span>
+                                        } @else {
+                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-500">
+                                            <i class="pi pi-times text-white text-[0.65rem]"></i>
+                                        </span>
+                                        } } @else {
+                                        <span class="text-surface-300">—</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (row.fullAccessExists) { @if (row.fullAccessAssigned) {
+                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-500">
+                                            <i class="pi pi-check text-white text-[0.65rem]"></i>
+                                        </span>
+                                        } @else {
+                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-500">
+                                            <i class="pi pi-times text-white text-[0.65rem]"></i>
+                                        </span>
+                                        } } @else {
+                                        <span class="text-surface-300">—</span>
+                                        }
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-tabpanel>
+                </p-tabpanels>
+            </p-tabs>
+            }
+        </div>
+    </div>
+</div>

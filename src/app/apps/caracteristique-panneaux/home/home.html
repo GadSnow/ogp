@@ -1,0 +1,51 @@
+
+<div custom-card>
+    <h3 card-title>Caractéristiques Panneaux</h3>
+    <div card-action>
+        <p-button label="Ajouter" [routerLink]="['add']" />
+    </div>
+
+    @if (isLoading()) {
+        <app-skeleton-table></app-skeleton-table>
+    } @else {
+        <div>
+            @if (caracteristiques.length > 0) {
+                <p-table [value]="caracteristiques" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]"
+                         [tableStyle]="{ 'min-width': '75rem' }">
+                    <ng-template #header>
+                        <tr>
+                            <th>#</th>
+                            <th>Type</th>
+                            <th>Caractéristique</th>
+                            <th>Dimensions</th>
+                            <th>Longueur</th>
+                            <th>Largeur</th>
+                            <th>Catégorie Panneaux</th>
+                            <th>Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template #body let-caract let-rowIndex="rowIndex">
+                        <tr>
+                            <td>{{ rowIndex + 1 }}</td>
+                            <td>{{ caract.type }}</td>
+                            <td>{{ caract.caracteristique }}</td>
+                            <td>{{ caract.dimenssion }}</td>
+                            <td>{{ caract.longeur }}</td>
+                            <td>{{ caract.largeur }}</td>
+                            <td>{{ caract.categoriePanneaux?.categorie }}</td>
+                            <td>
+                                <p-button label="Modifier" [text]="true" size="small"
+                                          [routerLink]="['edit', caract.id]" />
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            } @else {
+                <div class="bg-card flex justify-center items-center h-72">
+                    <h1 class="font-bold text-3xl">Aucune donnée trouvée</h1>
+                </div>
+            }
+        </div>
+    }
+
+</div>

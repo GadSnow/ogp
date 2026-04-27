@@ -1,0 +1,107 @@
+�
+<div class="flex justify-center mt-4">
+    <div class="w-full md:w-4/5">
+        <div class="card p-6 flex flex-col gap-5">
+
+            <div class="text-xl font-semibold">Modification</div>
+
+            @if (isLoading()) {
+
+                <!-- SKELETON -->
+                <div class="flex flex-col gap-4">
+
+                    <!-- Commune -->
+                    <div class="flex flex-col gap-2">
+                        <p-skeleton width="100px" height="1rem"></p-skeleton>
+                        <p-skeleton width="100%" height="2.5rem"></p-skeleton>
+                    </div>
+
+                    <!-- Région -->
+                    <div class="flex flex-col gap-2">
+                        <p-skeleton width="100px" height="1rem"></p-skeleton>
+                        <p-skeleton width="100%" height="2.5rem"></p-skeleton>
+                    </div>
+
+                    <!-- Button -->
+                    <div class="flex justify-end">
+                        <p-skeleton width="120px" height="2.5rem"></p-skeleton>
+                    </div>
+
+                </div>
+
+            } @else {
+
+                <!-- FORM -->
+                <form [formGroup]="form">
+
+                    <!-- Commune -->
+                    <div class="flex flex-col gap-2 mb-4">
+                        <label for="commune">Commune</label>
+                        <input
+                            id="commune"
+                            type="text"
+                            pInputText
+                            fluid
+                            formControlName="commune"
+                            [class.ng-invalid]="isInvalid('commune')"
+                            [class.ng-dirty]="isInvalid('commune')"
+                        />
+                        @if (isInvalid('commune')) {
+                            <small class="p-error">La commune est requise.</small>
+                        }
+                    </div>
+
+                    <!-- Région -->
+                    <div class="flex flex-col gap-2 mb-4">
+                        <label for="idRegion">Région</label>
+                        <p-select
+                            id="idRegion"
+                            [options]="regions"
+                            optionLabel="region"
+                            optionValue="id"
+                            formControlName="idRegion"
+                            class="w-full"
+                            [class.ng-invalid]="isInvalid('idRegion')"
+                            [class.ng-dirty]="isInvalid('idRegion')"
+                        />
+                        @if (isInvalid('idRegion')) {
+                            <small class="p-error">La région est requise.</small>
+                        }
+                    </div>
+
+                    <!-- Button -->
+                    <div class="flex justify-end">
+                        <p-button
+                            label="Valider"
+                            severity="primary"
+                            (onClick)="submit()"
+                            [disabled]="form.invalid || isLoading()"
+                        />
+                    </div>
+
+                </form>
+
+            }
+
+            <!-- Dialog (hors loading pour éviter bug UI) -->
+            <p-confirmdialog #cd>
+                <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
+                    @if (message) {
+                        <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
+                            <div class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
+                                <i class="pi pi-question !text-5xl"></i>
+                            </div>
+                            <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
+                            <p class="mb-0">{{ message.message }}</p>
+                            <div class="flex items-center gap-2 mt-6">
+                                <p-button label="Oui, confirmer" (onClick)="onAccept()"></p-button>
+                                <p-button label="Annuler" [outlined]="true" (onClick)="onReject()" styleClass="w-32"></p-button>
+                            </div>
+                        </div>
+                    }
+                </ng-template>
+            </p-confirmdialog>
+
+        </div>
+    </div>
+</div>
