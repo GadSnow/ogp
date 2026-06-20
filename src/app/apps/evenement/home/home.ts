@@ -9,10 +9,13 @@ import { CustomCard } from '@/app/layout/components/ui/customcard';
 import { Button } from 'primeng/button';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
     selector: 'app-evenement-home',
-    imports: [TableModule, SkeletonTableComponent, CustomCard, Button, RouterLink, DatePipe],
+    imports: [TableModule, SkeletonTableComponent, CustomCard, Button, RouterLink, DatePipe, IconFieldModule, InputIconModule, InputText],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })

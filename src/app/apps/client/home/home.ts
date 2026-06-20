@@ -9,10 +9,13 @@ import { SkeletonTableComponent } from '@/app/shared/utils/components/skeleton-t
 import { CustomCard } from '@/app/layout/components/ui/customcard';
 import { Button } from 'primeng/button';
 import { RouterLink } from '@angular/router';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
     selector: 'app-client-home',
-    imports: [TableModule, Tag, SkeletonTableComponent, CustomCard, Button, RouterLink],
+    imports: [TableModule, Tag, SkeletonTableComponent, CustomCard, Button, RouterLink, IconFieldModule, InputIconModule, InputText],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })

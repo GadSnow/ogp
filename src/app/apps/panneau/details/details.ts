@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PanneauService } from '../panneau.service';
-import { Panneau } from '../panneau.types';
+import { Panneau, Tarif } from '../panneau.types';
 import { finalize } from 'rxjs';
 import { Tag } from 'primeng/tag';
 import { Button } from 'primeng/button';
@@ -20,6 +20,7 @@ export class DetailsPanneau implements OnInit {
     private panneauService = inject(PanneauService);
 
     panneau = signal<Panneau | null>(null);
+    tarif = signal<Tarif | null>(null);
     isLoading = signal(true);
 
     ngOnInit() {
@@ -35,7 +36,8 @@ export class DetailsPanneau implements OnInit {
             .pipe(finalize(() => this.isLoading.set(false)))
             .subscribe({
                 next: (res) => {
-                    this.panneau.set(res.data);
+                    this.panneau.set(res.data.panneau);
+                    this.tarif.set(res.data.tarif);
                 },
                 error: (err) => {
                     console.error('Error fetching panneau details', err);

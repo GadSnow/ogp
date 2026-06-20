@@ -3,7 +3,7 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
 import { TabsModule } from 'primeng/tabs';
-import { DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DevisService } from '@/app/apps/devis/devis.service';
@@ -17,7 +17,7 @@ interface DevisDetail extends Devis {
 
 @Component({
     selector: 'app-detail-devis',
-    imports: [RouterLink, Skeleton, Tag, TabsModule, DatePipe],
+    imports: [RouterLink, Skeleton, Tag, TabsModule, DatePipe, DecimalPipe,],
     templateUrl: './detail.html'
 })
 export class DetailDevis {

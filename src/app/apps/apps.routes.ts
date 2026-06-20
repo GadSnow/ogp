@@ -30,5 +30,10 @@ export default [
         path: 'campagne',
         loadChildren: () => import('./campagne/campagne.routes'),
         data: { breadcrumb: 'Campagne' }
+    },
+    {
+        path: 'facture',
+        loadChildren: () => import('./facture/facture.routes'),
+        data: { breadcrumb: 'Facture' }
     }
 ] as Routes;

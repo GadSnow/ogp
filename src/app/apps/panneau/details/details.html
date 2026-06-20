@@ -1,172 +1,173 @@
-<div class="details-page px-6 py-10 max-w-5xl mx-auto flex flex-col gap-10 text-surface-900 dark:text-surface-50">
-
-    <!-- Header -->
-    <div class="flex flex-wrap items-start justify-between gap-6">
-        <div class="flex flex-col gap-4">
-            <p-button icon="pi pi-arrow-left" [text]="true" label="Retour à la liste" [routerLink]="['/ogp/panneau']"
-                severity="secondary" size="small" class="self-start -ml-2" />
-            <div>
-                <h1 class="text-3xl font-semibold tracking-tight">
-                    Panneau <span class="text-primary font-black">#{{ panneau()?.reference }}</span>
-                </h1>
-                <p class="text-surface-400 text-sm mt-1 flex items-center gap-2">
-                    <i class="pi pi-clock text-xs"></i>
-                    Créé le {{ panneau()?.dtCreated }}
-                </p>
-            </div>
-        </div>
-        <p-button label="Modifier" icon="pi pi-pencil" [routerLink]="['/ogp/panneau/edit', panneau()?.id]"
-            severity="secondary" [outlined]="true" size="small" />
-    </div>
-
-    <!-- Loading -->
-    @if (isLoading()) {
-        <div class="flex flex-col gap-4">
-            <p-skeleton width="100%" height="5rem" styleClass="rounded-xl"></p-skeleton>
-            <p-skeleton width="100%" height="5rem" styleClass="rounded-xl"></p-skeleton>
-            <p-skeleton width="100%" height="5rem" styleClass="rounded-xl"></p-skeleton>
-        </div>
-    }
-
-    @else if (panneau()) {
-
-        <!-- Statut rapide -->
-        <div class="status-bar flex flex-wrap gap-4 items-center p-4 rounded-xl bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
-            <span class="text-xs font-bold uppercase tracking-widest text-surface-400 mr-2">Statut</span>
-            <div class="flex items-center gap-2">
-                <span class="status-dot" [class.active]="panneau()?.btValide"></span>
-                <span class="text-sm font-medium">Validé</span>
-                <p-tag [value]="getStatus(panneau()!.btValide)"
-                    [severity]="getSeverity(panneau()!.btValide)"
-                    [rounded]="true" styleClass="text-xs px-2" />
-            </div>
-            <div class="h-4 w-px bg-surface-300 dark:bg-surface-600"></div>
-            <div class="flex items-center gap-2">
-                <span class="status-dot" [class.active]="panneau()?.btAvailable"></span>
-                <span class="text-sm font-medium">Disponible</span>
-                <p-tag [value]="getStatus(panneau()!.btAvailable)"
-                    [severity]="getSeverity(panneau()!.btAvailable)"
-                    [rounded]="true" styleClass="text-xs px-2" />
-            </div>
+<div class="flex justify-center mt-4 mb-4">
+    <div class="w-full">
+        <!-- Navigation -->
+        <div class="flex items-center justify-between mb-6">
+            <p-button icon="pi pi-angle-left" [text]="true" label="Retour à la liste" [routerLink]="['/ogp/panneau']" severity="secondary" size="small" />
+            @if (panneau()) {
+            <p-button label="Modifier" icon="pi pi-pencil" [routerLink]="['/ogp/panneau/edit', panneau()?.id]" severity="secondary" [outlined]="true" size="small" />
+            }
         </div>
 
-        <!-- Section: Identité -->
-        <section class="detail-section">
-            <div class="section-header">
-                <i class="pi pi-id-card section-icon"></i>
-                <span>Identité</span>
-            </div>
-            <div class="section-body grid grid-cols-2 md:grid-cols-3 gap-6">
-                <div class="field-item">
-                    <label>Référence</label>
-                    <span class="value font-bold text-lg">#{{ panneau()?.reference }}</span>
-                </div>
-                <div class="field-item">
-                    <label>Latitude</label>
-                    <span class="value font-mono">{{ panneau()?.latitude }}</span>
-                </div>
-                <div class="field-item">
-                    <label>Longitude</label>
-                    <span class="value font-mono">{{ panneau()?.longitude }}</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section: Technique -->
-        <section class="detail-section">
-            <div class="section-header">
-                <i class="pi pi-cog section-icon"></i>
-                <span>Technique</span>
-            </div>
-            <div class="section-body grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-                <div class="field-item">
-                    <label>Catégorie</label>
-                    <span class="value font-bold uppercase tracking-tight">
-                        {{ panneau()?.caracteristiquePanneaux?.categoriePanneaux?.categorie }}
-                    </span>
-                </div>
-                <div class="field-item">
-                    <label>Type</label>
-                    <span class="value">{{ panneau()?.caracteristiquePanneaux?.type }}</span>
-                </div>
-                <div class="field-item">
-                    <label>Caractéristique</label>
-                    <span class="value">{{ panneau()?.caracteristiquePanneaux?.caracteristique }}</span>
-                </div>
-                <div class="field-item">
-                    <label>Dimensions</label>
-                    <span class="value">{{ panneau()?.caracteristiquePanneaux?.dimenssion }} m</span>
-                </div>
-                <div class="field-item">
-                    <label>Surface (L × l)</label>
-                    <span class="value">
-                        {{ panneau()?.caracteristiquePanneaux?.longeur }}m
-                        <span class="text-surface-400 text-xs">×</span>
-                        {{ panneau()?.caracteristiquePanneaux?.largeur }}m
-                    </span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section: Tarification -->
-        @if (panneau()?.hasSpecialPrice) {
-            <section class="detail-section price-section">
-                <div class="section-header">
-                    <i class="pi pi-tag section-icon"></i>
-                    <span>Tarification spéciale</span>
-                </div>
-                <div class="section-body flex flex-wrap gap-6">
-                    <div class="price-card">
-                        <span class="price-label">Par Jour</span>
-                        <span class="price-value">{{ panneau()?.priceDay | number }}</span>
-                        <span class="price-currency">FG</span>
-                    </div>
-                    <div class="price-card">
-                        <span class="price-label">Par Semaine</span>
-                        <span class="price-value">{{ panneau()?.priceWeek | number }}</span>
-                        <span class="price-currency">FG</span>
-                    </div>
-                    <div class="price-card">
-                        <span class="price-label">Par Mois</span>
-                        <span class="price-value">{{ panneau()?.priceMonth | number }}</span>
-                        <span class="price-currency">FG</span>
-                    </div>
-                </div>
-            </section>
+        <!-- Loading -->
+        @if (isLoading()) {
+        <div class="card p-6 flex flex-col gap-4">
+            <p-skeleton width="14rem" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="1.5rem"></p-skeleton>
+            <p-skeleton width="100%" height="6rem"></p-skeleton>
+            <p-skeleton width="100%" height="6rem"></p-skeleton>
+        </div>
         }
 
-        <!-- Section: Localisation -->
-        <section class="detail-section">
-            <div class="section-header">
-                <i class="pi pi-map-marker section-icon"></i>
-                <span>Localisation</span>
-            </div>
-            <div class="section-body">
-                <div class="geo-breadcrumb">
-                    <span class="geo-item region">{{ panneau()?.secteur?.quartier?.commune?.region?.region }}</span>
-                    <i class="pi pi-chevron-right geo-sep"></i>
-                    <span class="geo-item">{{ panneau()?.secteur?.quartier?.commune?.commune }}</span>
-                    <i class="pi pi-chevron-right geo-sep"></i>
-                    <span class="geo-item">{{ panneau()?.secteur?.quartier?.quartier }}</span>
-                    <i class="pi pi-chevron-right geo-sep"></i>
-                    <span class="geo-item secteur">{{ panneau()?.secteur?.secteur }}</span>
+        <!-- Contenu -->
+        @else if (panneau()) {
+        <div class="card p-0 overflow-hidden">
+            <!-- En-tête de la card -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 px-6 py-5 border-b border-surface-200">
+                <div class="flex flex-col gap-1">
+                    <div class="flex items-center gap-3">
+                        <h2 class="text-xl font-bold tracking-tight">Panneau <span class="text-primary">#{{ panneau()?.reference }}</span></h2>
+                        <p-tag [value]="panneau()!.btValide ? 'Validé' : 'Non validé'" [severity]="getSeverity(panneau()!.btValide)" [rounded]="true" />
+                        <p-tag [value]="panneau()!.btAvailable ? 'Disponible' : 'Indisponible'" [severity]="getSeverity(panneau()!.btAvailable)" [rounded]="true" />
+                    </div>
+                    <p class="text-xs text-surface-400 flex items-center gap-1">
+                        <i class="pi pi-clock"></i>
+                        Créé le {{ panneau()?.dtCreated | date:'dd/MM/yyyy HH:mm' }}
+                    </p>
                 </div>
             </div>
-        </section>
 
-    }
+            <!-- Identité -->
+            <div class="px-6 py-5 border-b border-surface-100">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-surface-400 mb-4 flex items-center gap-2"><i class="pi pi-id-card"></i> Identité</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Référence</span>
+                        <span class="font-bold text-primary text-lg">#{{ panneau()?.reference }}</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Latitude</span>
+                        <span class="font-medium font-mono text-sm">{{ panneau()?.latitude }}</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Longitude</span>
+                        <span class="font-medium font-mono text-sm">{{ panneau()?.longitude }}</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Nombre de faces</span>
+                        <span class="font-medium">{{ panneau()?.nombreFace ?? '—' }}</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Face</span>
+                        <span class="font-semibold text-primary">{{ panneau()?.face ?? '—' }}</span>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Not found -->
-    @else {
-        <div class="flex flex-col items-center justify-center p-24 text-surface-500 gap-6
-            border border-dashed border-surface-300 dark:border-surface-700 rounded-2xl mt-4">
-            <i class="pi pi-search text-5xl opacity-20"></i>
-            <div class="text-center">
-                <h2 class="text-2xl font-light">Panneau <span class="font-bold">introuvable</span></h2>
-                <p class="mt-1 text-sm">Vérifiez l'identifiant ou revenez à la liste.</p>
+            <!-- Caractéristiques techniques -->
+            <div class="px-6 py-5 border-b border-surface-100">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-surface-400 mb-4 flex items-center gap-2"><i class="pi pi-cog"></i> Caractéristiques techniques</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Catégorie</span>
+                        <span class="font-semibold">{{ panneau()?.caracteristiquePanneaux?.categoriePanneaux?.categorie ?? '—' }}</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Type</span>
+                        <span class="font-medium">{{ panneau()?.caracteristiquePanneaux?.type ?? '—' }}</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Caractéristique</span>
+                        <span class="font-medium">{{ panneau()?.caracteristiquePanneaux?.caracteristique ?? '—' }}</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Dimensions</span>
+                        <span class="font-medium">{{ panneau()?.caracteristiquePanneaux?.dimenssion ?? '—' }} m</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Surface (L × l)</span>
+                        <span class="font-medium">
+                            {{ panneau()?.caracteristiquePanneaux?.longeur }}m
+                            <span class="text-surface-400 text-xs mx-1">×</span>
+                            {{ panneau()?.caracteristiquePanneaux?.largeur }}m
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Localisation -->
+            <div class="px-6 py-5 border-b border-surface-100">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-surface-400 mb-4 flex items-center gap-2"><i class="pi pi-map-marker"></i> Localisation</h3>
+                <div class="flex flex-wrap items-center gap-2 text-sm">
+                    <span class="text-surface-400">{{ panneau()?.secteur?.quartier?.commune?.region?.region }}</span>
+                    <i class="pi pi-chevron-right text-surface-300 text-xs"></i>
+                    <span class="text-surface-500">{{ panneau()?.secteur?.quartier?.commune?.commune }}</span>
+                    <i class="pi pi-chevron-right text-surface-300 text-xs"></i>
+                    <span class="text-surface-600 font-medium">{{ panneau()?.secteur?.quartier?.quartier }}</span>
+                    <i class="pi pi-chevron-right text-surface-300 text-xs"></i>
+                    <span class="bg-surface-800 text-surface-0 text-xs font-semibold px-2 py-0.5 rounded"> {{ panneau()?.secteur?.secteur }} </span>
+                </div>
+            </div>
+
+            <!-- Tarif standard -->
+            @if (tarif()) {
+            <div class="px-6 py-5 border-b border-surface-100">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-surface-400 mb-4 flex items-center gap-2"><i class="pi pi-tag"></i> Tarif standard</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="flex flex-col gap-1 rounded-xl border border-surface-200 p-4">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Par jour</span>
+                        <span class="text-2xl font-black text-surface-800">{{ tarif()?.priceDay | number }}</span>
+                        <span class="text-xs text-surface-400 font-semibold">GNF</span>
+                    </div>
+                    <div class="flex flex-col gap-1 rounded-xl border border-surface-200 p-4">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Par semaine</span>
+                        <span class="text-2xl font-black text-surface-800">{{ tarif()?.priceWeek | number }}</span>
+                        <span class="text-xs text-surface-400 font-semibold">GNF</span>
+                    </div>
+                    <div class="flex flex-col gap-1 rounded-xl border border-primary-200 bg-primary-50 p-4">
+                        <span class="text-xs text-primary-500 uppercase tracking-wide font-semibold">Par mois</span>
+                        <span class="text-2xl font-black text-primary-700">{{ tarif()?.priceMonth | number }}</span>
+                        <span class="text-xs text-primary-400 font-semibold">GNF</span>
+                    </div>
+                </div>
+            </div>
+            }
+
+            <!-- Tarification spéciale -->
+            @if (panneau()?.hasSpecialPrice) {
+            <div class="px-6 py-5">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-surface-400 mb-4 flex items-center gap-2"><i class="pi pi-star"></i> Tarification spéciale</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="flex flex-col gap-1 rounded-xl border border-surface-200 p-4">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Par jour</span>
+                        <span class="text-2xl font-black text-surface-800">{{ panneau()?.priceDay | number }}</span>
+                        <span class="text-xs text-surface-400 font-semibold">GNF</span>
+                    </div>
+                    <div class="flex flex-col gap-1 rounded-xl border border-surface-200 p-4">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Par semaine</span>
+                        <span class="text-2xl font-black text-surface-800">{{ panneau()?.priceWeek | number }}</span>
+                        <span class="text-xs text-surface-400 font-semibold">GNF</span>
+                    </div>
+                    <div class="flex flex-col gap-1 rounded-xl border border-primary-200 bg-primary-50 p-4">
+                        <span class="text-xs text-primary-500 uppercase tracking-wide font-semibold">Par mois</span>
+                        <span class="text-2xl font-black text-primary-700">{{ panneau()?.priceMonth | number }}</span>
+                        <span class="text-xs text-primary-400 font-semibold">GNF</span>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+
+        <!-- Introuvable -->
+        @else {
+        <div class="card p-16 flex flex-col items-center justify-center gap-4 text-center border border-dashed border-surface-300">
+            <i class="pi pi-search text-5xl text-surface-300"></i>
+            <div>
+                <h2 class="text-xl font-semibold">Panneau introuvable</h2>
+                <p class="text-sm text-surface-400 mt-1">Vérifiez l'identifiant ou revenez à la liste.</p>
             </div>
             <p-button label="Retour à la liste" [routerLink]="['/ogp/panneau']" severity="secondary" [outlined]="true" size="small" />
         </div>
-    }
-
+        }
+    </div>
 </div>

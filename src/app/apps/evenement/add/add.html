@@ -1,7 +1,7 @@
 <div class="flex justify-center mt-4 mb-4">
-    <div class="w-full md:w-5/6">
+    <div class="w-full">
         <div class="card p-6 flex flex-col gap-5">
-            <div class="text-xl font-semibold">Enregistrement d'un Événement</div>
+            <div class="text-xl font-semibold bg-indigo-900 text-white p-2 rounded-md">Enregistrement d'un Événement</div>
 
             @if (isLoading()) {
             <div class="flex flex-col gap-4">
@@ -13,23 +13,14 @@
                     <!-- Date -->
                     <div class="flex flex-col gap-2">
                         <label for="dateEvenement">Date de l'événement</label>
-                        <p-datepicker
-                            id="dateEvenement"
-                            formControlName="dateEvenement"
-                            [showIcon]="true"
-                            class="w-full"
-                            [class.ng-invalid]="isInvalid('dateEvenement')"
-                            [class.ng-dirty]="isInvalid('dateEvenement')"
-                        ></p-datepicker>
+                        <p-datepicker id="dateEvenement" formControlName="dateEvenement" [showIcon]="true" class="w-full" [class.ng-invalid]="isInvalid('dateEvenement')" [class.ng-dirty]="isInvalid('dateEvenement')"></p-datepicker>
                         @if (isInvalid('dateEvenement')) { <small class="p-error">Ce champ est requis.</small> }
                     </div>
 
                     <!-- Coût total -->
                     <div class="flex flex-col gap-2">
                         <label for="coutTotal">Coût total</label>
-                        <input id="coutTotal" type="number" pInputText formControlName="coutTotal"
-                               [class.ng-invalid]="isInvalid('coutTotal')"
-                               [class.ng-dirty]="isInvalid('coutTotal')" />
+                        <input id="coutTotal" type="number" pInputText formControlName="coutTotal" [class.ng-invalid]="isInvalid('coutTotal')" [class.ng-dirty]="isInvalid('coutTotal')" />
                     </div>
 
                     <!-- Type d'événement -->

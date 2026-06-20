@@ -1,7 +1,7 @@
 :root {
     --sidebar-text-color: var(--text-color);
-    --sidebar-menu-item-hover: var(--p-primary-200);
-    --sidebar-compact-parent-active: var(--p-primary-300);
+    --sidebar-menu-item-hover: var(--p-surface-100);
+    --sidebar-compact-parent-active: var(--p-surface-200);
     --sidebar-active-item-text: #ffffff;
     --popover-background: var(--surface-0);
     --popover-border-color: var(--surface-border);
@@ -12,10 +12,56 @@
 }
 
 .layout-sidebar-light {
-    --sidebar-text-color: var(--text-color);
-    --sidebar-menu-item-hover: var(--p-primary-200);
-    --sidebar-compact-parent-active: var(--p-primary-300);
+    background: #1e1b4b;
+    --sidebar-text-color: rgba(255, 255, 255, 0.8);
+    --sidebar-menu-item-hover: rgba(255, 255, 255, 0.08);
+    --sidebar-compact-parent-active: rgba(255, 255, 255, 0.12);
     --sidebar-active-item-text: #ffffff;
+
+    .app-name {
+        color: #ffffff !important;
+    }
+
+    .layout-menu {
+        .menu-separator {
+            border-top-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .layout-root-menuitem {
+            .layout-menuitem-root-text {
+                color: rgba(255, 255, 255, 0.35) !important;
+            }
+        }
+
+        li a {
+            color: rgba(255, 255, 255, 0.7);
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.08) !important;
+                color: #ffffff;
+            }
+
+            &.active-route {
+                background: rgba(255, 255, 255, 0.14) !important;
+                color: #ffffff !important;
+                box-shadow: none !important;
+                border-left: 2px solid rgba(255, 255, 255, 0.5);
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.18) !important;
+                }
+
+                .layout-menuitem-icon {
+                    color: #ffffff !important;
+                }
+            }
+        }
+
+        li.active-menuitem > a {
+            background: rgba(255, 255, 255, 0.08) !important;
+            color: #ffffff !important;
+        }
+    }
 }
 
 .layout-drawer,

@@ -7,8 +7,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { StyleClassModule } from 'primeng/styleclass';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
 import { Avatar } from 'primeng/avatar';
 import { LayoutService } from '@/app/layout/service/layout.service';
 import { AuthService } from '@/app/core/services/auth.service';
@@ -19,55 +17,91 @@ import { AppRightMenu } from './app.rightmenu';
 @Component({
     selector: '[app-header]',
     standalone: true,
-    imports: [CommonModule, FormsModule, StyleClassModule, InputTextModule, ButtonModule, IconFieldModule, InputIconModule, Avatar, AppNotifications, AppProfile, AppRightMenu],
+    imports: [CommonModule, FormsModule, StyleClassModule, InputTextModule, ButtonModule, Avatar, AppNotifications, AppProfile, AppRightMenu],
     template: `
+        <!-- Left: hamburger + page title -->
         <div class="topbar-left">
             @if (showMenuButton()) {
                 <button type="button" (click)="layoutService.toggleMenu()" class="menu-button">
                     <i class="pi pi-bars"></i>
                 </button>
-                <span class="topbar-separator"></span>
             }
-            <div class="page-title">
-                {{ pageTitle() }}
-            </div>
+            <!-- <span class="page-title">{{ pageTitle() }}</span> -->
         </div>
 
-        <div class="topbar-right">
+        <!-- Center: search (hidden on mobile) -->
+        <div class="topbar-center hidden lg:flex">
+            <!-- <div class="relative w-full">
+                <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 pointer-events-none" style="font-size:0.8rem"></i>
+                <input
+                    pInputText
+                    type="text"
+                    [(ngModel)]="search"
+                    placeholder="Rechercher..."
+                    class="w-full! h-9! pl-9! text-sm! rounded-lg! bg-surface-50! dark:bg-surface-800! border-surface-200! dark:border-surface-700!"
+                />
+            </div> -->
+        </div>
 
+        <!-- Right: actions -->
+        <div class="topbar-right">
             <div class="topbar-actions">
+
+                <!-- Mobile hamburger -->
                 <button type="button" (click)="layoutService.toggleMenu()" class="menu-button menu-button-mobile">
                     <i class="pi pi-bars"></i>
                 </button>
 
-                <button type="button" (click)="layoutService.toggleConfigSidebar()" class="app-config-button">
-                    <i class="pi pi-cog"></i>
-                </button>
-
-                <div class="relative">
-                    <a pStyleClass="@next" enterFromClass="hidden" enterActiveClass="p-anchored-overlay-enter-active" leaveActiveClass="p-anchored-overlay-leave-active" leaveToClass="hidden" [hideOnOutsideClick]="true">
-                        <p-button icon="pi pi-bell" severity="secondary" [outlined]="true" />
+                <!-- Notifications -->
+                <!-- <div class="relative">
+                    <a
+                        pStyleClass="@next"
+                        enterFromClass="hidden"
+                        enterActiveClass="p-anchored-overlay-enter-active"
+                        leaveActiveClass="p-anchored-overlay-leave-active"
+                        leaveToClass="hidden"
+                        [hideOnOutsideClick]="true"
+                    >
+                        <button type="button" class="topbar-icon-btn">
+                            <i class="pi pi-bell"></i>
+                        </button>
                     </a>
                     <div class="absolute hidden min-w-72 top-auto right-0 z-20 mt-2">
                         <div app-notifications styleClass="w-full sm:w-[22rem]"></div>
                     </div>
-                </div>
+                </div> -->
 
+                <!-- Theme / config -->
+                <!-- <button type="button" (click)="layoutService.toggleConfigSidebar()" class="app-config-button">
+                    <i class="pi pi-sliders-h"></i>
+                </button> -->
+
+                <!-- User avatar + dropdown -->
                 <div class="relative">
-                    <a pStyleClass="@next" enterFromClass="hidden" enterActiveClass="p-anchored-overlay-enter-active" leaveActiveClass="p-anchored-overlay-leave-active" leaveToClass="hidden" [hideOnOutsideClick]="true" class="flex items-center gap-2">
+                    <a
+                        pStyleClass="@next"
+                        enterFromClass="hidden"
+                        enterActiveClass="p-anchored-overlay-enter-active"
+                        leaveActiveClass="p-anchored-overlay-leave-active"
+                        leaveToClass="hidden"
+                        [hideOnOutsideClick]="true"
+                        class="flex items-center gap-2 cursor-pointer rounded-lg px-2 py-1 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
+                    >
                         <p-avatar
                             [label]="userInitials()"
-                            class="!rounded-md !overflow-hidden !w-9 !h-9 cursor-pointer bg-primary-600 text-white"
-                            shape="circle"
+                            class="rounded-lg! overflow-hidden! w-8! h-8! shrink-0"
+                            [style]="{'background': 'var(--p-primary-600)', 'color': '#fff', 'font-size': '0.7rem', 'font-weight': '600'}"
                         />
-                        <span class="text-sm font-medium hidden md:block">Utilisateur</span>
+                        <span class="text-sm font-medium hidden md:block leading-none">Utilisateur</span>
+                        <i class="pi pi-angle-down text-xs hidden md:block text-surface-400"></i>
                     </a>
                     <div class="absolute hidden top-full right-0 mt-2 z-20">
                         <div app-profile class="w-52"></div>
                     </div>
                 </div>
-                <p-button (click)="layoutService.toggleRightMenu()" icon="pi pi-align-right" severity="secondary" [outlined]="true" />
+
                 <div app-rightmenu></div>
+
             </div>
         </div>
     `

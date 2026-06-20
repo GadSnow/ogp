@@ -1,9 +1,9 @@
 <p-toast />
 
 <div class="flex justify-center mt-4 mb-4">
-    <div class="w-full md:w-5/6">
+    <div class="w-full">
         <div class="card p-6 flex flex-col gap-5">
-            <div class="text-xl font-semibold uppercase tracking-tight text-primary">Modifier la Campagne</div>
+            <div class="text-xl font-semibold uppercase tracking-tight bg-indigo-900 text-white p-2 rounded-md">Modifier la Campagne</div>
 
             @if (loadingData()) {
             <div class="flex flex-col gap-6">
@@ -42,22 +42,58 @@
                         }
                     </div>
 
+                    <!-- Cycle -->
+                    <div class="flex flex-col gap-2">
+                        <label for="cycle">Cycle de facturation</label>
+                        <p-select
+                            id="cycle"
+                            [options]="cycles"
+                            optionLabel="label"
+                            optionValue="value"
+                            formControlName="cycle"
+                            class="w-full"
+                            placeholder="Sélectionner un cycle"
+                            [class.ng-invalid]="isInvalid('cycle')"
+                            [class.ng-dirty]="isInvalid('cycle')"
+                        ></p-select>
+                        @if (isInvalid('cycle')) { <small class="p-error">Le cycle est obligatoire.</small> }
+                    </div>
+
+                    <!-- Durée -->
+                    <div class="flex flex-col gap-2">
+                        <label for="duree">{{ dureeLabel }}</label>
+                        <p-inputnumber
+                            id="duree"
+                            formControlName="duree"
+                            [min]="1"
+                            [showButtons]="true"
+                            class="w-full"
+                            [class.ng-invalid]="isInvalid('duree')"
+                            [class.ng-dirty]="isInvalid('duree')"
+                        ></p-inputnumber>
+                        @if (isInvalid('duree')) { <small class="p-error">La durée est obligatoire.</small> }
+                    </div>
+
                     <!-- Date Début -->
                     <div class="flex flex-col gap-2">
                         <label for="dateDebut">Date de Début</label>
-                        <p-datepicker id="dateDebut" formControlName="dateDebut" [showIcon]="true" class="w-full" [class.ng-invalid]="isInvalid('dateDebut')" [class.ng-dirty]="isInvalid('dateDebut')"></p-datepicker>
+                        <p-datepicker id="dateDebut" formControlName="dateDebut" [showIcon]="true" styleClass="w-full" [class.ng-invalid]="isInvalid('dateDebut')" [class.ng-dirty]="isInvalid('dateDebut')"></p-datepicker>
+                        @if (isInvalid('dateDebut')) { <small class="p-error">La date de début est obligatoire.</small> }
                     </div>
 
-                    <!-- Date Fin -->
+                    <!-- Date Fin (auto-calculée) -->
                     <div class="flex flex-col gap-2">
-                        <label for="dateFin">Date de Fin</label>
-                        <p-datepicker id="dateFin" formControlName="dateFin" [showIcon]="true" class="w-full" [class.ng-invalid]="isInvalid('dateFin')" [class.ng-dirty]="isInvalid('dateFin')"></p-datepicker>
-                    </div>
-
-                    <!-- Cycle -->
-                    <div class="flex flex-col gap-2">
-                        <label for="cycle">Cycle</label>
-                        <input id="cycle" type="text" pInputText formControlName="cycle" [class.ng-invalid]="isInvalid('cycle')" [class.ng-dirty]="isInvalid('cycle')" />
+                        <label for="dateFin" class="flex items-center gap-2">
+                            Date de Fin
+                            <span class="text-xs text-surface-400 font-normal italic">(calculée automatiquement)</span>
+                        </label>
+                        <p-datepicker
+                            id="dateFin"
+                            formControlName="dateFin"
+                            [showIcon]="true"
+                            styleClass="w-full opacity-60"
+                            [disabled]="true"
+                        ></p-datepicker>
                     </div>
 
                     <!-- Panneaux MultiSelect -->

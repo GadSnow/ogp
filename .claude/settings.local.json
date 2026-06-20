@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node fix-encoding.js)"
+      "Bash(node fix-encoding.js)",
+      "Bash(Remove-Item -Path \"d:\\\\Self\\\\Ogp\\\\src\\\\app\\\\apps\\\\facture\\\\add\\\\add.ts\", \"d:\\\\Self\\\\Ogp\\\\src\\\\app\\\\apps\\\\facture\\\\add\\\\add.html\", \"d:\\\\Self\\\\Ogp\\\\src\\\\app\\\\apps\\\\facture\\\\add\" -Recurse -Force)"
     ]
   }
 }

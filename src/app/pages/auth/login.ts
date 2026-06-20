@@ -102,7 +102,7 @@ export class Login {
 
     onSubmit(): void {
         if (!this.email || !this.password) {
-            this.errorMessage = 'Please enter both email and password';
+            this.errorMessage = 'Veuillez remplir tous les champs.';
             return;
         }
 
@@ -112,15 +112,14 @@ export class Login {
         this.authService.login({ email: this.email, password: this.password }).subscribe({
             next: (user) => {
                 this.loading = false;
-                console.log('User logged in successfully:', user);
-                
+
                 // Get returnUrl from query params or default to dashboard
                 const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard/e-commerce';
                 this.router.navigateByUrl(returnUrl);
             },
             error: (error) => {
                 this.loading = false;
-                this.errorMessage = error.message || 'Authentication failed. Please try again.';
+                this.errorMessage = error.message || 'Échec de l\'authentification. Veuillez réessayer.';
                 console.error('Login error:', error);
             }
         });

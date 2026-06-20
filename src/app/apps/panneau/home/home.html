@@ -1,4 +1,3 @@
-
 <div custom-card>
     <h3 card-title>Gestion des Panneaux</h3>
     <div card-action>
@@ -6,59 +5,64 @@
     </div>
 
     @if (isLoading()) {
-        <app-skeleton-table></app-skeleton-table>
+    <app-skeleton-table></app-skeleton-table>
     } @else {
-        <div>
-            @if (panneaux.length > 0) {
-                <p-table [value]="panneaux" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]"
-                         [tableStyle]="{ 'min-width': '100rem' }">
-                    <ng-template #header>
-                        <tr>
-                            <th>#</th>
-                            <th>Référence</th>
-                            <th>Localisation (Lat, Lng)</th>
-                            <th>Valide</th>
-                            <th>Disponible</th>
-                            <th>Prix spécial</th>
-                            <th>Prix (J/S/M)</th>
-                            <th>Caractéristique</th>
-                            <th>Secteur</th>
-                            <th>Action</th>
-                        </tr>
-                    </ng-template>
-                    <ng-template #body let-pan let-rowIndex="rowIndex">
-                        <tr>
-                            <td>{{ rowIndex + 1 }}</td>
-                            <td class="font-bold cursor-pointer hover:underline text-primary" [routerLink]="['details', pan.id]">{{ pan.reference }}</td>
-                            <td>{{ pan.latitude }}, {{ pan.longitude }}</td>
-                            <td>
-                                <p-tag [value]="getStatus(pan.btValide)"
-                                       [severity]="getSeverity(pan.btValide)" />
-                            </td>
-                            <td>
-                                <p-tag [value]="getStatus(pan.btAvailable)"
-                                       [severity]="getSeverity(pan.btAvailable)" />
-                            </td>
-                            <td>
-                                <p-tag [value]="getStatus(pan.hasSpecialPrice)"
-                                       [severity]="getSeverity(pan.hasSpecialPrice)" />
-                            </td>
-                            <td>{{ pan.priceDay }} / {{ pan.priceWeek }} / {{ pan.priceMonth }}</td>
-                            <td>{{ pan.caracteristiquePanneaux?.type }} ({{ pan.caracteristiquePanneaux?.caracteristique }})</td>
-                            <td>{{ pan.secteur?.secteur }}</td>
-                            <td>
-                                <p-button label="Modifier" [text]="true" size="small"
-                                          [routerLink]="['edit', pan.id]" />
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
-            } @else {
-                <div class="bg-card flex justify-center items-center h-72">
-                    <h1 class="font-bold text-3xl">Aucun panneau trouvé</h1>
-                </div>
-            }
+    <div>
+        @if (panneaux.length > 0) {
+        <div class="flex justify-end mb-3">
+            <p-iconfield>
+                <p-inputicon class="pi pi-search" />
+                <input pInputText type="text" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
+            </p-iconfield>
         </div>
-    }
+        <p-table
+            #dt
+            [value]="panneaux"
+            [paginator]="true"
+            [rows]="10"
+            [rowsPerPageOptions]="[5, 10, 20]"
+            class="p-datatable-striped"
+            [globalFilterFields]="['reference', 'secteur.secteur', 'caracteristiquePanneaux.type', 'caracteristiquePanneaux.caracteristique']"
+        >
+            <ng-template #header>
+                <tr>
+                    <th>#</th>
+                    <th>Référence</th>
+                    <th>Prix (J/S/M)</th>
+                    <th>Caractéristique</th>
+                    <th>Valide</th>
+                    <th>Disponible</th>
+                    <th>Prix spécial</th>
+                    <th>Action</th>
+                </tr>
+            </ng-template>
+            <ng-template #body let-pan let-rowIndex="rowIndex">
+                <tr>
+                    <td>{{ rowIndex + 1 }}</td>
+                    <td class="font-bold cursor-pointer hover:underline text-primary" [routerLink]="['details', pan.id]">{{ pan.reference }}</td>
 
+                    <td>{{ pan.priceDay }} / {{ pan.priceWeek }} / {{ pan.priceMonth }}</td>
+                    <td>{{ pan.caracteristiquePanneaux?.type }} ({{ pan.caracteristiquePanneaux?.caracteristique }})</td>
+                    <td>
+                        <p-tag [value]="getStatus(pan.btValide)" [severity]="getSeverity(pan.btValide)" />
+                    </td>
+                    <td>
+                        <p-tag [value]="getStatus(pan.btAvailable)" [severity]="getSeverity(pan.btAvailable)" />
+                    </td>
+                    <td>
+                        <p-tag [value]="getStatus(pan.hasSpecialPrice)" [severity]="getSeverity(pan.hasSpecialPrice)" />
+                    </td>
+                    <td>
+                        <p-button label="Modifier" [text]="true" size="small" [routerLink]="['edit', pan.id]" />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        } @else {
+        <div class="bg-card flex justify-center items-center h-72">
+            <h1 class="font-bold text-3xl">Aucun panneau trouvé</h1>
+        </div>
+        }
+    </div>
+    }
 </div>

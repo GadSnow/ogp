@@ -1,0 +1,126 @@
+<p-dialog header="Détail de la facture" [(visible)]="showDetail" [modal]="true" [style]="{ width: '36rem' }" [draggable]="false" [resizable]="false">
+    @if (selectedFacture) {
+    <div class="flex flex-col gap-5 pt-2">
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1">
+                <span class="text-xs text-surface-400 uppercase tracking-wide">Référence</span>
+                <span class="font-medium">{{ selectedFacture.reference ?? '—' }}</span>
+            </div>
+            <div class="flex flex-col gap-1">
+                <span class="text-xs text-surface-400 uppercase tracking-wide">Date d'échéance</span>
+                <span class="font-medium">{{ selectedFacture.dateEcheance | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="flex flex-col gap-1">
+                <span class="text-xs text-surface-400 uppercase tracking-wide">Créée le</span>
+                <span class="font-medium">{{ selectedFacture.dtCreated | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="flex flex-col gap-1">
+                <span class="text-xs text-surface-400 uppercase tracking-wide">Campagne</span>
+                <a [routerLink]="['/ogp/campagne/detail', selectedFacture.campagne?.id]"
+                   class="font-medium text-primary hover:underline" (click)="showDetail.set(false)">
+                    {{ selectedFacture.campagne?.nomCampagne }}
+                </a>
+            </div>
+            <div class="flex flex-col gap-1">
+                <span class="text-xs text-surface-400 uppercase tracking-wide">Client</span>
+                <span class="font-medium">{{ selectedFacture.campagne?.client?.denomination ?? '—' }}</span>
+            </div>
+            @if (selectedFacture.remise) {
+            <div class="flex flex-col gap-1">
+                <span class="text-xs text-surface-400 uppercase tracking-wide">Remise</span>
+                <span class="font-medium">{{ selectedFacture.remise.typeRemise }} — {{ selectedFacture.remise.valeurRemise }}%</span>
+            </div>
+            }
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 bg-surface-50 rounded-lg p-4">
+            <div class="flex flex-col gap-0.5">
+                <span class="text-xs text-surface-400">Montant brut</span>
+                <span class="text-sm font-semibold">{{ selectedFacture.montantBrute | currency:'GNF' }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+                <span class="text-xs text-surface-400">Remise</span>
+                <span class="text-sm font-semibold text-amber-600">− {{ selectedFacture.montantRemise | currency:'GNF' }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+                <span class="text-xs text-surface-400">Montant net</span>
+                <span class="text-sm font-semibold text-green-600">{{ selectedFacture.montantNet | currency:'GNF' }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+                <span class="text-xs text-surface-400">Montant payé</span>
+                <span class="text-sm font-semibold text-blue-600">{{ selectedFacture.montantPaye | currency:'GNF' }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5 col-span-2">
+                <span class="text-xs text-surface-400">Reste à payer</span>
+                <span class="text-sm font-semibold text-red-600">{{ selectedFacture.montantResteAPaye | currency:'GNF' }}</span>
+            </div>
+        </div>
+
+    </div>
+    }
+    <ng-template pTemplate="footer">
+        <p-button label="Fermer" severity="secondary" [outlined]="true" (onClick)="showDetail.set(false)" />
+    </ng-template>
+</p-dialog>
+
+<div custom-card>
+    <h3 card-title>Gestion des Factures</h3>
+    <div card-action>
+        <p-button label="Nouvelle Facture" size="small" icon="pi pi-plus" [routerLink]="['add']" />
+    </div>
+
+    <div>
+        @if (isLoading()) {
+            <app-skeleton-table [rows]="10" [columns]="5"></app-skeleton-table>
+        } @else {
+            <div class="flex justify-end mb-3">
+                <p-iconfield>
+                    <p-inputicon class="pi pi-search" />
+                    <input pInputText type="text" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
+                </p-iconfield>
+            </div>
+            <p-table #dt [value]="factures" [rows]="10" [paginator]="true" [responsiveLayout]="'scroll'" styleClass="p-datatable-sm overflow-hidden" [globalFilterFields]="['reference', 'campagne.nomCampagne', 'campagne.client.denomination']">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>#</th>
+                        <th>Référence</th>
+                        <th>Campagne</th>
+                        <th>Client</th>
+                        <th>Montant net</th>
+                        <th>Reste à payer</th>
+                        <th>Échéance</th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-f let-rowIndex="rowIndex">
+                    <tr>
+                        <td>{{ rowIndex + 1 }}</td>
+                        <td class="font-semibold text-primary">{{ f.reference ?? '—' }}</td>
+                        <td>{{ f.campagne?.nomCampagne ?? '—' }}</td>
+                        <td>{{ f.campagne?.client?.denomination ?? '—' }}</td>
+                        <td>{{ f.montantNet | currency:'GNF' }}</td>
+                        <td>
+                            <span [class]="f.montantResteAPaye > 0 ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold'">
+                                {{ f.montantResteAPaye | currency:'GNF' }}
+                            </span>
+                        </td>
+                        <td>{{ f.dateEcheance | date:'dd/MM/yyyy' }}</td>
+                        <td>
+                            <p-button icon="pi pi-eye" [text]="true" size="small" pTooltip="Voir les détails"
+                                      tooltipPosition="left" (onClick)="voirDetail(f)" />
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8" class="text-center p-8 bg-surface-50 dark:bg-surface-900 border-b border-surface-200">
+                            <i class="pi pi-inbox text-4xl text-surface-400 mb-3 block"></i>
+                            <span class="text-surface-500 font-medium italic">Aucune facture trouvée.</span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        }
+    </div>
+</div>

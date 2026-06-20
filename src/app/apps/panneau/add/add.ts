@@ -50,14 +50,17 @@ export class AddPanneau implements OnInit {
     communes: any[] = [];
     quartiers: any[] = [];
     secteurs: any[] = [];
+    nombreFaces = [1, 2, 3, 4];
 
     form: FormGroup;
+
 
     constructor() {
         this.form = this.fb.group({
             reference: ['', Validators.required],
             latitude: [0, Validators.required],
             longitude: [0, Validators.required],
+            nombreFace: [1, Validators.required],
             btValide: [true],
             btAvailable: [true],
             hasSpecialPrice: [false],

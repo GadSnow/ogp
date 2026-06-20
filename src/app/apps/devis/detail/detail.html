@@ -1,116 +1,223 @@
 <div class="flex justify-center mt-4 mb-4">
-    <div class="w-full md:w-5/6">
-
+    <div class="w-full">
         <!-- Header -->
         <div class="flex items-center justify-between mb-6">
             @if (devis) {
-                <h2 class="text-2xl font-bold uppercase tracking-wide">
-                    Devis — {{ devis.campagne?.nomCampagne }}
-                </h2>
+            <div>
+                <h2 class="text-2xl font-bold uppercase tracking-wide font-mono">{{ devis.numeroDevis }}</h2>
+                <p class="text-sm text-surface-500 mt-1">Émis le {{ devis.dateEmission | date:'dd/MM/yyyy' }} · Campagne : {{ devis.campagne?.nomCampagne }}</p>
+            </div>
             } @else {
+            <div class="flex flex-col gap-2">
                 <p-skeleton width="18rem" height="2rem"></p-skeleton>
+                <p-skeleton width="12rem" height="1rem"></p-skeleton>
+            </div>
             }
-            <a [routerLink]="['/ogp/devis']" class="flex items-center gap-1 text-sm text-surface-500 hover:text-primary cursor-pointer">
-                <i class="pi pi-angle-left"></i> Retour à la liste
-            </a>
+            <a [routerLink]="['/ogp/devis']" class="flex items-center gap-1 text-sm text-surface-500 hover:text-primary cursor-pointer"> <i class="pi pi-angle-left"></i> Retour à la liste </a>
         </div>
 
+        <!-- Résumé financier -->
+        @if (isLoading()) {
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <p-skeleton width="100%" height="5rem"></p-skeleton>
+            <p-skeleton width="100%" height="5rem"></p-skeleton>
+            <p-skeleton width="100%" height="5rem"></p-skeleton>
+        </div>
+        } @else {
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="card p-4 flex flex-col items-center gap-1">
+                <span class="text-xs text-surface-500 uppercase tracking-widest">Montant brut</span>
+                <span class="text-xl font-semibold">{{ devis?.montantBrute | number:'1.0-0' }} GNF</span>
+            </div>
+            <div class="card p-4 flex flex-col items-center gap-1 border border-orange-200 dark:border-orange-800">
+                <span class="text-xs text-surface-500 uppercase tracking-widest">Remise</span>
+                <span class="text-xl font-semibold text-orange-500"> @if (devis?.montantRemise) { − {{ devis?.montantRemise | number:'1.0-0' }} GNF } @else { — } </span>
+            </div>
+            <div class="card p-4 flex flex-col items-center gap-1 bg-primary-50 dark:bg-primary-950 border border-primary-200 dark:border-primary-800">
+                <span class="text-xs text-surface-500 uppercase tracking-widest">Montant net</span>
+                <span class="text-xl font-bold text-primary">{{ devis?.montantNet | number:'1.0-0' }} GNF</span>
+            </div>
+        </div>
+        }
+
         <div class="card p-6">
-
             @if (isLoading()) {
-                <div class="flex flex-col gap-3">
-                    <p-skeleton width="8rem" height="1.5rem"></p-skeleton>
-                    <p-skeleton width="100%" height="20rem"></p-skeleton>
-                </div>
+            <div class="flex flex-col gap-3">
+                <p-skeleton width="8rem" height="1.5rem"></p-skeleton>
+                <p-skeleton width="100%" height="20rem"></p-skeleton>
+            </div>
             } @else {
-                <p-tabs value="0">
-                    <p-tablist>
-                        <p-tab value="0">Campagne</p-tab>
-                        <p-tab value="1">Remise</p-tab>
-                    </p-tablist>
+            <p-tabs value="0">
+                <p-tablist>
+                    <p-tab value="0">Informations</p-tab>
+                    <p-tab value="1">Campagne</p-tab>
+                    <p-tab value="2">Remise</p-tab>
+                </p-tablist>
 
-                    <p-tabpanels>
-
-                        <!-- Tab Campagne -->
-                        <p-tabpanel value="0">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-
-                                <div class="flex flex-col gap-1">
-                                    <span class="text-sm text-surface-500">Nom</span>
-                                    <span class="font-medium">{{ devis?.campagne?.nomCampagne }}</span>
-                                </div>
-
-                                <div class="flex flex-col gap-1">
-                                    <span class="text-sm text-surface-500">Client</span>
-                                    <span class="font-medium">{{ devis?.campagne?.client?.denomination }}</span>
-                                </div>
-
-                                <div class="flex flex-col gap-1">
-                                    <span class="text-sm text-surface-500">Date début</span>
-                                    <span class="font-medium">{{ devis?.campagne?.dateDebut | date:'dd/MM/yyyy' }}</span>
-                                </div>
-
-                                <div class="flex flex-col gap-1">
-                                    <span class="text-sm text-surface-500">Date fin</span>
-                                    <span class="font-medium">{{ devis?.campagne?.dateFin | date:'dd/MM/yyyy' }}</span>
-                                </div>
-
-                                <div class="flex flex-col gap-1">
-                                    <span class="text-sm text-surface-500">Cycle</span>
-                                    <span class="font-medium">{{ devis?.campagne?.cycle }}</span>
-                                </div>
-
-                                <div class="flex flex-col gap-1">
-                                    <span class="text-sm text-surface-500">Statut</span>
-                                    <span class="font-medium">{{ devis?.campagne?.statut }}</span>
-                                </div>
-
-                                <div class="flex flex-col gap-1">
-                                    <span class="text-sm text-surface-500">Créé le</span>
-                                    <span class="font-medium">{{ devis?.dtCreated | date:'dd/MM/yyyy HH:mm' }}</span>
-                                </div>
-
-                                @if (devis?.panneaux?.length) {
-                                    <div class="flex flex-col gap-2 md:col-span-2 border-t border-surface-200 pt-4 mt-2">
-                                        <span class="text-sm text-surface-500">Panneaux ({{ devis?.panneaux?.length }})</span>
-                                        <div class="flex flex-wrap gap-2">
-                                            @for (p of devis?.panneaux; track p.id) {
-                                                <p-tag [value]="p.reference" severity="secondary" />
-                                            }
-                                        </div>
-                                    </div>
-                                }
-
+                <p-tabpanels>
+                    <!-- Tab Informations -->
+                    <p-tabpanel value="0">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Numéro de devis</span>
+                                <span class="font-medium font-mono">{{ devis?.numeroDevis }}</span>
                             </div>
-                        </p-tabpanel>
 
-                        <!-- Tab Remise -->
-                        <p-tabpanel value="1">
-                            @if (devis?.remise) {
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Date d'émission</span>
+                                <span class="font-medium">{{ devis?.dateEmission | date:'dd/MM/yyyy' }}</span>
+                            </div>
 
-                                    <div class="flex flex-col gap-1">
-                                        <span class="text-sm text-surface-500">Type</span>
-                                        <span class="font-medium">{{ devis?.remise?.typeRemise }}</span>
-                                    </div>
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Date de validité</span>
+                                <span class="font-medium"> {{ devis?.dateValidite ? (devis?.dateValidite | date:'dd/MM/yyyy') : '—' }} </span>
+                            </div>
 
-                                    <div class="flex flex-col gap-1">
-                                        <span class="text-sm text-surface-500">Valeur</span>
-                                        <span class="font-medium">{{ devis?.remise?.valeurRemise }}%</span>
-                                    </div>
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Créé le</span>
+                                <span class="font-medium">{{ devis?.dtCreated | date:'dd/MM/yyyy HH:mm' }}</span>
+                            </div>
 
-                                </div>
-                            } @else {
-                                <div class="flex justify-center items-center h-32 text-surface-400 pt-4">
-                                    <span class="italic">Aucune remise appliquée</span>
-                                </div>
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Période prévue</span>
+                                <span class="font-medium"> {{ devis?.dateDebutPrevu | date:'dd/MM/yyyy' }} → {{ devis?.dateFinPrevu | date:'dd/MM/yyyy' }} </span>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Client</span>
+                                <span class="font-medium">{{ devis?.client?.denomination }}</span>
+                                @if (devis?.client?.sigle) {
+                                <span class="text-xs text-surface-400">{{ devis?.client?.sigle }}</span>
+                                } @if (devis?.client?.typeClient?.typeClient) {
+                                <span class="text-xs text-surface-400">{{ devis?.client?.typeClient?.typeClient }}</span>
+                                }
+                            </div>
+
+                            @if (devis?.client?.domaineActivite) {
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Domaine d'activité</span>
+                                <span class="font-medium">{{ devis?.client?.domaineActivite }}</span>
+                            </div>
+                            } @if (devis?.client?.adresse) {
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Adresse client</span>
+                                <span class="font-medium">{{ devis?.client?.adresse }}</span>
+                            </div>
+                            } @if (devis?.client?.nomResponsable || devis?.client?.prenomResponsable) {
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Responsable</span>
+                                <span class="font-medium">{{ devis?.client?.prenomResponsable }} {{ devis?.client?.nomResponsable }}</span>
+                                @if (devis?.client?.emailResponsable) {
+                                <span class="text-xs text-surface-400">{{ devis?.client?.emailResponsable }}</span>
+                                } @if (devis?.client?.telephoneResponsable) {
+                                <span class="text-xs text-surface-400">{{ devis?.client?.telephoneResponsable }}</span>
+                                }
+                            </div>
+                            } @if (devis?.observations) {
+                            <div class="flex flex-col gap-1 md:col-span-2">
+                                <span class="text-sm text-surface-500">Observations</span>
+                                <span class="font-medium">{{ devis?.observations }}</span>
+                            </div>
                             }
-                        </p-tabpanel>
+                        </div>
+                    </p-tabpanel>
 
-                    </p-tabpanels>
-                </p-tabs>
+                    <!-- Tab Campagne -->
+                    <p-tabpanel value="1">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Nom</span>
+                                <span class="font-medium">{{ devis?.campagne?.nomCampagne }}</span>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Client</span>
+                                <span class="font-medium">{{ devis?.campagne?.client?.denomination }}</span>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Date début</span>
+                                <span class="font-medium">{{ devis?.campagne?.dateDebut | date:'dd/MM/yyyy' }}</span>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Date fin</span>
+                                <span class="font-medium">{{ devis?.campagne?.dateFin | date:'dd/MM/yyyy' }}</span>
+                            </div>
+
+                            @if (devis?.campagne?.description) {
+                            <div class="flex flex-col gap-1 md:col-span-2">
+                                <span class="text-sm text-surface-500">Description</span>
+                                <span class="font-medium">{{ devis?.campagne?.description }}</span>
+                            </div>
+                            }
+
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Cycle</span>
+                                <span class="font-medium">{{ devis?.campagne?.cycle ?? '—' }}</span>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Statut</span>
+                                <span class="font-medium capitalize">{{ devis?.campagne?.statut }}</span>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Statut paiement</span>
+                                <span class="font-medium capitalize">{{ devis?.campagne?.statutPaiement ?? '—' }}</span>
+                            </div>
+
+                            @if (devis?.panneaux?.length) {
+                            <div class="flex flex-col gap-2 md:col-span-2 border-t border-surface-200 pt-4 mt-2">
+                                <span class="text-sm text-surface-500">Panneaux ({{ devis?.panneaux?.length }})</span>
+                                <div class="flex flex-wrap gap-2">
+                                    @for (p of devis?.panneaux; track p.id) {
+                                    <p-tag [value]="p.reference" severity="secondary" />
+                                    }
+                                </div>
+                            </div>
+                            }
+                        </div>
+                    </p-tabpanel>
+
+                    <!-- Tab Remise -->
+                    <p-tabpanel value="2">
+                        @if (devis?.remise) {
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Type de remise</span>
+                                <span class="font-medium">{{ devis?.remise?.typeRemise }}</span>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Taux</span>
+                                <span class="font-medium">{{ devis?.remise?.valeurRemise }}%</span>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Montant brut</span>
+                                <span class="font-medium">{{ devis?.montantBrute | number:'1.0-0' }} GNF</span>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-500">Montant remisé</span>
+                                <span class="font-medium text-orange-500">− {{ devis?.montantRemise | number:'1.0-0' }} GNF</span>
+                            </div>
+
+                            <div class="flex flex-col gap-1 md:col-span-2 border-t border-surface-200 pt-4">
+                                <span class="text-sm text-surface-500">Montant net</span>
+                                <span class="text-2xl font-bold text-primary">{{ devis?.montantNet | number:'1.0-0' }} GNF</span>
+                            </div>
+                        </div>
+                        } @else {
+                        <div class="flex justify-center items-center h-32 text-surface-400 pt-4">
+                            <span class="italic">Aucune remise appliquée</span>
+                        </div>
+                        }
+                    </p-tabpanel>
+                </p-tabpanels>
+            </p-tabs>
             }
-
         </div>
     </div>
 </div>

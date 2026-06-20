@@ -12,8 +12,14 @@
         } @else {
             <div>
                 @if (remises.length > 0) {
-                    <p-table [value]="remises" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]"
-                             [tableStyle]="{ 'min-width': '50rem' }">
+                    <div class="flex justify-end mb-3">
+                        <p-iconfield>
+                            <p-inputicon class="pi pi-search" />
+                            <input pInputText type="text" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
+                        </p-iconfield>
+                    </div>
+                    <p-table #dt [value]="remises" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]"
+                             [tableStyle]="{ 'min-width': '50rem' }" [globalFilterFields]="['typeRemise', 'valeurRemise']">
                         <ng-template #header>
                             <tr>
                                 <th>#</th>

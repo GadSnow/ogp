@@ -19,8 +19,11 @@
     --color-primary-active-contrast: var(--p-primary-active-contrast);
 
     --shadow-stroke: var(--shadow-stroke);
+    --shadow-card: var(--shadow-card);
+    --shadow-elevated: var(--shadow-elevated);
 }
 
+/* ── Landing utilities ─────────────────────────────── */
 @utility landing-container {
     @apply max-w-[1184px] mx-auto px-4;
 }
@@ -33,53 +36,93 @@
     @apply leading-6 bg-surface-0 dark:bg-surface-950 hover:bg-surface-50 dark:hover:bg-surface-900 shadow-stroke text-surface-950 dark:text-surface-0 px-4 py-2 rounded-full font-medium transition-all cursor-pointer;
 }
 
+/* ── App utilities ─────────────────────────────────── */
 @utility card {
-    @apply p-4 rounded-2xl bg-transparent dark:bg-transparent shadow-stroke;
+    @apply rounded-xl;
+    background-color: var(--surface-card);
+    box-shadow: var(--shadow-card);
+}
+
+@utility section-title {
+    @apply text-xs font-semibold uppercase tracking-widest mb-3;
+    color: var(--text-muted-color);
+    letter-spacing: 0.07em;
+}
+
+@utility page-heading {
+    @apply text-xl font-semibold tracking-tight;
+    color: var(--text-color);
+}
+
+@utility topbar-icon-btn {
+    @apply w-8 h-8 flex items-center justify-center rounded-lg border-none cursor-pointer outline-none transition-colors;
+    background: transparent;
+    color: var(--text-color);
+
+    &:hover {
+        background: var(--surface-hover);
+    }
+
+    i {
+        font-size: 1rem;
+    }
 }
 
 @layer base {
     :root {
-        --shadow-stroke: 0px 1px 2px 0px rgba(164, 172, 185, 0.24), 0px 0px 0px 1px rgba(18, 55, 105, 0.08);
-        --border: var(--p-surface-200);
-        --background: var(--p-surface-0);
-        --foreground: var(--p-surface-950);
-        --p-primary-active: var(--p-primary-600);
+        /* Shadows */
+        --shadow-stroke:   0px 1px 2px 0px rgba(164, 172, 185, 0.24),
+                           0px 0px 0px 1px rgba(18, 55, 105, 0.08);
+        --shadow-card:     0px 1px 3px 0px rgba(0, 0, 0, 0.05),
+                           0px 0px 0px 1px rgba(18, 55, 105, 0.07);
+        --shadow-elevated: 0px 4px 16px 0px rgba(0, 0, 0, 0.08),
+                           0px 0px 0px 1px rgba(18, 55, 105, 0.06);
+
+        /* Color tokens */
+        --border:      var(--p-surface-200);
+        --background:  var(--p-surface-0);
+        --foreground:  var(--p-surface-950);
+        --p-primary-active:          var(--p-primary-600);
         --p-primary-active-contrast: #ffffff;
 
-        --primary-color: var(--p-primary-color);
-        --primary-contrast-color: var(--p-primary-contrast-color);
-        --text-color: var(--p-text-color);
-        --text-muted-color: var(--p-text-muted-color);
-        --surface-ground: #ffffff;
-        --surface-border: var(--p-content-border-color);
-        --surface-card: var(--p-surface-50);
-        --surface-hover: var(--p-content-hover-background);
-        --surface-overlay: var(--p-overlay-popover-background);
-        --transition-duration: var(--p-transition-duration);
-        --focus-ring-shadow: var(--p-focus-ring-shadow);
-
-        --border-radius: var(--p-content-border-radius);
+        /* Legacy PrimeNG vars */
+        --primary-color:         var(--p-primary-color);
+        --primary-contrast-color:var(--p-primary-contrast-color);
+        --text-color:            var(--p-text-color);
+        --text-muted-color:      var(--p-text-muted-color);
+        --surface-ground:        #f4f4f5;
+        --surface-border:        var(--p-content-border-color);
+        --surface-card:          var(--p-surface-0);
+        --surface-hover:         var(--p-content-hover-background);
+        --surface-overlay:       var(--p-overlay-popover-background);
+        --transition-duration:   var(--p-transition-duration);
+        --focus-ring-shadow:     var(--p-focus-ring-shadow);
+        --border-radius:         var(--p-content-border-radius);
     }
 
     .app-dark {
-        --shadow-stroke: 0px 1px 2px 0px rgba(164, 172, 185, 0.12), 0px 0px 0px 1px #27272a;
-        --border: var(--p-surface-800);
-        --background: var(--p-surface-900);
-        --foreground: var(--p-surface-0);
-        --p-primary-active: var(--p-primary-600);
+        --shadow-stroke:   0px 1px 2px 0px rgba(0, 0, 0, 0.2),
+                           0px 0px 0px 1px rgba(255, 255, 255, 0.06);
+        --shadow-card:     0px 1px 3px 0px rgba(0, 0, 0, 0.25),
+                           0px 0px 0px 1px rgba(255, 255, 255, 0.06);
+        --shadow-elevated: 0px 4px 16px 0px rgba(0, 0, 0, 0.35),
+                           0px 0px 0px 1px rgba(255, 255, 255, 0.07);
+        --border:          var(--p-surface-800);
+        --background:      var(--p-surface-900);
+        --foreground:      var(--p-surface-0);
+        --p-primary-active:          var(--p-primary-500);
         --p-primary-active-contrast: #ffffff;
-
-        --surface-ground: var(--p-surface-950);
-        --surface-card: var(--p-surface-900);
+        --surface-ground:  var(--p-surface-950);
+        --surface-card:    var(--p-surface-900);
     }
 
     .p-noir {
-        --p-primary-active: var(--p-surface-950);
+        --p-primary-active:          var(--p-surface-950);
         --p-primary-active-contrast: #ffffff;
     }
 
     .p-noir.app-dark {
-        --p-primary-active: #ffffff;
+        --p-primary-active:          #ffffff;
         --p-primary-active-contrast: var(--p-surface-950);
     }
 
@@ -87,9 +130,11 @@
         height: 100%;
         line-height: 1.2;
     }
+
     * {
         border-color: var(--border);
     }
+
     body {
         @apply bg-background text-foreground overflow-x-clip p-0 m-0 min-h-full;
         font-family: 'Archivo', Helvetica, Arial, sans-serif;
@@ -97,4 +142,21 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar        { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track  { background: transparent; }
+    ::-webkit-scrollbar-thumb  { background: var(--p-surface-300); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--p-surface-400); }
+
+    .app-dark ::-webkit-scrollbar-thumb       { background: var(--p-surface-700); }
+    .app-dark ::-webkit-scrollbar-thumb:hover { background: var(--p-surface-600); }
+}
+
+/* Table headers — unlayered and !important on purpose: PrimeNG injects its
+   theme CSS at runtime (unlayered, appended after this stylesheet), so it
+   wins both the layer and the source-order tiebreak unless forced here. */
+.p-datatable-thead > tr > th {
+    background-color: var(--p-surface-200) !important;
+    color: var(--p-surface-900) !important;
 }

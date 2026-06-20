@@ -15,21 +15,10 @@ import { AuthService } from '@/app/core/services/auth.service';
                 <p class="text-sm text-surface-500">Connecté</p>
             </div>
         }
-        <button pRipple [class]="buttonClass">
-            <i class="pi pi-cog"></i>
-            <span>Settings</span>
-        </button>
-        <button pRipple [class]="buttonClass">
-            <i class="pi pi-file"></i>
-            <span>Terms of Usage</span>
-        </button>
-        <button pRipple [class]="buttonClass">
-            <i class="pi pi-comments"></i>
-            <span>Support</span>
-        </button>
+       
         <button pRipple [class]="buttonClass" (click)="logout()">
             <i class="pi pi-sign-out"></i>
-            <span>Log Out</span>
+            <span>Se déconnecter</span>
         </button>
     `,
     host: {
@@ -39,7 +28,7 @@ import { AuthService } from '@/app/core/services/auth.service';
 export class AppProfile {
     authService = inject(AuthService);
     router = inject(Router);
-    
+
     styleClass = input<string>('');
 
     currentUser = computed(() => this.authService.getCurrentUser());

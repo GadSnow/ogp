@@ -47,4 +47,10 @@ export class CampagneService {
         });
     }
 
+    updateStatut(idCampagne: string, type: 'validation' | 'rejet', commentaire?: string): Observable<ApiResponse<any>> {
+        const params: Record<string, string> = { idCampagne, type };
+        if (commentaire) params['commentaire'] = commentaire;
+        return this.httpClient.get<ApiResponse<any>>(`${this.apiUrl}/campagne/statut/update`, { params });
+    }
+
 }

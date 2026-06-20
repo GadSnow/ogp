@@ -60,6 +60,11 @@ export class AppMenu {
                     label: "Devis",
                     icon: 'pi pi-fw pi-file-edit',
                     routerLink: ['/ogp/devis']
+                },
+                {
+                    label: "Facture",
+                    icon: 'pi pi-fw pi-receipt',
+                    routerLink: ['/ogp/facture']
                 }
             ]
         },

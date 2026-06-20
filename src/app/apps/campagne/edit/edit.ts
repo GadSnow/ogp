@@ -4,6 +4,7 @@ import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DatePicker } from 'primeng/datepicker';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { CampagneService } from '@/app/apps/campagne/campagne.service';
 import { StatutCampagneService } from '@/app/apps/campagne/statut-campagne.service';
 import { StatutCampagne } from '@/app/apps/campagne/statut-campagne.types';
@@ -23,7 +24,7 @@ import { CampagnePayload } from '@/app/apps/campagne/campagne.types';
 
 @Component({
     selector: 'app-edit-campagne',
-    imports: [Button, InputText, Select, MultiSelectModule, DatePicker, ToastModule, ConfirmDialogModule, ReactiveFormsModule, Skeleton, RouterLink],
+    imports: [Button, InputText, Select, MultiSelectModule, DatePicker, ToastModule, ConfirmDialogModule, ReactiveFormsModule, Skeleton, RouterLink, InputNumberModule],
     templateUrl: './edit.html',
     providers: [ConfirmationService, MessageService]
 })
@@ -51,15 +52,30 @@ export class EditCampagne implements OnInit {
     private campagnePanneauxIds: string[] = [];
     idCampagne: string | null = null;
 
+    cycles = [
+        { label: 'Journalier', value: 'JOURNALIER' },
+        { label: 'Hebdomadaire', value: 'HEBDOMADAIRE' },
+        { label: 'Mensuel', value: 'MENSUEL' }
+    ];
+
     form: FormGroup;
+
+    get dureeLabel(): string {
+        const cycle = this.form?.get('cycle')?.value;
+        if (cycle === 'JOURNALIER') return 'Nombre de jours';
+        if (cycle === 'HEBDOMADAIRE') return 'Nombre de semaines';
+        if (cycle === 'MENSUEL') return 'Nombre de mois';
+        return 'Durée';
+    }
 
     constructor() {
         this.form = this.fb.group({
             nomCampagne: ['', Validators.required],
             description: [''],
-            dateDebut: [null, Validators.required],
-            dateFin: [null, Validators.required],
             cycle: ['', Validators.required],
+            duree: [null, [Validators.required, Validators.min(1)]],
+            dateDebut: [null, Validators.required],
+            dateFin: [{ value: null, disabled: true }],
             statut: [null, Validators.required],
             idClient: ['', Validators.required],
             selectedPanneaux: [[], Validators.required]
@@ -71,12 +87,37 @@ export class EditCampagne implements OnInit {
         this.loadPanneaux();
         this.loadStatuts();
 
+        ['dateDebut', 'cycle', 'duree'].forEach(field => {
+            this.form.get(field)?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.calculateDateFin());
+        });
+
         this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
             this.idCampagne = params.get('id');
             if (this.idCampagne) {
                 this.loadCampagne(this.idCampagne);
             }
         });
+    }
+
+    private calculateDateFin(): void {
+        const dateDebut = this.form.get('dateDebut')?.value;
+        const cycle = this.form.get('cycle')?.value;
+        const duree = this.form.get('duree')?.value;
+
+        if (!dateDebut || !cycle || !duree || duree < 1) {
+            this.form.get('dateFin')?.setValue(null, { emitEvent: false });
+            return;
+        }
+
+        const date = new Date(dateDebut);
+        if (cycle === 'JOURNALIER') {
+            date.setDate(date.getDate() + Number(duree));
+        } else if (cycle === 'HEBDOMADAIRE') {
+            date.setDate(date.getDate() + Number(duree) * 7);
+        } else if (cycle === 'MENSUEL') {
+            date.setMonth(date.getMonth() + Number(duree));
+        }
+        this.form.get('dateFin')?.setValue(date, { emitEvent: false });
     }
 
     loadClients() {
@@ -114,9 +155,9 @@ export class EditCampagne implements OnInit {
                 this.form.patchValue({
                     nomCampagne: campagne.nomCampagne,
                     description: campagne.description,
-                    dateDebut: new Date(campagne.dateDebut),
-                    dateFin: new Date(campagne.dateFin),
                     cycle: campagne.cycle,
+                    duree: campagne.nombre,
+                    dateDebut: new Date(campagne.dateDebut),
                     statut: campagne.statut,
                     idClient: campagne.client?.id,
                     selectedPanneaux: this.panneaux.filter(p => this.campagnePanneauxIds.includes(p.id))
@@ -155,7 +196,8 @@ export class EditCampagne implements OnInit {
         if (!this.idCampagne) return;
         this.isLoading.set(true);
 
-        const { idClient, selectedPanneaux, ...campagneData } = this.form.getRawValue();
+        const { idClient, selectedPanneaux, duree, ...campagneData } = this.form.getRawValue();
+        campagneData.nombre = duree;
         const selectedClient = this.clients.find(c => c.id === idClient);
         const clientMsisdn = selectedClient?.telephoneResponsable || '';
         

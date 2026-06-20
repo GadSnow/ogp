@@ -1,0 +1,31 @@
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '@/environments/environment';
+import { Observable } from 'rxjs';
+import { Facture } from '@/app/apps/facture/facture.types';
+import { ApiResponse } from '@/app/core/models/api-response.interface';
+
+@Injectable({
+    providedIn: 'root',
+})
+export class FactureService {
+
+    private httpClient = inject(HttpClient);
+    private apiUrl: string = environment.apiUrl;
+
+    getFactures(): Observable<ApiResponse<Facture[]>> {
+        return this.httpClient.get<ApiResponse<Facture[]>>(`${this.apiUrl}/facture/liste`);
+    }
+
+    getFacturesByCampagne(idCampagne: string): Observable<ApiResponse<Facture[]>> {
+        return this.httpClient.get<ApiResponse<Facture[]>>(`${this.apiUrl}/facture/getbycampagne`, {
+            params: { idCampagne }
+        });
+    }
+
+    addFacture(idCampagne: string): Observable<ApiResponse<Facture>> {
+        return this.httpClient.post<ApiResponse<Facture>>(`${this.apiUrl}/facture/add`, null, {
+            params: { idCampagne }
+        });
+    }
+}

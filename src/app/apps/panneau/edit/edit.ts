@@ -52,16 +52,19 @@ export class EditPanneau implements OnInit {
     communes: any[] = [];
     quartiers: any[] = [];
     secteurs: any[] = [];
+    nombreFaces = [1, 2, 3, 4];
 
     form: FormGroup;
     idPanneau: string | null = null;
     isSettingInitialValues = false; // Flag to stop recursive clear
+
 
     constructor() {
         this.form = this.fb.group({
             reference: ['', Validators.required],
             latitude: [0, Validators.required],
             longitude: [0, Validators.required],
+            nombreFace: [1, Validators.required],
             btValide: [true],
             btAvailable: [true],
             hasSpecialPrice: [false],
@@ -191,7 +194,7 @@ export class EditPanneau implements OnInit {
         this.isLoading.set(true);
         this.panneauService.getPanneau(id).pipe(finalize(() => this.isLoading.set(false))).subscribe({
             next: (response) => {
-                const data = response.data;
+                const data = response.data.panneau;
                 const secteur = data.secteur;
                 const quartier = secteur?.quartier;
                 const commune = quartier?.commune;
@@ -208,6 +211,7 @@ export class EditPanneau implements OnInit {
                     reference: data.reference,
                     latitude: data.latitude,
                     longitude: data.longitude,
+                    nombreFace: data.nombreFace ?? 1,
                     btValide: data.btValide,
                     btAvailable: data.btAvailable,
                     hasSpecialPrice: data.hasSpecialPrice,

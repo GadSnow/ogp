@@ -1,3 +1,8 @@
 @use 'primeicons/primeicons.css';
 @use './layout/layout.scss';
 @use './demo/demo.scss';
+
+
+  .p-datatable-thead > tr > th {
+      background-color: var(--p-surface-500); // ou ta couleur
+  }

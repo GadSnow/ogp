@@ -4,20 +4,22 @@ import { LayoutService } from '@/app/layout/service/layout.service';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { filter, Subject, takeUntil } from 'rxjs';
-import { Logo } from './icons';
+
 
 const BREAKPOINT = 992;
 
 @Component({
     selector: '[app-sidebar]',
     standalone: true,
-    imports: [CommonModule, AppMenu, RouterModule, Logo],
+    imports: [CommonModule, AppMenu, RouterModule],
     template: ` <div [class]="sidebarClass()" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
         <div class="sidebar-header">
-            <a class="logo" [routerLink]="['/']">
-                <logo />
-                <span class="app-name text-4xl font-medium leading-normal">AVALON</span></a
-            >
+            <a class="logo w-full justify-center py-3" [routerLink]="['/']">
+                <span class="flex items-center justify-center gap-2">
+                    <span class="app-name text-xl! font-black! tracking-[0.25em]! leading-none!">OGP</span>
+                    <i class="pi pi-megaphone text-white text-base opacity-70"></i>
+                </span>
+            </a>
             <button class="layout-sidebar-anchor z-2" type="button" (click)="onAnchorToggle()"></button>
         </div>
 

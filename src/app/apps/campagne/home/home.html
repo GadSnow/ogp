@@ -5,12 +5,18 @@
     <div card-action>
         <p-button label="Nouvelle Campagne" size="small" icon="pi pi-plus" [routerLink]="['add']" />
     </div>
-    
+
     <div>
         @if (isLoading()) {
             <app-skeleton-table [rows]="10" [columns]="6"></app-skeleton-table>
         } @else {
-            <p-table [value]="campagnes" [rows]="10" [paginator]="true" [responsiveLayout]="'scroll'" styleClass="p-datatable-sm overflow-hidden">
+            <div class="flex justify-end mb-3">
+                <p-iconfield>
+                    <p-inputicon class="pi pi-search" />
+                    <input pInputText type="text" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
+                </p-iconfield>
+            </div>
+            <p-table #dt [value]="campagnes" [rows]="10" [paginator]="true" [responsiveLayout]="'scroll'" styleClass="p-datatable-sm overflow-hidden" [globalFilterFields]="['nomCampagne', 'client.denomination', 'client.sigle', 'statut']">
                 <ng-template pTemplate="header">
                     <tr>
                         <th>#</th>

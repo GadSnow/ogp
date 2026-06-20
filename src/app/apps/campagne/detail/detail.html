@@ -1,97 +1,278 @@
-<div class="flex justify-center mt-4 mb-4">
-    <div class="w-full md:w-5/6">
+<p-toast />
 
+<p-dialog header="Générer une facture" [(visible)]="showFactureDialog" [modal]="true" [style]="{ width: '26rem' }" [draggable]="false" [resizable]="false">
+    <div class="flex flex-col gap-3 pt-2">
+        <p class="text-sm text-surface-700">Confirmer la génération d'une facture pour la campagne <span class="font-semibold">{{ campagne?.nomCampagne }}</span> ?</p>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end gap-2">
+            <p-button label="Annuler" severity="secondary" [outlined]="true" (onClick)="showFactureDialog.set(false)" />
+            <p-button label="Générer" icon="pi pi-receipt" severity="success" [loading]="isFactureLoading()" (onClick)="genererFacture()" />
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Confirmer la validation" [(visible)]="showValidationDialog" [modal]="true" [style]="{ width: '26rem' }" [draggable]="false" [resizable]="false">
+    <div class="flex flex-col gap-3 pt-2">
+        <p class="text-sm text-surface-700">Êtes-vous sûr de vouloir <span class="font-semibold text-green-600">valider</span> cette campagne ?</p>
+        <p class="text-xs text-surface-400">Cette action modifiera le statut de la campagne.</p>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end gap-2">
+            <p-button label="Annuler" severity="secondary" [outlined]="true" (onClick)="showValidationDialog.set(false)" />
+            <p-button label="Valider" severity="success" [loading]="isActionLoading()" (onClick)="confirmerValidation()" />
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Motif de rejet" [(visible)]="showRejetDialog" [modal]="true" [style]="{ width: '28rem' }" [draggable]="false" [resizable]="false">
+    <div class="flex flex-col gap-3 pt-2">
+        <label class="text-sm font-medium text-surface-700">Commentaire <span class="text-red-500">*</span></label>
+        <textarea pTextarea [(ngModel)]="commentaireRejet" rows="4" placeholder="Saisir le motif du rejet..." class="w-full resize-none"></textarea>
+        <p class="text-xs text-surface-400">Le commentaire est obligatoire pour rejeter une campagne.</p>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end gap-2">
+            <p-button label="Annuler" severity="secondary" [outlined]="true" (onClick)="showRejetDialog.set(false)" />
+            <p-button label="Confirmer le rejet" severity="danger" [disabled]="!commentaireRejet.trim()" (onClick)="confirmerRejet()" />
+        </div>
+    </ng-template>
+</p-dialog>
+
+<div class="flex justify-center mt-4 mb-4">
+    <div class="w-full">
+        <div class="flex justify-end mb-4">
+            <a [routerLink]="['/ogp/campagne']" class="flex items-center gap-1 text-sm text-surface-500 hover:text-primary cursor-pointer"> <i class="pi pi-angle-left"></i> Retour à la liste </a>
+        </div>
         <!-- Header -->
         <div class="flex items-center justify-between mb-6">
             @if (campagne) {
-                <h2 class="text-2xl font-bold uppercase tracking-wide">{{ campagne.nomCampagne }}</h2>
+            <h2 class="text-2xl font-bold uppercase tracking-wide">{{ campagne.nomCampagne }}</h2>
             } @else {
-                <p-skeleton width="18rem" height="2rem"></p-skeleton>
+            <p-skeleton width="18rem" height="2rem"></p-skeleton>
+            } @if (campagne && campagne.statut == 'proposition') {
+            <div class="flex gap-2">
+                <p-button icon="pi pi-check" pTooltip="Valider" tooltipPosition="bottom" [outlined]="true" size="small" severity="success" [loading]="isActionLoading()" (onClick)="onValider()" />
+                <p-button icon="pi pi-times" pTooltip="Rejeter" tooltipPosition="bottom" [outlined]="true" size="small" severity="danger" [loading]="isActionLoading()" (onClick)="onRejeter()" />
+            </div>
             }
-            <a [routerLink]="['/ogp/campagne']" class="flex items-center gap-1 text-sm text-surface-500 hover:text-primary cursor-pointer">
-                <i class="pi pi-angle-left"></i> Retour à la liste
-            </a>
         </div>
 
-        <div class="card p-6">
+        @if (isLoading()) {
+        <div class="card p-6 flex flex-col gap-3">
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="6rem"></p-skeleton>
+        </div>
+        } @else {
 
-            @if (isLoading()) {
-                <div class="flex flex-col gap-3">
-                    <p-skeleton width="100%" height="2rem"></p-skeleton>
-                    <p-skeleton width="100%" height="2rem"></p-skeleton>
-                    <p-skeleton width="100%" height="6rem"></p-skeleton>
+        <!-- Infos générales -->
+        <div class="card p-6 mb-4">
+            <h3 class="text-base font-semibold mb-4 text-surface-700 uppercase tracking-wide flex items-center gap-2"><i class="pi pi-info-circle"></i> Informations générales</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div class="flex flex-col gap-1">
+                    <span class="text-xs text-surface-500 uppercase tracking-wide">Nom de la campagne</span>
+                    <span class="font-medium">{{ campagne?.nomCampagne }}</span>
                 </div>
+
+                <div class="flex flex-col gap-1">
+                    <span class="text-xs text-surface-500 uppercase tracking-wide">Client</span>
+                    <a [routerLink]="['/ogp/client/detail', campagne?.client?.id]" class="font-medium text-primary hover:underline"> {{ campagne?.client?.denomination }} @if (campagne?.client?.sigle) { ({{ campagne?.client?.sigle }}) } </a>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <span class="text-xs text-surface-500 uppercase tracking-wide">Cycle</span>
+                    <span class="font-medium">{{ campagne?.cycle }}</span>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <span class="text-xs text-surface-500 uppercase tracking-wide">Date de début</span>
+                    <span class="font-medium">{{ campagne?.dateDebut | date:'dd/MM/yyyy' }}</span>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <span class="text-xs text-surface-500 uppercase tracking-wide">Date de fin</span>
+                    <span class="font-medium">{{ campagne?.dateFin | date:'dd/MM/yyyy' }}</span>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <span class="text-xs text-surface-500 uppercase tracking-wide">Créé le</span>
+                    <span class="font-medium">{{ campagne?.dtCreated | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <span class="text-xs text-surface-500 uppercase tracking-wide">Statut</span>
+                    <div>
+                        <p-tag [value]="campagne?.statut" [severity]="getStatutSeverity(campagne?.statut ?? '')" />
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <span class="text-xs text-surface-500 uppercase tracking-wide">Statut de paiement</span>
+                    <div>
+                        <p-tag [value]="campagne?.statutPaiement" [severity]="getPaiementSeverity(campagne?.statutPaiement ?? '')" />
+                    </div>
+                </div>
+
+                @if (campagne?.description) {
+                <div class="flex flex-col gap-1 md:col-span-2 lg:col-span-3">
+                    <span class="text-xs text-surface-500 uppercase tracking-wide">Description</span>
+                    <span class="font-medium">{{ campagne?.description }}</span>
+                </div>
+                }
+            </div>
+        </div>
+
+        <!-- Panneaux -->
+        <div class="card p-6 mb-4">
+            <h3 class="text-base font-semibold mb-4 text-surface-700 uppercase tracking-wide flex items-center gap-2"><i class="pi pi-map-marker"></i> Panneaux ({{ panneaux.length }})</h3>
+
+            @if (panneaux.length === 0) {
+            <p class="text-surface-400 text-sm">Aucun panneau associé à cette campagne.</p>
             } @else {
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                    <div class="flex flex-col gap-1">
-                        <span class="text-sm text-surface-500">Nom de la campagne</span>
-                        <span class="font-medium">{{ campagne?.nomCampagne }}</span>
-                    </div>
-
-                    <div class="flex flex-col gap-1">
-                        <span class="text-sm text-surface-500">Client</span>
-                        <a [routerLink]="['/ogp/client/detail', campagne?.client?.id]" class="font-medium text-primary hover:underline">
-                            {{ campagne?.client?.denomination }}
-                            @if (campagne?.client?.sigle) {
-                                ({{ campagne?.client?.sigle }})
-                            }
-                        </a>
-                    </div>
-
-                    <div class="flex flex-col gap-1">
-                        <span class="text-sm text-surface-500">Date de début</span>
-                        <span class="font-medium">{{ campagne?.dateDebut | date:'dd/MM/yyyy' }}</span>
-                    </div>
-
-                    <div class="flex flex-col gap-1">
-                        <span class="text-sm text-surface-500">Date de fin</span>
-                        <span class="font-medium">{{ campagne?.dateFin | date:'dd/MM/yyyy' }}</span>
-                    </div>
-
-                    <div class="flex flex-col gap-1">
-                        <span class="text-sm text-surface-500">Cycle</span>
-                        <span class="font-medium">{{ campagne?.cycle }}</span>
-                    </div>
-
-                    <div class="flex flex-col gap-1">
-                        <span class="text-sm text-surface-500">Statut</span>
-                        <div>
-                            <p-tag [value]="campagne?.statut" [severity]="getSeverity(campagne?.statut ?? '')" />
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col gap-1">
-                        <span class="text-sm text-surface-500">Statut de paiement</span>
-                        <span class="font-medium">{{ campagne?.statutPaiement }}</span>
-                    </div>
-
-                    <div class="flex flex-col gap-1">
-                        <span class="text-sm text-surface-500">Créé le</span>
-                        <span class="font-medium">{{ campagne?.dtCreated | date:'dd/MM/yyyy HH:mm' }}</span>
-                    </div>
-
-                    @if (campagne?.description) {
-                        <div class="flex flex-col gap-1 md:col-span-2">
-                            <span class="text-sm text-surface-500">Description</span>
-                            <span class="font-medium">{{ campagne?.description }}</span>
-                        </div>
-                    }
-
-                    @if (panneaux.length) {
-                        <div class="flex flex-col gap-2 md:col-span-2 border-t border-surface-200 pt-4 mt-2">
-                            <span class="text-sm text-surface-500">Panneaux ({{ panneaux.length }})</span>
-                            <div class="flex flex-wrap gap-2">
-                                @for (p of panneaux; track p.id) {
-                                    <p-tag [value]="p.reference" severity="secondary" />
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-surface-200 text-xs text-surface-400 uppercase tracking-wide">
+                            <th class="text-left py-2 pr-4 font-medium">Référence</th>
+                            <th class="text-left py-2 pr-4 font-medium">Localisation</th>
+                            <th class="text-left py-2 pr-4 font-medium">Catégorie / Type</th>
+                            <th class="text-right py-2 pr-4 font-medium">Jour</th>
+                            <th class="text-right py-2 pr-4 font-medium">Semaine</th>
+                            <th class="text-right py-2 font-medium">Mois</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (p of panneaux; track p.id) {
+                        <tr class="border-b border-surface-100 hover:bg-surface-50 transition-colors">
+                            <td class="py-3 pr-4 font-semibold text-primary">{{ p.reference }}</td>
+                            <td class="py-3 pr-4 text-surface-600">{{ p.secteur ? getLocalisation(p) : '—' }}</td>
+                            <td class="py-3 pr-4 text-surface-600">
+                                @if (p.caracteristiquePanneaux) {
+                                <span>{{ p.caracteristiquePanneaux.categoriePanneaux?.categorie }}</span>
+                                <span class="text-surface-400"> / {{ p.caracteristiquePanneaux.type }}</span>
+                                } @else {
+                                <span class="text-surface-300">—</span>
                                 }
-                            </div>
-                        </div>
-                    }
-
-                </div>
+                            </td>
+                            <td class="py-3 pr-4 text-right font-medium">{{ p.priceDay | currency:'GNF' }}</td>
+                            <td class="py-3 pr-4 text-right font-medium">{{ p.priceWeek | currency:'GNF' }}</td>
+                            <td class="py-3 text-right font-medium">{{ p.priceMonth | currency:'GNF' }}</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
             }
-
         </div>
+
+        <!-- Devis -->
+        <div class="card p-6">
+            <div class="flex flex-col md:flex-row md:justify-between">
+                <h3 class="text-base font-semibold mb-4 text-surface-700 uppercase tracking-wide flex items-center gap-2"><i class="pi pi-file"></i> Devis ({{ devis.length }})</h3>
+            </div>
+            @if (devis.length === 0) {
+            <p class="text-surface-400 text-sm">Aucun devis associé à cette campagne.</p>
+            } @else {
+            <div class="flex flex-col gap-4">
+                @for (d of devis; track d.id) {
+                <div class="border border-surface-200 rounded-lg p-4 flex flex-col gap-4">
+                    <!-- En-tête devis -->
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold text-primary">{{ d.numeroDevis }}</span>
+                        <span class="text-xs text-surface-400">Émis le {{ d.dateEmission | date:'dd/MM/yyyy' }}</span>
+                    </div>
+
+                    <!-- Dates -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="flex flex-col gap-0.5">
+                            <span class="text-xs text-surface-400 uppercase tracking-wide">Validité</span>
+                            <span class="text-sm font-medium">jusqu'au {{ d.dateValidite | date:'dd/MM/yyyy' }}</span>
+                        </div>
+                        <div class="flex flex-col gap-0.5">
+                            <span class="text-xs text-surface-400 uppercase tracking-wide">Période prévue</span>
+                            <span class="text-sm font-medium"> {{ d.dateDebutPrevu | date:'dd/MM/yyyy' }} → {{ d.dateFinPrevu | date:'dd/MM/yyyy' }} </span>
+                        </div>
+                        @if (d.remise) {
+                        <div class="flex flex-col gap-0.5">
+                            <span class="text-xs text-surface-400 uppercase tracking-wide">Remise</span>
+                            <span class="text-sm font-medium">{{ d.remise.typeRemise }} — {{ d.remise.valeurRemise }}%</span>
+                        </div>
+                        }
+                    </div>
+
+                    <!-- Montants -->
+                    <div class="grid grid-cols-3 gap-2 bg-surface-50 rounded p-3">
+                        <div class="flex flex-col items-center gap-0.5">
+                            <span class="text-xs text-surface-400">Montant brut</span>
+                            <span class="text-sm font-semibold">{{ d.montantBrute | currency:'GNF' }}</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-0.5 border-x border-surface-200">
+                            <span class="text-xs text-surface-400">Remise</span>
+                            <span class="text-sm font-semibold text-amber-600">− {{ d.montantRemise | currency:'GNF' }}</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-0.5">
+                            <span class="text-xs text-surface-400">Montant net</span>
+                            <span class="text-sm font-semibold text-green-600">{{ d.montantNet | currency:'GNF' }}</span>
+                        </div>
+                    </div>
+
+                    @if (d.observations) {
+                    <div class="flex flex-col gap-0.5">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Observations</span>
+                        <span class="text-sm">{{ d.observations }}</span>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+        <!-- Factures -->
+        <div class="card p-6 mt-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                <h3 class="text-base font-semibold text-surface-700 uppercase tracking-wide flex items-center gap-2"><i class="pi pi-receipt"></i> Factures ({{ factures.length }})</h3>
+                <p-button label="Générer une facture" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="showFactureDialog.set(true)" />
+            </div>
+
+            @if (factures.length === 0) {
+            <p class="text-surface-400 text-sm">Aucune facture associée à cette campagne.</p>
+            } @else {
+            <div class="flex flex-col gap-4">
+                @for (f of factures; track f.id) {
+                <div class="border border-surface-200 rounded-lg p-4 flex flex-col gap-4">
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold text-primary">{{ f.reference ?? '—' }}</span>
+                        @if (f.dateEcheance) {
+                        <span class="text-xs text-surface-400">Échéance : {{ f.dateEcheance | date:'dd/MM/yyyy' }}</span>
+                        }
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 bg-surface-50 rounded p-3">
+                        <div class="flex flex-col items-center gap-0.5">
+                            <span class="text-xs text-surface-400">Montant brut</span>
+                            <span class="text-sm font-semibold">{{ f.montantBrute | currency:'GNF' }}</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-0.5 border-x border-surface-200">
+                            <span class="text-xs text-surface-400">Remise</span>
+                            <span class="text-sm font-semibold text-amber-600">− {{ f.montantRemise | currency:'GNF' }}</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-0.5 border-r border-surface-200">
+                            <span class="text-xs text-surface-400">Montant net</span>
+                            <span class="text-sm font-semibold text-green-600">{{ f.montantNet | currency:'GNF' }}</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-0.5">
+                            <span class="text-xs text-surface-400">Reste à payer</span>
+                            <span class="text-sm font-semibold" [class]="(f.montantResteAPaye ?? 0) > 0 ? 'text-red-600' : 'text-green-600'"> {{ f.montantResteAPaye | currency:'GNF' }} </span>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+        }
     </div>
 </div>

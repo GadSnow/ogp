@@ -12,10 +12,13 @@ import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
     selector: 'app-home-campagne',
-    imports: [TableModule, Tag, SkeletonTableComponent, CustomCard, Button, RouterLink, DatePipe, ConfirmDialogModule],
+    imports: [TableModule, Tag, SkeletonTableComponent, CustomCard, Button, RouterLink, DatePipe, ConfirmDialogModule, IconFieldModule, InputIconModule, InputText],
     templateUrl: './home.html',
     providers: [ConfirmationService]
 })

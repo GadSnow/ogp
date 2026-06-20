@@ -13,10 +13,13 @@ import { CustomCard } from '@/app/layout/components/ui/customcard';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
     selector: 'app-users-home',
-    imports: [TableModule, Tag, Button, RouterLink, SkeletonTableComponent, CustomCard, ConfirmDialogModule, ToastModule],
+    imports: [TableModule, Tag, Button, RouterLink, SkeletonTableComponent, CustomCard, ConfirmDialogModule, ToastModule, IconFieldModule, InputIconModule, InputText],
     templateUrl: './home.html',
     providers: [ConfirmationService, MessageService]
 })

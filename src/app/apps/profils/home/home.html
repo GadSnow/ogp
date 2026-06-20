@@ -12,7 +12,13 @@
         } @else {
         <div>
             @if (profils.length > 0) {
-            <p-table [value]="profils" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]" [tableStyle]="{ 'min-width': '50rem' }">
+            <div class="flex justify-end mb-3">
+                <p-iconfield>
+                    <p-inputicon class="pi pi-search" />
+                    <input pInputText type="text" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
+                </p-iconfield>
+            </div>
+            <p-table #dt [value]="profils" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]" [tableStyle]="{ 'min-width': '50rem' }" [globalFilterFields]="['profil']">
                 <ng-template #header>
                     <tr>
                         <th>#</th>

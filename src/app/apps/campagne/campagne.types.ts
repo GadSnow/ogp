@@ -11,6 +11,7 @@ export interface Campagne {
     nomCampagne: string;
     description: string;
     cycle: string;
+    nombre: number;
     statut: string;
     statutPaiement: string;
     client: Client;
@@ -23,6 +24,7 @@ export interface AddCampagne {
     nomCampagne: string;
     description: string;
     cycle: string;
+    nombre: number;
     statut: string;
     statutPaiement?: string;
 }

@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@/environments/environment';
 import { Observable } from 'rxjs';
-import { AddPanneau, Panneau } from '@/app/apps/panneau/panneau.types';
+import { AddPanneau, Panneau, PanneauDetail } from '@/app/apps/panneau/panneau.types';
 import { ApiResponse } from '@/app/core/models/api-response.interface';
 
 @Injectable({
@@ -30,8 +30,8 @@ export class PanneauService {
         });
     }
 
-    getPanneau(id: string): Observable<ApiResponse<Panneau>> {
-        return this.httpClient.get<ApiResponse<Panneau>>(`${this.apiUrl}/panneau/getbyid`, {
+    getPanneau(id: string): Observable<ApiResponse<PanneauDetail>> {
+        return this.httpClient.get<ApiResponse<PanneauDetail>>(`${this.apiUrl}/panneau/getbyid`, {
             params: {
                 idPanneau: id
             }

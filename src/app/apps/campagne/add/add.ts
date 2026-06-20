@@ -4,9 +4,8 @@ import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DatePicker } from 'primeng/datepicker';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { CampagneService } from '@/app/apps/campagne/campagne.service';
-import { StatutCampagneService } from '@/app/apps/campagne/statut-campagne.service';
-import { StatutCampagne } from '@/app/apps/campagne/statut-campagne.types';
 import { ClientService } from '@/app/apps/client/client.service';
 import { PanneauService } from '@/app/apps/panneau/panneau.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -23,13 +22,12 @@ import { CampagnePayload } from '@/app/apps/campagne/campagne.types';
 
 @Component({
     selector: 'app-add-campagne',
-    imports: [Button, InputText, Select, MultiSelectModule, DatePicker, ToastModule, ConfirmDialogModule, ReactiveFormsModule, Skeleton, RouterLink],
+    imports: [Button, InputText, Select, MultiSelectModule, DatePicker, ToastModule, ConfirmDialogModule, ReactiveFormsModule, Skeleton, RouterLink, InputNumberModule],
     templateUrl: './add.html',
     providers: [ConfirmationService, MessageService]
 })
 export class AddCampagne implements OnInit {
     private campagneService = inject(CampagneService);
-    private statutCampagneService = inject(StatutCampagneService);
     private clientService = inject(ClientService);
     private panneauService = inject(PanneauService);
     private confirmationService = inject(ConfirmationService);
@@ -41,22 +39,34 @@ export class AddCampagne implements OnInit {
     isLoading = signal(false);
     loadingClients = signal(false);
     loadingPanneaux = signal(false);
-    loadingStatuts = signal(false);
 
     clients: Client[] = [];
     panneaux: Panneau[] = [];
-    statuts: StatutCampagne[] = [];
+
+    cycles = [
+        { label: 'Journalier', value: 'JOURNALIER' },
+        { label: 'Hebdomadaire', value: 'HEBDOMADAIRE' },
+        { label: 'Mensuel', value: 'MENSUEL' }
+    ];
 
     form: FormGroup;
+
+    get dureeLabel(): string {
+        const cycle = this.form?.get('cycle')?.value;
+        if (cycle === 'JOURNALIER') return 'Nombre de jours';
+        if (cycle === 'HEBDOMADAIRE') return 'Nombre de semaines';
+        if (cycle === 'MENSUEL') return 'Nombre de mois';
+        return 'Durée';
+    }
 
     constructor() {
         this.form = this.fb.group({
             nomCampagne: ['', Validators.required],
             description: [''],
-            dateDebut: [null, Validators.required],
-            dateFin: [null, Validators.required],
             cycle: ['', Validators.required],
-            statut: [null, Validators.required],
+            duree: [null, [Validators.required, Validators.min(1)]],
+            dateDebut: [null, Validators.required],
+            dateFin: [{ value: null, disabled: true }],
             idClient: ['', Validators.required],
             selectedPanneaux: [[], Validators.required]
         });
@@ -65,7 +75,31 @@ export class AddCampagne implements OnInit {
     ngOnInit() {
         this.loadClients();
         this.loadPanneaux();
-        this.loadStatuts();
+
+        ['dateDebut', 'cycle', 'duree'].forEach(field => {
+            this.form.get(field)?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.calculateDateFin());
+        });
+    }
+
+    private calculateDateFin(): void {
+        const dateDebut = this.form.get('dateDebut')?.value;
+        const cycle = this.form.get('cycle')?.value;
+        const duree = this.form.get('duree')?.value;
+
+        if (!dateDebut || !cycle || !duree || duree < 1) {
+            this.form.get('dateFin')?.setValue(null, { emitEvent: false });
+            return;
+        }
+
+        const date = new Date(dateDebut);
+        if (cycle === 'JOURNALIER') {
+            date.setDate(date.getDate() + Number(duree));
+        } else if (cycle === 'HEBDOMADAIRE') {
+            date.setDate(date.getDate() + Number(duree) * 7);
+        } else if (cycle === 'MENSUEL') {
+            date.setMonth(date.getMonth() + Number(duree));
+        }
+        this.form.get('dateFin')?.setValue(date, { emitEvent: false });
     }
 
     loadClients() {
@@ -79,13 +113,6 @@ export class AddCampagne implements OnInit {
         this.loadingPanneaux.set(true);
         this.panneauService.getDisponibles().pipe(finalize(() => this.loadingPanneaux.set(false)), takeUntilDestroyed(this.destroyRef)).subscribe(res => {
             this.panneaux = res.data;
-        });
-    }
-
-    loadStatuts() {
-        this.loadingStatuts.set(true);
-        this.statutCampagneService.getStatuts().pipe(finalize(() => this.loadingStatuts.set(false)), takeUntilDestroyed(this.destroyRef)).subscribe(res => {
-            this.statuts = res.data;
         });
     }
 
@@ -115,7 +142,8 @@ export class AddCampagne implements OnInit {
     validate() {
         this.isLoading.set(true);
 
-        const { idClient, selectedPanneaux, ...campagneData } = this.form.getRawValue();
+        const { idClient, selectedPanneaux, duree, ...campagneData } = this.form.getRawValue();
+        campagneData.nombre = duree;
         const selectedClient = this.clients.find(c => c.id === idClient);
         const clientMsisdn = selectedClient?.telephoneResponsable || '';
         

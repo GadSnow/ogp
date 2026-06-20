@@ -76,6 +76,10 @@ export const appRoutes: Routes = [
                 loadChildren: () => import('@/app/apps/devis/devis.routes')
             },
             {
+                path: 'facture',
+                loadChildren: () => import('@/app/apps/facture/facture.routes')
+            },
+            {
                 path: 'profils',
                 loadChildren: () => import('@/app/apps/profils/profils.routes')
             },
