@@ -53,18 +53,18 @@ export class EditCampagne implements OnInit {
     idCampagne: string | null = null;
 
     cycles = [
-        { label: 'Journalier', value: 'JOURNALIER' },
-        { label: 'Hebdomadaire', value: 'HEBDOMADAIRE' },
-        { label: 'Mensuel', value: 'MENSUEL' }
+        { label: 'Journalier', value: 'jour' },
+        { label: 'Hebdomadaire', value: 'semaine' },
+        { label: 'Mensuel', value: 'mois' }
     ];
 
     form: FormGroup;
 
     get dureeLabel(): string {
         const cycle = this.form?.get('cycle')?.value;
-        if (cycle === 'JOURNALIER') return 'Nombre de jours';
-        if (cycle === 'HEBDOMADAIRE') return 'Nombre de semaines';
-        if (cycle === 'MENSUEL') return 'Nombre de mois';
+        if (cycle === 'jour') return 'Nombre de jours';
+        if (cycle === 'semaine') return 'Nombre de semaines';
+        if (cycle === 'mois') return 'Nombre de mois';
         return 'Durée';
     }
 
@@ -110,11 +110,11 @@ export class EditCampagne implements OnInit {
         }
 
         const date = new Date(dateDebut);
-        if (cycle === 'JOURNALIER') {
+        if (cycle === 'jour') {
             date.setDate(date.getDate() + Number(duree));
-        } else if (cycle === 'HEBDOMADAIRE') {
+        } else if (cycle === 'semaine') {
             date.setDate(date.getDate() + Number(duree) * 7);
-        } else if (cycle === 'MENSUEL') {
+        } else if (cycle === 'mois') {
             date.setMonth(date.getMonth() + Number(duree));
         }
         this.form.get('dateFin')?.setValue(date, { emitEvent: false });
@@ -200,7 +200,7 @@ export class EditCampagne implements OnInit {
         campagneData.nombre = duree;
         const selectedClient = this.clients.find(c => c.id === idClient);
         const clientMsisdn = selectedClient?.telephoneResponsable || '';
-        
+
         const payload: CampagnePayload = {
             campagne: {
                 ...campagneData,

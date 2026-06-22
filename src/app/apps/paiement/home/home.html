@@ -1,0 +1,67 @@
+<div custom-card>
+    <h3 card-title>Gestion des Paiements</h3>
+    <div card-action>
+        <p-button label="Ajouter" size="small" icon="pi pi-plus" [routerLink]="['/ogp/paiement/add']" />
+    </div>
+
+    <div>
+        @if (isLoading()) {
+        <app-skeleton-table [rows]="10" [columns]="6"></app-skeleton-table>
+        } @else {
+        <div class="flex justify-end mb-3">
+            <p-iconfield>
+                <p-inputicon class="pi pi-search" />
+                <input pInputText type="text" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
+            </p-iconfield>
+        </div>
+        <p-table
+            #dt
+            [value]="paiements"
+            [rows]="10"
+            [paginator]="true"
+            [responsiveLayout]="'scroll'"
+            styleClass="p-datatable-sm overflow-hidden"
+            [globalFilterFields]="['reference', 'facture.reference', 'facture.campagne.nomCampagne', 'facture.campagne.client.denomination', 'modePaiement.mode', 'statut']"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>#</th>
+                    <th>Référence paiement</th>
+                    <th>Référence facture</th>
+                    <th>Campagne</th>
+                    <th>Client</th>
+                    <th>Montant</th>
+                    <th>Mode de paiement</th>
+                    <th>Statut</th>
+                    <th>Date</th>
+                    <th></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-p let-rowIndex="rowIndex">
+                <tr>
+                    <td>{{ rowIndex + 1 }}</td>
+                    <td>{{ p.reference ?? '—' }}</td>
+                    <td class="font-semibold text-primary">{{ p.facture?.reference ?? '—' }}</td>
+                    <td>{{ p.facture?.campagne?.nomCampagne ?? '—' }}</td>
+                    <td>{{ p.facture?.campagne?.client?.denomination ?? '—' }}</td>
+                    <td>{{ p.montant | currency:'GNF' }}</td>
+                    <td>{{ p.modePaiement?.mode ?? '—' }}</td>
+                    <td><p-tag [value]="p.statut" [severity]="getSeverity(p.statut)" /></td>
+                    <td>{{ p.dtCreated | date:'dd/MM/yyyy HH:mm' }}</td>
+                    <td>
+                        <p-button icon="pi pi-eye" [text]="true" size="small" [routerLink]="['/ogp/paiement/detail', p.id]" />
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="10" class="text-center p-8 bg-surface-50 dark:bg-surface-900 border-b border-surface-200">
+                        <i class="pi pi-inbox text-4xl text-surface-400 mb-3 block"></i>
+                        <span class="text-surface-500 font-medium italic">Aucun paiement trouvé.</span>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        }
+    </div>
+</div>

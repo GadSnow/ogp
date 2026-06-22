@@ -114,7 +114,7 @@ export class Login {
                 this.loading = false;
 
                 // Get returnUrl from query params or default to dashboard
-                const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard/e-commerce';
+                const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/ogp/dashboard';
                 this.router.navigateByUrl(returnUrl);
             },
             error: (error) => {

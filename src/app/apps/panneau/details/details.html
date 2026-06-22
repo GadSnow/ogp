@@ -106,6 +106,9 @@
                     <i class="pi pi-chevron-right text-surface-300 text-xs"></i>
                     <span class="bg-surface-800 text-surface-0 text-xs font-semibold px-2 py-0.5 rounded"> {{ panneau()?.secteur?.secteur }} </span>
                 </div>
+                @if (panneau()?.latitude && panneau()?.longitude) {
+                <app-map-location class="block mt-4" [latitude]="panneau()!.latitude" [longitude]="panneau()!.longitude" [label]="'Panneau #' + panneau()?.reference" />
+                }
             </div>
 
             <!-- Tarif standard -->

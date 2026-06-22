@@ -43,7 +43,7 @@ export class DetailCampagne {
     campagne: Campagne | null = null;
     panneaux: Panneau[] = [];
     devis: Devis[] = [];
-    factures: Facture[] = [];
+    factures = signal<Facture[]>([]);
 
     showValidationDialog = signal(false);
     showRejetDialog = signal(false);
@@ -82,8 +82,12 @@ export class DetailCampagne {
             .getFacturesByCampagne(idCampagne)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
-                next: (res) => { this.factures = res.data ?? []; },
-                error: () => { this.factures = []; }
+                next: (res) => {
+                    this.factures.set(Array.isArray(res) ? res : (res?.data ?? []));
+                },
+                error: () => {
+                    this.factures.set([]);
+                }
             });
     }
 
@@ -174,6 +178,19 @@ export class DetailCampagne {
                 return 'secondary';
             default:
                 return 'secondary';
+        }
+    }
+
+    getCycleLabel(cycle: string | undefined): string {
+        switch (cycle) {
+            case 'JOUR':
+                return 'Jour';
+            case 'SEMAINE':
+                return 'Semaine';
+            case 'MOIS':
+                return 'Mois';
+            default:
+                return cycle ?? '—';
         }
     }
 

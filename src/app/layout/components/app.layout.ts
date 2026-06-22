@@ -18,7 +18,7 @@ import { AppHeader } from './app.header';
         <main class="layout-content-wrapper flex-1 max-w-430 w-full mx-auto flex flex-col transition-all duration-300 h-full bg-background rounded-2xl shadow-card overflow-hidden">
             <header app-header class="layout-topbar z-40!"></header>
             <div app-breadcrumb class="max-h-16 py-4 pr-4 pl-6 flex items-center gap-2 border-b"></div>
-            <div class="p-6 flex-1 overflow-auto scrollable-content bg-surface-50 dark:bg-surface-900">
+            <div class="p-6 flex-1 overflow-auto scrollable-content bg-gray-100 dark:bg-surface-900">
                 <router-outlet></router-outlet>
             </div>
         </main>

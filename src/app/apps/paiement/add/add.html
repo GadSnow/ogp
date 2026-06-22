@@ -1,0 +1,80 @@
+<p-toast />
+
+<div class="flex justify-center mt-4 mb-4">
+    <div class="w-full md:w-4/5">
+        <div class="card p-6 flex flex-col gap-5">
+            <div class="text-xl font-semibold uppercase tracking-tight bg-[#03254E] text-white p-2 rounded-md">Nouveau Paiement</div>
+
+            <form [formGroup]="form">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Référence facture -->
+                    <div class="flex flex-col gap-2">
+                        <label for="referenceFacture">Référence facture</label>
+                        <input
+                            id="referenceFacture"
+                            type="text"
+                            pInputText
+                            fluid
+                            formControlName="referenceFacture"
+                            [class.ng-invalid]="isInvalid('referenceFacture')"
+                            [class.ng-dirty]="isInvalid('referenceFacture')"
+                        />
+                        @if (isInvalid('referenceFacture')) { <small class="p-error">La référence de la facture est obligatoire.</small> }
+                    </div>
+
+                    <!-- Montant -->
+                    <div class="flex flex-col gap-2">
+                        <label for="montant">Montant</label>
+                        <p-inputnumber
+                            id="montant"
+                            formControlName="montant"
+                            [min]="1"
+                            mode="currency"
+                            currency="GNF"
+                            locale="fr-FR"
+                            class="w-full"
+                            [class.ng-invalid]="isInvalid('montant')"
+                            [class.ng-dirty]="isInvalid('montant')"
+                        ></p-inputnumber>
+                        @if (isInvalid('montant')) { <small class="p-error">Le montant est obligatoire.</small> }
+                    </div>
+
+                    <!-- Mode de paiement -->
+                    <div class="flex flex-col gap-2">
+                        <label for="modePaiement">Mode de paiement</label>
+                        @if (loadingModes()) {
+                        <p-skeleton width="100%" height="3rem"></p-skeleton>
+                        } @else {
+                        <p-select
+                            id="modePaiement"
+                            [options]="modes"
+                            optionLabel="mode"
+                            optionValue="mode"
+                            formControlName="modePaiement"
+                            class="w-full"
+                            placeholder="Sélectionner un mode de paiement"
+                            [class.ng-invalid]="isInvalid('modePaiement')"
+                            [class.ng-dirty]="isInvalid('modePaiement')"
+                        ></p-select>
+                        }
+                        @if (isInvalid('modePaiement')) { <small class="p-error">Le mode de paiement est obligatoire.</small> }
+                    </div>
+                </div>
+
+                <!-- Message -->
+                <div class="flex flex-col gap-2 mt-6">
+                    <label for="message">Message <span class="text-xs text-surface-400 font-normal italic">(optionnel)</span></label>
+                    <textarea id="message" pTextarea formControlName="message" rows="3" class="w-full"></textarea>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex justify-end gap-3 mt-8">
+                    <p-button label="Annuler" severity="secondary" [outlined]="true" [routerLink]="['/ogp/paiement']" />
+                    <p-button label="Enregistrer" severity="primary" (onClick)="submit()" [disabled]="form.invalid || isLoading()" />
+                </div>
+
+                <p-confirmdialog />
+            </form>
+        </div>
+    </div>
+</div>

@@ -82,7 +82,7 @@
 
                 <div class="flex flex-col gap-1">
                     <span class="text-xs text-surface-500 uppercase tracking-wide">Cycle</span>
-                    <span class="font-medium">{{ campagne?.cycle }}</span>
+                    <span class="font-medium">{{ getCycleLabel(campagne?.cycle) }}</span>
                 </div>
 
                 <div class="flex flex-col gap-1">
@@ -232,15 +232,15 @@
         <!-- Factures -->
         <div class="card p-6 mt-4">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                <h3 class="text-base font-semibold text-surface-700 uppercase tracking-wide flex items-center gap-2"><i class="pi pi-receipt"></i> Factures ({{ factures.length }})</h3>
+                <h3 class="text-base font-semibold text-surface-700 uppercase tracking-wide flex items-center gap-2"><i class="pi pi-receipt"></i> Factures ({{ factures().length }})</h3>
                 <p-button label="Générer une facture" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="showFactureDialog.set(true)" />
             </div>
 
-            @if (factures.length === 0) {
+            @if (factures().length === 0) {
             <p class="text-surface-400 text-sm">Aucune facture associée à cette campagne.</p>
             } @else {
             <div class="flex flex-col gap-4">
-                @for (f of factures; track f.id) {
+                @for (f of factures(); track f.id) {
                 <div class="border border-surface-200 rounded-lg p-4 flex flex-col gap-4">
                     <div class="flex items-center justify-between">
                         <span class="font-semibold text-primary">{{ f.reference ?? '—' }}</span>

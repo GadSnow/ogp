@@ -153,6 +153,22 @@
     .app-dark ::-webkit-scrollbar-thumb:hover { background: var(--p-surface-600); }
 }
 
+/* Leaflet tiles — Tailwind's preflight forces img { max-width: 100% }, which
+   breaks Leaflet's 256px tile grid alignment. Must override globally. */
+.leaflet-container img {
+    max-width: none !important;
+}
+
+/* Leaflet marker — rendered outside Angular's component view, so it must be global. */
+.map-location-pin-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--p-primary-color);
+    border: 3px solid #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
 /* Table headers — unlayered and !important on purpose: PrimeNG injects its
    theme CSS at runtime (unlayered, appended after this stylesheet), so it
    wins both the layer and the source-order tiebreak unless forced here. */

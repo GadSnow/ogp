@@ -21,13 +21,13 @@ export class AppMenu {
     model: any[] = [
         {
             label: 'Tableau de bord',
-            icon: 'pi pi-home',
-            path: '/dashboard',
+            icon: 'pi pi-fw pi-chart-bar',
+            path: '/ogp/dashboard',
             items: [
                 {
                     label: 'Tableau de bord',
-                    icon: 'pi pi-fw pi-warehouse',
-                    routerLink: ['/dashboard/e-commerce']
+                    icon: 'pi pi-fw pi-chart-bar',
+                    routerLink: ['/ogp/dashboard']
                 }
             ]
         },
@@ -65,6 +65,11 @@ export class AppMenu {
                     label: "Facture",
                     icon: 'pi pi-fw pi-receipt',
                     routerLink: ['/ogp/facture']
+                },
+                {
+                    label: "Paiement",
+                    icon: 'pi pi-fw pi-wallet',
+                    routerLink: ['/ogp/paiement']
                 }
             ]
         },

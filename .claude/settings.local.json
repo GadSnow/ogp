@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(node fix-encoding.js)",
-      "Bash(Remove-Item -Path \"d:\\\\Self\\\\Ogp\\\\src\\\\app\\\\apps\\\\facture\\\\add\\\\add.ts\", \"d:\\\\Self\\\\Ogp\\\\src\\\\app\\\\apps\\\\facture\\\\add\\\\add.html\", \"d:\\\\Self\\\\Ogp\\\\src\\\\app\\\\apps\\\\facture\\\\add\" -Recurse -Force)"
+      "Bash(Remove-Item -Path \"d:\\\\Self\\\\Ogp\\\\src\\\\app\\\\apps\\\\facture\\\\add\\\\add.ts\", \"d:\\\\Self\\\\Ogp\\\\src\\\\app\\\\apps\\\\facture\\\\add\\\\add.html\", \"d:\\\\Self\\\\Ogp\\\\src\\\\app\\\\apps\\\\facture\\\\add\" -Recurse -Force)",
+      "Bash(npm info *)",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npx ng *)",
+      "Bash(xargs sed -i 's/bg-indigo-900/bg-[#03254E]/g')",
+      "Bash(grep -n '\"@/\\\\*\"' tsconfig.json tsconfig.base.json)"
     ]
   }
 }

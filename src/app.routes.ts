@@ -12,6 +12,10 @@ export const appRoutes: Routes = [
         data: { breadcrumb: 'Office Guinéene de Publicité' },
         children: [
             {
+                path: 'dashboard',
+                loadChildren: () => import('@/app/apps/dashboard-ogp/dashboard-ogp.routes')
+            },
+            {
                 path: 'type-evenement',
                 loadChildren: () => import('@/app/apps/type-evenement/type-evenement.routes')
             },
@@ -80,6 +84,10 @@ export const appRoutes: Routes = [
                 loadChildren: () => import('@/app/apps/facture/facture.routes')
             },
             {
+                path: 'paiement',
+                loadChildren: () => import('@/app/apps/paiement/paiement.routes')
+            },
+            {
                 path: 'profils',
                 loadChildren: () => import('@/app/apps/profils/profils.routes')
             },
@@ -96,24 +104,8 @@ export const appRoutes: Routes = [
         children: [
             {
                 path: '',
-                redirectTo: '/dashboard/e-commerce',
+                redirectTo: '/ogp/dashboard',
                 pathMatch: 'full'
-            },
-
-            {
-                path: 'dashboard/e-commerce',
-                loadComponent: () => import('@/app/pages/dashboards/ecommerce/ecommercedashboard').then((c) => c.EcommerceDashboard),
-                data: { breadcrumb: ['E-Commerce', 'Overview'] }
-            },
-            {
-                path: 'dashboard/banking',
-                loadComponent: () => import('@/app/pages/dashboards/banking/bankingdashboard').then((c) => c.BankingDashboard),
-                data: { breadcrumb: ['Banking', 'Overview'] }
-            },
-            {
-                path: 'dashboard/marketing',
-                loadComponent: () => import('@/app/pages/dashboards/marketing/marketingdashboard').then((c) => c.MarketingDashboard),
-                data: { breadcrumb: ['Marketing', 'Overview'] }
             },
             {
                 path: 'apps',
