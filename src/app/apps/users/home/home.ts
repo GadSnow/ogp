@@ -16,10 +16,12 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
+import { EmptyStateComponent } from '@/app/shared/utils/components/empty-state/empty-state.component';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
     selector: 'app-users-home',
-    imports: [TableModule, Tag, Button, RouterLink, SkeletonTableComponent, CustomCard, ConfirmDialogModule, ToastModule, IconFieldModule, InputIconModule, InputText],
+    imports: [TableModule, Tag, Button, RouterLink, SkeletonTableComponent, CustomCard, ConfirmDialogModule, ToastModule, IconFieldModule, InputIconModule, InputText, EmptyStateComponent, Tooltip],
     templateUrl: './home.html',
     providers: [ConfirmationService, MessageService]
 })

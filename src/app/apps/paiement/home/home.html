@@ -8,19 +8,19 @@
         @if (isLoading()) {
         <app-skeleton-table [rows]="10" [columns]="6"></app-skeleton-table>
         } @else {
-        <div class="flex justify-end mb-3">
-            <p-iconfield>
-                <p-inputicon class="pi pi-search" />
-                <input pInputText type="text" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
-            </p-iconfield>
-        </div>
+        <div class="mb-4 flex flex-wrap items-center gap-3 rounded-lg border bg-surface-50 dark:bg-surface-800 px-3.5 py-3">
+                        <p-iconfield class="w-full sm:w-80">
+                            <p-inputicon class="pi pi-search" />
+                            <input pInputText type="text" class="w-full" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
+                        </p-iconfield>
+                    </div>
         <p-table
             #dt
             [value]="paiements"
             [rows]="10"
             [paginator]="true"
             [responsiveLayout]="'scroll'"
-            styleClass="p-datatable-sm overflow-hidden"
+           
             [globalFilterFields]="['reference', 'facture.reference', 'facture.campagne.nomCampagne', 'facture.campagne.client.denomination', 'modePaiement.mode', 'statut']"
         >
             <ng-template pTemplate="header">
@@ -44,7 +44,7 @@
                     <td class="font-semibold text-primary">{{ p.facture?.reference ?? '—' }}</td>
                     <td>{{ p.facture?.campagne?.nomCampagne ?? '—' }}</td>
                     <td>{{ p.facture?.campagne?.client?.denomination ?? '—' }}</td>
-                    <td>{{ p.montant | currency:'GNF' }}</td>
+                    <td>{{ p.montant | currency:'GNF':'symbol':'1.0-0' }}</td>
                     <td>{{ p.modePaiement?.mode ?? '—' }}</td>
                     <td><p-tag [value]="p.statut" [severity]="getSeverity(p.statut)" /></td>
                     <td>{{ p.dtCreated | date:'dd/MM/yyyy HH:mm' }}</td>
@@ -55,9 +55,8 @@
             </ng-template>
             <ng-template pTemplate="emptymessage">
                 <tr>
-                    <td colspan="10" class="text-center p-8 bg-surface-50 dark:bg-surface-900 border-b border-surface-200">
-                        <i class="pi pi-inbox text-4xl text-surface-400 mb-3 block"></i>
-                        <span class="text-surface-500 font-medium italic">Aucun paiement trouvé.</span>
+                    <td colspan="10" class="p-0">
+                        <app-empty-state message="Aucun paiement trouvé" />
                     </td>
                 </tr>
             </ng-template>

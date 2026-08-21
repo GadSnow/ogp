@@ -13,10 +13,11 @@ import { CustomCard } from '@/app/layout/components/ui/customcard';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
+import { EmptyStateComponent } from '@/app/shared/utils/components/empty-state/empty-state.component';
 
 @Component({
     selector: 'app-home-paiement',
-    imports: [Button, TableModule, Tag, DatePipe, CurrencyPipe, RouterLink, SkeletonTableComponent, CustomCard, IconFieldModule, InputIconModule, InputText],
+    imports: [Button, TableModule, Tag, DatePipe, CurrencyPipe, RouterLink, SkeletonTableComponent, CustomCard, IconFieldModule, InputIconModule, InputText, EmptyStateComponent],
     templateUrl: './home.html'
 })
 export class HomePaiement {

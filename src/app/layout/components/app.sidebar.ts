@@ -3,6 +3,7 @@ import { AppMenu } from './app.menu';
 import { LayoutService } from '@/app/layout/service/layout.service';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { OgpLogo } from '@/app/layout/components/icons/ogplogo';
 import { filter, Subject, takeUntil } from 'rxjs';
 
 
@@ -11,14 +12,11 @@ const BREAKPOINT = 992;
 @Component({
     selector: '[app-sidebar]',
     standalone: true,
-    imports: [CommonModule, AppMenu, RouterModule],
+    imports: [CommonModule, AppMenu, RouterModule, OgpLogo],
     template: ` <div [class]="sidebarClass()" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
         <div class="sidebar-header">
             <a class="logo w-full justify-center py-3" [routerLink]="['/']">
-                <span class="flex items-center justify-center gap-2">
-                    <span class="app-name text-xl! font-black! tracking-[0.25em]! leading-none!">OGP</span>
-                    <i class="pi pi-megaphone text-white text-base opacity-70"></i>
-                </span>
+                <ogp-logo variant="full" [size]="26" />
             </a>
             <button class="layout-sidebar-anchor z-2" type="button" (click)="onAnchorToggle()"></button>
         </div>

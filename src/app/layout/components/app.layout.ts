@@ -15,10 +15,10 @@ import { AppHeader } from './app.header';
     template: `
         <div class="layout-wrapper h-dvh bg-surface-100 dark:bg-surface-950 relative p-2 flex overflow-hidden" [ngClass]="containerClass()">
         <div app-sidebar></div>
-        <main class="layout-content-wrapper flex-1 max-w-430 w-full mx-auto flex flex-col transition-all duration-300 h-full bg-background rounded-2xl shadow-card overflow-hidden">
+        <main class="layout-content-wrapper flex-1 max-w-430 w-full mx-auto flex flex-col transition-all duration-300 h-full bg-background rounded-xl shadow-card overflow-hidden">
             <header app-header class="layout-topbar z-40!"></header>
             <div app-breadcrumb class="max-h-16 py-4 pr-4 pl-6 flex items-center gap-2 border-b"></div>
-            <div class="p-6 flex-1 overflow-auto scrollable-content bg-gray-100 dark:bg-surface-900">
+            <div class="p-6 flex-1 overflow-auto scrollable-content bg-surface-100 dark:bg-surface-950">
                 <router-outlet></router-outlet>
             </div>
         </main>

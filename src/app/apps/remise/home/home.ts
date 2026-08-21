@@ -13,11 +13,13 @@ import { DatePipe } from '@angular/common';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
+import { EmptyStateComponent } from '@/app/shared/utils/components/empty-state/empty-state.component';
+import { Tooltip } from 'primeng/tooltip';
 
 
 @Component({
     selector: 'app-remise-home',
-    imports: [TableModule, Tag, SkeletonTableComponent, CustomCard, Button, RouterLink, DatePipe, IconFieldModule, InputIconModule, InputText],
+    imports: [TableModule, Tag, SkeletonTableComponent, CustomCard, Button, RouterLink, DatePipe, IconFieldModule, InputIconModule, InputText, EmptyStateComponent, Tooltip],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })

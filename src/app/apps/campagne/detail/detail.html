@@ -155,9 +155,9 @@
                                 <span class="text-surface-300">—</span>
                                 }
                             </td>
-                            <td class="py-3 pr-4 text-right font-medium">{{ p.priceDay | currency:'GNF' }}</td>
-                            <td class="py-3 pr-4 text-right font-medium">{{ p.priceWeek | currency:'GNF' }}</td>
-                            <td class="py-3 text-right font-medium">{{ p.priceMonth | currency:'GNF' }}</td>
+                            <td class="py-3 pr-4 text-right font-medium">{{ p.priceDay | currency:'GNF':'symbol':'1.0-0' }}</td>
+                            <td class="py-3 pr-4 text-right font-medium">{{ p.priceWeek | currency:'GNF':'symbol':'1.0-0' }}</td>
+                            <td class="py-3 text-right font-medium">{{ p.priceMonth | currency:'GNF':'symbol':'1.0-0' }}</td>
                         </tr>
                         }
                     </tbody>
@@ -205,15 +205,15 @@
                     <div class="grid grid-cols-3 gap-2 bg-surface-50 rounded p-3">
                         <div class="flex flex-col items-center gap-0.5">
                             <span class="text-xs text-surface-400">Montant brut</span>
-                            <span class="text-sm font-semibold">{{ d.montantBrute | currency:'GNF' }}</span>
+                            <span class="text-sm font-semibold">{{ d.montantBrute | currency:'GNF':'symbol':'1.0-0' }}</span>
                         </div>
                         <div class="flex flex-col items-center gap-0.5 border-x border-surface-200">
                             <span class="text-xs text-surface-400">Remise</span>
-                            <span class="text-sm font-semibold text-amber-600">− {{ d.montantRemise | currency:'GNF' }}</span>
+                            <span class="text-sm font-semibold text-amber-600">− {{ d.montantRemise | currency:'GNF':'symbol':'1.0-0' }}</span>
                         </div>
                         <div class="flex flex-col items-center gap-0.5">
                             <span class="text-xs text-surface-400">Montant net</span>
-                            <span class="text-sm font-semibold text-green-600">{{ d.montantNet | currency:'GNF' }}</span>
+                            <span class="text-sm font-semibold text-green-600">{{ d.montantNet | currency:'GNF':'symbol':'1.0-0' }}</span>
                         </div>
                     </div>
 
@@ -252,19 +252,19 @@
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-2 bg-surface-50 rounded p-3">
                         <div class="flex flex-col items-center gap-0.5">
                             <span class="text-xs text-surface-400">Montant brut</span>
-                            <span class="text-sm font-semibold">{{ f.montantBrute | currency:'GNF' }}</span>
+                            <span class="text-sm font-semibold">{{ f.montantBrute | currency:'GNF':'symbol':'1.0-0' }}</span>
                         </div>
                         <div class="flex flex-col items-center gap-0.5 border-x border-surface-200">
                             <span class="text-xs text-surface-400">Remise</span>
-                            <span class="text-sm font-semibold text-amber-600">− {{ f.montantRemise | currency:'GNF' }}</span>
+                            <span class="text-sm font-semibold text-amber-600">− {{ f.montantRemise | currency:'GNF':'symbol':'1.0-0' }}</span>
                         </div>
                         <div class="flex flex-col items-center gap-0.5 border-r border-surface-200">
                             <span class="text-xs text-surface-400">Montant net</span>
-                            <span class="text-sm font-semibold text-green-600">{{ f.montantNet | currency:'GNF' }}</span>
+                            <span class="text-sm font-semibold text-green-600">{{ f.montantNet | currency:'GNF':'symbol':'1.0-0' }}</span>
                         </div>
                         <div class="flex flex-col items-center gap-0.5">
                             <span class="text-xs text-surface-400">Reste à payer</span>
-                            <span class="text-sm font-semibold" [class]="(f.montantResteAPaye ?? 0) > 0 ? 'text-red-600' : 'text-green-600'"> {{ f.montantResteAPaye | currency:'GNF' }} </span>
+                            <span class="text-sm font-semibold" [class]="(f.montantResteAPaye ?? 0) > 0 ? 'text-red-600' : 'text-green-600'"> {{ f.montantResteAPaye | currency:'GNF':'symbol':'1.0-0' }} </span>
                         </div>
                     </div>
                 </div>

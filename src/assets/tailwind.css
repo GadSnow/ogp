@@ -21,6 +21,42 @@
     --shadow-stroke: var(--shadow-stroke);
     --shadow-card: var(--shadow-card);
     --shadow-elevated: var(--shadow-elevated);
+
+    /* Accent de marque — jaune d'or du logo. Jamais en texte ni en fond de
+       bouton avec libellé blanc : contraste 1,56:1 sur blanc. */
+    --color-accent-50: #fffaeb;
+    --color-accent-100: #fff4d1;
+    --color-accent-200: #ffe9a8;
+    --color-accent-300: #ffde7a;
+    --color-accent-400: #ffd147;
+    --color-accent-500: #ffc71f;
+    --color-accent-600: #f5b800;
+    --color-accent-700: #cc9900;
+    --color-accent-800: #a37a00;
+    --color-accent-900: #745906;
+    --color-accent-950: #493704;
+
+    /* Couleurs sémantiques de la charte. Sans elles, bg-green-50 & co. pointent
+       vers les teintes Tailwind natives, hors charte. */
+    --color-ok-50: #f3fcf8;
+    --color-ok-100: #e7f8f0;
+    --color-ok-500: #2c9664;
+    --color-ok-700: #1b6a45;
+
+    --color-info-50: #f2f8fd;
+    --color-info-100: #e5f1fa;
+    --color-info-500: #2280c3;
+    --color-info-700: #175582;
+
+    --color-warn-50: #fef9f0;
+    --color-warn-100: #fef3e2;
+    --color-warn-500: #f59f0a;
+    --color-warn-700: #97520c;
+
+    --color-danger-50: #fdf2f2;
+    --color-danger-100: #fbeaea;
+    --color-danger-500: #c1252a;
+    --color-danger-700: #81181c;
 }
 
 /* ── Landing utilities ─────────────────────────────── */
@@ -47,6 +83,10 @@
     @apply text-xs font-semibold uppercase tracking-widest mb-3;
     color: var(--text-muted-color);
     letter-spacing: 0.07em;
+}
+
+@utility tabular {
+    font-variant-numeric: tabular-nums;
 }
 
 @utility page-heading {
@@ -78,6 +118,12 @@
         --shadow-elevated: 0px 4px 16px 0px rgba(0, 0, 0, 0.08),
                            0px 0px 0px 1px rgba(18, 55, 105, 0.06);
 
+        /* Accent de marque (SCSS layout + composants) */
+        --ogp-accent:        #ffc71f;
+        --ogp-accent-soft:   #fff4d1;
+        --ogp-accent-strong: #f5b800;
+        --ogp-accent-ink:    #22242b;
+
         /* Color tokens */
         --border:      var(--p-surface-200);
         --background:  var(--p-surface-0);
@@ -90,7 +136,7 @@
         --primary-contrast-color:var(--p-primary-contrast-color);
         --text-color:            var(--p-text-color);
         --text-muted-color:      var(--p-text-muted-color);
-        --surface-ground:        #f4f4f5;
+        --surface-ground:        var(--p-surface-50);
         --surface-border:        var(--p-content-border-color);
         --surface-card:          var(--p-surface-0);
         --surface-hover:         var(--p-content-hover-background);
@@ -137,7 +183,8 @@
 
     body {
         @apply bg-background text-foreground overflow-x-clip p-0 m-0 min-h-full;
-        font-family: 'Archivo', Helvetica, Arial, sans-serif;
+        font-family: 'IBM Plex Sans', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+        font-size: 0.8125rem;
         font-weight: 400;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -173,6 +220,54 @@
    theme CSS at runtime (unlayered, appended after this stylesheet), so it
    wins both the layer and the source-order tiebreak unless forced here. */
 .p-datatable-thead > tr > th {
-    background-color: var(--p-surface-200) !important;
-    color: var(--p-surface-900) !important;
+    background-color: var(--p-surface-100) !important;
+    color: var(--p-surface-600) !important;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding-block: 0.625rem;
+}
+
+.app-dark .p-datatable-thead > tr > th {
+    background-color: var(--p-surface-800) !important;
+    color: var(--p-surface-300) !important;
+}
+
+/* Chiffres tabulaires sur toutes les cellules — les colonnes de montants et de
+   dates s'alignent verticalement, sans effet sur le texte courant. */
+.p-datatable-tbody > tr > td {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Densité de tableau de la charte, appliquée à toutes les tables : cellule 13/20,
+   en-tête 11px.
+   En px et non en rem : layout.scss fixe html à 14px, donc 0.8125rem rendrait
+   11,4px au lieu des 13px spécifiés.
+   En !important : PrimeNG injecte son thème au runtime, non-layered et après cette
+   feuille — il gagne autrement le tiebreak d'ordre source, comme pour les th. */
+.p-datatable .p-datatable-thead > tr > th {
+    font-size: 11px;
+    padding: 10px 14px !important;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+    font-size: 13px;
+    line-height: 20px;
+    padding: 11px 14px !important;
+}
+
+.p-datatable .p-datatable-tbody > tr > td .p-tag,
+.p-datatable .p-datatable-tbody > tr > td .p-button {
+    font-size: 12px;
+}
+
+.p-datatable + .p-paginator,
+.p-datatable .p-paginator {
+    font-size: 12px;
+}
+
+/* Ligne survolée : liseré d'accent, repris du canvas de design. */
+.p-datatable-hoverable .p-datatable-tbody > tr:not(.p-datatable-row-selected):hover {
+    box-shadow: inset 3px 0 0 var(--ogp-accent);
 }

@@ -15,10 +15,11 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
+import { EmptyStateComponent } from '@/app/shared/utils/components/empty-state/empty-state.component';
 
 @Component({
     selector: 'app-home-campagne',
-    imports: [TableModule, Tag, SkeletonTableComponent, CustomCard, Button, RouterLink, DatePipe, ConfirmDialogModule, IconFieldModule, InputIconModule, InputText],
+    imports: [TableModule, Tag, SkeletonTableComponent, CustomCard, Button, RouterLink, DatePipe, ConfirmDialogModule, IconFieldModule, InputIconModule, InputText, EmptyStateComponent],
     templateUrl: './home.html',
     providers: [ConfirmationService]
 })

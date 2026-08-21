@@ -69,29 +69,49 @@ export class AuthService {
         return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, credentials).pipe(
             tap(response => {
                 // Extract token from response structure
-                const token = response.data.token;
+                const token = response.data?.token;
+
+                if (!token) {
+                    throw new Error(response.message || 'Réponse invalide du serveur.');
+                }
 
                 // Store token directly in localStorage
                 localStorage.setItem('token', token);
                 this.currentUserSubject.next({ token });
             }),
-            catchError((error: HttpErrorResponse) => {
-                console.error('Login error:', error);
-                let errorMessage = 'Authentication failed. Please try again.';
-
-                if (error.status === 0) {
-                    errorMessage = 'Unable to connect to the server. Please check your network connection.';
-                } else if (error.status === 401) {
-                    errorMessage = 'Invalid email or password.';
-                } else if (error.status === 403) {
-                    errorMessage = 'Access denied. Your account may be locked.';
-                } else if (error.error?.message) {
-                    errorMessage = error.error.message;
-                }
-
-                return throwError(() => new Error(errorMessage));
+            catchError((error: unknown) => {
+                return throwError(() => new Error(this.buildErrorMessage(error)));
             })
         );
+    }
+
+    /** Le message du backend prime ; sinon on retombe sur un libellé lié au code HTTP. */
+    private buildErrorMessage(error: unknown): string {
+        if (error instanceof HttpErrorResponse) {
+            const backendMessage = error.error?.message;
+            if (typeof backendMessage === 'string' && backendMessage.trim()) {
+                return backendMessage;
+            }
+
+            if (error.status === 0) {
+                return 'Impossible de joindre le serveur. Vérifiez votre connexion.';
+            }
+            if (error.status === 400) {
+                return 'Identifiants incorrects.';
+            }
+            if (error.status === 401) {
+                return 'Email ou mot de passe incorrect.';
+            }
+            if (error.status === 403) {
+                return 'Accès refusé. Votre compte est peut-être désactivé.';
+            }
+        }
+
+        if (error instanceof Error && error.message) {
+            return error.message;
+        }
+
+        return "Échec de l'authentification. Veuillez réessayer.";
     }
 
     logout(): void {

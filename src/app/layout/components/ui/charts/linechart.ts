@@ -3,6 +3,7 @@ import { UIChart } from 'primeng/chart';
 import { LayoutService } from '@/app/layout/service/layout.service';
 import { tooltip } from './tooltip';
 import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 import 'chartjs-adapter-date-fns';
 
 export interface LineChartDataset {
@@ -61,11 +62,11 @@ export class LineChart {
     labels = input<any[]>([]);
     valueFormatter = input<(value: any) => string>((value) => `${value}`);
     showYAxis = input<boolean>(false);
-    xLabelFormatter = input<(value: any) => string>((value) => format(value, 'MMM'));
+    xLabelFormatter = input<(value: any) => string>((value) => format(value, 'MMM', { locale: fr }));
     yLabelFormatter = input<(value: any) => string | number>((value) => value);
     tooltipTitleFormatter = input<(value: any) => string>((value) => {
         const date = new Date(value);
-        return format(date, 'MMMM yyyy');
+        return format(date, 'MMMM yyyy', { locale: fr });
     });
     borderColor = input<string | null>(null);
     area = input<boolean>(false);

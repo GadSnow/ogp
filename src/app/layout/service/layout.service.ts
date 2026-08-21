@@ -33,8 +33,8 @@ interface MenuChangeEvent {
 export class LayoutService {
     layoutConfig = signal<LayoutConfig>({
         preset: 'Aura',
-        primary: 'blue',
-        surface: null,
+        primary: 'ogp',
+        surface: 'ogp',
         darkTheme: false,
         menuMode: 'static'
     });

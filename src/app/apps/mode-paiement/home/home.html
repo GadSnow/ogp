@@ -11,12 +11,12 @@
     } @else {
         <div>
             @if (modes.length > 0) {
-                <div class="flex justify-end mb-3">
-                    <p-iconfield>
-                        <p-inputicon class="pi pi-search" />
-                        <input pInputText type="text" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
-                    </p-iconfield>
-                </div>
+                <div class="mb-4 flex flex-wrap items-center gap-3 rounded-lg border bg-surface-50 dark:bg-surface-800 px-3.5 py-3">
+                        <p-iconfield class="w-full sm:w-80">
+                            <p-inputicon class="pi pi-search" />
+                            <input pInputText type="text" class="w-full" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
+                        </p-iconfield>
+                    </div>
                 <p-table #dt [value]="modes" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]"
                          [tableStyle]="{ 'min-width': '50rem' }" [globalFilterFields]="['mode', 'description']">
                     <ng-template #header>
@@ -33,7 +33,7 @@
                             <td>{{ mode.mode }}</td>
                             <td>{{ mode.description }}</td>
                             <td>
-                                <p-button label="Modifier" [text]="true" size="small"
+                                <p-button icon="pi pi-pencil" severity="secondary" pTooltip="Modifier" tooltipPosition="top" ariaLabel="Modifier" [text]="true" size="small"
                                           [routerLink]="['edit', mode.id]" />
 
                             </td>
@@ -41,9 +41,7 @@
                     </ng-template>
                 </p-table>
             } @else {
-                <div class="bg-card flex justify-center items-center h-72">
-                    <h1 class="font-bold text-3xl">Aucune donnée trouvée</h1>
-                </div>
+                <app-empty-state message="Aucune donnée trouvée" />
             }
         </div>
     }

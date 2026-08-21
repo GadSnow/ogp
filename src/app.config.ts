@@ -1,44 +1,29 @@
-import { provideHttpClient, withFetch, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
-import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
+import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
+import { ApplicationConfig, DEFAULT_CURRENCY_CODE, LOCALE_ID, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
-import Aura from '@primeuix/themes/aura';
-import { definePreset } from '@primeuix/themes';
 import { providePrimeNG } from 'primeng/config';
 import { appRoutes } from './app.routes';
 import { authInterceptor } from '@/app/core/interceptors/auth.interceptor';
 import { apiResponseInterceptor } from '@/app/core/interceptors/api-response.interceptor';
+import { OgpPreset } from '@/app/layout/theme/ogp-theme';
+import { primeNgFr } from '@/app/layout/theme/primeng-fr';
 import { MessageService } from 'primeng/api';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { HashLocationStrategy, LocationStrategy, registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
 
-const MyPreset = definePreset(Aura, {
-    semantic: {
-        select: {
-            borderRadius: '{border.radius.lg}',
-            height: '2rem'
-        },
-        primary: {
-            50: '{blue.50}',
-            100: '{blue.100}',
-            200: '{blue.200}',
-            300: '{blue.300}',
-            400: '{blue.400}',
-            500: '{blue.500}',
-            600: '{blue.600}',
-            700: '{blue.700}',
-            800: '{blue.800}',
-            900: '{blue.900}',
-            950: '{blue.950}'
-        }
-    }
-});
+// Référence francophone : séparateur de milliers en espace insécable,
+// virgule décimale, symbole monétaire après le montant.
+registerLocaleData(localeFr);
 
 export const appConfig: ApplicationConfig = {
     providers: [
         MessageService,
+        { provide: LOCALE_ID, useValue: 'fr-FR' },
+        { provide: DEFAULT_CURRENCY_CODE, useValue: 'GNF' },
         provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),
         provideHttpClient(withInterceptorsFromDi(), withInterceptors([authInterceptor, apiResponseInterceptor])),
         provideZonelessChangeDetection(),
-        providePrimeNG({ theme: { preset: MyPreset, options: { darkModeSelector: '.app-dark' } } }),
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
+        providePrimeNG({ theme: { preset: OgpPreset, options: { darkModeSelector: '.app-dark' } }, translation: primeNgFr }),
+        { provide: LocationStrategy, useClass: HashLocationStrategy }
     ]
 };

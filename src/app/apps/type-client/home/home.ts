@@ -12,11 +12,13 @@ import { RouterLink } from '@angular/router';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
+import { EmptyStateComponent } from '@/app/shared/utils/components/empty-state/empty-state.component';
+import { Tooltip } from 'primeng/tooltip';
 
 
 @Component({
     selector: 'app-type-client-home',
-    imports: [TableModule, Tag, SkeletonTableComponent, CustomCard, Button, RouterLink, IconFieldModule, InputIconModule, InputText],
+    imports: [TableModule, Tag, SkeletonTableComponent, CustomCard, Button, RouterLink, IconFieldModule, InputIconModule, InputText, EmptyStateComponent, Tooltip],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })

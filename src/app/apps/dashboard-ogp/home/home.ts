@@ -1,26 +1,56 @@
 import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CustomCard } from '@/app/layout/components/ui/customcard';
 import { Tag } from 'primeng/tag';
 import { TableModule } from 'primeng/table';
 import { Select } from 'primeng/select';
 import { DatePicker } from 'primeng/datepicker';
-import { TabsModule } from 'primeng/tabs';
 import { LineChart, LineChartDataset } from '@/app/layout/components/ui/charts/linechart';
 import { subMonths, startOfMonth, format, differenceInCalendarMonths } from 'date-fns';
+import { fr } from 'date-fns/locale';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DashboardOgpService } from '@/app/apps/dashboard-ogp/dashboard-ogp.service';
+import { DonutChart, DonutSlice } from '@/app/layout/components/ui/charts/donutchart';
+import { FactureService } from '@/app/apps/facture/facture.service';
+import { PaiementService } from '@/app/apps/paiement/paiement.service';
+import { Facture } from '@/app/apps/facture/facture.types';
+import { Paiement } from '@/app/apps/paiement/paiement.types';
+import { RouterLink } from '@angular/router';
+import { EmptyStateComponent } from '@/app/shared/utils/components/empty-state/empty-state.component';
 
 type PeriodValue = 3 | 6 | 12 | 'custom';
+
+type KpiTone = 'info' | 'warn' | 'accent' | 'danger';
 
 interface Kpi {
     label: string;
     value: string;
     icon: string;
-    iconBg: string;
-    trend?: { percent: number; increase: boolean; text: string };
+    /** Rôle sémantique — la tuile en dérive ses couleurs, en clair comme en sombre. */
+    tone: KpiTone;
+    hint?: string;
+    trend?: { percent: number; increase: boolean };
 }
+
+/**
+ * Classes littérales : un binding `[class]` objet d'Angular ne gère pas les clés
+ * multi-classes (contrairement à ngClass), et Tailwind n'indexe que ce qu'il lit
+ * tel quel — d'où ces chaînes complètes plutôt qu'une composition dynamique.
+ */
+const KPI_TILE_CLASS: Record<KpiTone, string> = {
+    info: 'border-info-100 bg-info-50 dark:border-info-500/25 dark:bg-info-500/10',
+    warn: 'border-warn-100 bg-warn-50 dark:border-warn-500/25 dark:bg-warn-500/10',
+    accent: 'border-accent-200 bg-accent-50 dark:border-accent-500/25 dark:bg-accent-500/10',
+    danger: 'border-danger-100 bg-danger-50 dark:border-danger-500/25 dark:bg-danger-500/10'
+};
+
+const KPI_ICON_CLASS: Record<KpiTone, string> = {
+    info: 'bg-info-500 text-white',
+    warn: 'bg-warn-500 text-white',
+    accent: 'bg-accent-500 text-accent-950',
+    danger: 'bg-danger-500 text-white'
+};
 
 interface TopClient {
     denomination: string;
@@ -71,7 +101,8 @@ interface ImpayesData {
 @Component({
     selector: 'app-home-dashboard-ogp',
     standalone: true,
-    imports: [CommonModule, FormsModule, CustomCard, Tag, TableModule, Select, DatePicker, TabsModule, LineChart],
+    imports: [CommonModule, FormsModule, CustomCard, Tag, TableModule, Select, DatePicker, LineChart, DonutChart, RouterLink, EmptyStateComponent],
+    providers: [CurrencyPipe],
     templateUrl: './home.html'
 })
 export class HomeDashboardOgp {
@@ -126,7 +157,38 @@ export class HomeDashboardOgp {
     private vueGenerale = signal<VueGeneraleData | null>(null);
     private impayesData = signal<ImpayesData | null>(null);
 
+    private factureService = inject(FactureService);
+    private paiementService = inject(PaiementService);
+    private factures = signal<Facture[]>([]);
+    private paiements = signal<Paiement[]>([]);
+
+    /** Les endpoints /liste ne trient pas : on ordonne côté client sur la date de création. */
+    private static readonly RECENTS = 5;
+
+    private static parDatePlusRecente<T extends { dtCreated?: string }>(items: T[]): T[] {
+        return [...items].sort((a, b) => new Date(b.dtCreated ?? 0).getTime() - new Date(a.dtCreated ?? 0).getTime());
+    }
+
+    facturesRecentes = computed(() => HomeDashboardOgp.parDatePlusRecente(this.factures()).slice(0, HomeDashboardOgp.RECENTS));
+    paiementsRecents = computed(() => HomeDashboardOgp.parDatePlusRecente(this.paiements()).slice(0, HomeDashboardOgp.RECENTS));
+
     constructor() {
+        this.factureService
+            .getFactures()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: (res) => this.factures.set(res?.data ?? []),
+                error: (err) => console.error('facture/liste - erreur', err)
+            });
+
+        this.paiementService
+            .getPaiements()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: (res) => this.paiements.set(res?.data ?? []),
+                error: (err) => console.error('paiement/liste - erreur', err)
+            });
+
         effect(() => {
             const dateDebut = this.dateDebut();
             const dateFin = this.dateFin();
@@ -136,7 +198,6 @@ export class HomeDashboardOgp {
                 .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({
                     next: (res) => {
-                        console.log('dashboard/vue-generale', res);
                         this.vueGenerale.set(res?.data ?? null);
                     },
                     error: (err) => console.error('dashboard/vue-generale - erreur', err)
@@ -147,7 +208,6 @@ export class HomeDashboardOgp {
                 .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({
                     next: (res) => {
-                        console.log('dashboard/impayes', res);
                         this.impayesData.set(res?.data ?? null);
                     },
                     error: (err) => console.error('dashboard/impayes - erreur', err)
@@ -166,43 +226,110 @@ export class HomeDashboardOgp {
         return 'Choisir une période';
     });
 
-    private trend(actuel: number, precedent: number): { percent: number; increase: boolean; text: string } {
+    private trend(actuel: number, precedent: number): { percent: number; increase: boolean } {
         const percent = precedent === 0 ? (actuel === 0 ? 0 : 100) : Math.round(((actuel - precedent) / precedent) * 100);
-        return { percent: Math.abs(percent), increase: actuel >= precedent, text: 'vs mois dernier' };
+        return { percent: Math.abs(percent), increase: actuel >= precedent };
     }
+
+    /**
+     * Tuile héro : le chiffre d'affaires est le seul KPI en aplat de marque.
+     * L'API ne renvoie que le mois courant et le précédent — le mois est donc nommé
+     * explicitement, sinon le chiffre se lirait comme le total de la période choisie.
+     */
+    caTile = computed(() => {
+        const data = this.vueGenerale();
+        if (!data) return null;
+        return {
+            value: this.formatGNF(data.chiffreAffairesMois.moisCourant),
+            mois: format(new Date(), 'MMMM yyyy', { locale: fr }),
+            trend: this.trend(data.chiffreAffairesMois.moisCourant, data.chiffreAffairesMois.moisPrecedent)
+        };
+    });
 
     kpis = computed<Kpi[]>(() => {
         const data = this.vueGenerale();
         if (!data) return [];
         return [
             {
-                label: "Taux d'occupation des panneaux",
-                value: `${Math.round(data.tauxOccupation.tauxOccupation)}%`,
+                label: "Taux d'occupation",
+                value: `${Math.round(data.tauxOccupation.tauxOccupation)} %`,
                 icon: 'pi pi-map',
-                iconBg: 'bg-blue-100 text-blue-600'
-            },
-            {
-                label: 'Chiffre d\'affaires du mois',
-                value: this.formatGNF(data.chiffreAffairesMois.moisCourant),
-                icon: 'pi pi-wallet',
-                iconBg: 'bg-green-100 text-green-600',
-                trend: this.trend(data.chiffreAffairesMois.moisCourant, data.chiffreAffairesMois.moisPrecedent)
+                tone: 'info',
+                hint: `${data.tauxOccupation.panneauxOccupes} panneaux loués sur ${data.tauxOccupation.totalPanneaux}`
             },
             {
                 label: 'Reste à payer',
                 value: this.formatGNF(data.resteAPayer.montantActuel),
                 icon: 'pi pi-exclamation-circle',
-                iconBg: 'bg-amber-100 text-amber-600',
+                tone: 'warn',
                 trend: this.trend(data.resteAPayer.montantActuel, data.resteAPayer.montantMoisPrecedent)
             },
             {
                 label: 'Campagnes actives',
                 value: `${data.campagnesActives.nombre}`,
                 icon: 'pi pi-megaphone',
-                iconBg: 'bg-purple-100 text-purple-600'
+                tone: 'accent',
+                hint: 'En diffusion sur la période'
             }
         ];
     });
+
+    /** Donut « état du parc » — deux parts, le taux d'occupation au centre. */
+    parcSlices = computed<DonutSlice[]>(() => {
+        const parc = this.vueGenerale()?.etatParc;
+        if (!parc) return [];
+        return [
+            { label: 'Loués', value: parc.occupes },
+            { label: 'Disponibles', value: parc.disponibles }
+        ];
+    });
+
+    tauxOccupation = computed(() => {
+        const taux = this.vueGenerale()?.tauxOccupation?.tauxOccupation;
+        return taux === undefined ? '' : `${Math.round(taux)} %`;
+    });
+
+    regionSlices = computed<DonutSlice[]>(() => this.enParts(this.repartitionRegions().map((r) => ({ label: r.region, value: r.nombrePanneaux })), 'Autres régions'));
+
+    totalPanneauxRegions = computed(() => this.regionSlices().reduce((sum, s) => sum + s.value, 0));
+
+    formatUnites = (value: number): string => `${value}`;
+
+    /**
+     * Agrège la queue de distribution : au-delà de cinq parts, la palette
+     * catégorielle n'a plus de pas distinguables.
+     */
+    private enParts(items: { label: string; value: number }[], resteLabel: string): DonutSlice[] {
+        const tries = [...items].filter((i) => i.value > 0).sort((a, b) => b.value - a.value);
+        if (tries.length <= 5) return tries;
+        const tete = tries.slice(0, 4);
+        const reste = tries.slice(4).reduce((sum, i) => sum + i.value, 0);
+        return [...tete, { label: resteLabel, value: reste }];
+    }
+
+    clientsSlices = computed<DonutSlice[]>(() =>
+        this.enParts(
+            this.topClients().map((c) => ({ label: c.sigle || c.denomination, value: c.ca })),
+            'Autres clients'
+        )
+    );
+
+    totalCaClients = computed(() => this.clientsSlices().reduce((sum, s) => sum + s.value, 0));
+
+    impayesSlices = computed<DonutSlice[]>(() =>
+        this.enParts(
+            this.impayesParClient().map((c) => ({ label: c.sigle || c.denomination, value: c.resteAPayer })),
+            'Autres sociétés'
+        )
+    );
+
+    tileClass(tone: KpiTone): string {
+        return KPI_TILE_CLASS[tone];
+    }
+
+    iconClass(tone: KpiTone): string {
+        return KPI_ICON_CLASS[tone];
+    }
 
     topClients = computed<TopClient[]>(() => this.vueGenerale()?.topClients ?? []);
 
@@ -239,12 +366,13 @@ export class HomeDashboardOgp {
         return Math.round((nombrePanneaux / this.maxRegionPanneaux()) * 100);
     }
 
-    formatGNF(value: number): string {
-        return `${value.toLocaleString('fr-FR')} GNF`;
-    }
+    private currencyPipe = inject(CurrencyPipe);
+
+    /** Passe par CurrencyPipe pour que graphiques et tableaux partagent le même format. */
+    formatGNF = (value: number): string => this.currencyPipe.transform(value, 'GNF', 'symbol', '1.0-0') ?? '';
 
     monthFormatter = (value: any) => {
         const date = typeof value === 'string' ? new Date(value) : value;
-        return format(date, 'MMM');
+        return format(date, 'MMM', { locale: fr });
     };
 }

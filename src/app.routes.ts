@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { AppLayout } from '@/app/layout/components/app.layout';
-import { LandingLayout } from '@/app/layout/components/app.landinglayout';
 import { AuthLayout } from '@/app/layout/components/app.authlayout';
 import { authGuard } from '@/app/core/guards/auth.guard';
 
@@ -106,64 +105,19 @@ export const appRoutes: Routes = [
                 path: '',
                 redirectTo: '/ogp/dashboard',
                 pathMatch: 'full'
-            },
-            {
-                path: 'apps',
-                loadChildren: () => import('@/app/apps/apps.routes'),
-                data: { breadcrumb: 'Apps' }
-            },
-
-            {
-                path: 'ecommerce',
-                loadChildren: () => import('@/app/pages/ecommerce/ecommerce.routes'),
-                data: { breadcrumb: 'E-Commerce' }
-            },
-            {
-                path: 'profile',
-                loadChildren: () => import('@/app/pages/usermanagement/usermanagement.routes')
             }
         ]
     },
     {
-        path: 'landing',
-        component: LandingLayout,
-        children: [
-            {
-                path: '',
-                loadComponent: () => import('@/app/pages/landing/home/home').then((c) => c.Home)
-            },
-            {
-                path: 'features',
-                loadComponent: () => import('@/app/pages/landing/features/features').then((c) => c.Features)
-            },
-            {
-                path: 'pricing',
-                loadComponent: () => import('@/app/pages/landing/pricing/pricing').then((c) => c.Pricing)
-            },
-            {
-                path: 'contact',
-                loadComponent: () => import('@/app/pages/landing/contact/contact').then((c) => c.Contact)
-            },
-            {
-                path: 'login',
-                redirectTo: 'auth/login',
-                pathMatch: 'full'
-            },
-            {
-                path: 'register',
-                redirectTo: 'auth/register',
-                pathMatch: 'full'
-            }
-        ]
+        // Hors AuthLayout : l'écran de connexion occupe toute la fenêtre, alors que
+        // AuthLayout contraint ses pages dans un conteneur centré de 1184px.
+        path: 'auth/login',
+        loadComponent: () => import('@/app/pages/auth/login').then((c) => c.Login)
     },
     {
         path: 'auth',
         component: AuthLayout,
         children: [
-            {
-                path: 'login',
-                loadComponent: () => import('@/app/pages/auth/login').then((c) => c.Login)
-            },
             {
                 path: 'register',
                 loadComponent: () => import('@/app/pages/auth/register').then((c) => c.Register)
@@ -195,7 +149,5 @@ export const appRoutes: Routes = [
             { path: 'notfound', loadComponent: () => import('@/app/pages/notfound/notfound').then((c) => c.Notfound) }
         ]
     },
-    { path: '**', redirectTo: 'auth/notfound' },
-
-
+    { path: '**', redirectTo: 'auth/notfound' }
 ];

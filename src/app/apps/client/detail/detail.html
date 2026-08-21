@@ -80,7 +80,7 @@
                     <p-tabpanel value="1">
                         <div class="pt-4">
                             @if (campagnes.length > 0) {
-                            <p-table [value]="campagnes" [rows]="10" [paginator]="true" styleClass="p-datatable-sm">
+                            <p-table [value]="campagnes" [rows]="10" [paginator]="true">
                                 <ng-template pTemplate="header">
                                     <tr>
                                         <th>#</th>
@@ -119,7 +119,7 @@
                     <p-tabpanel value="2">
                         <div class="pt-4">
                             @if (devis.length > 0) {
-                            <p-table [value]="devis" [rows]="10" [paginator]="true" styleClass="p-datatable-sm">
+                            <p-table [value]="devis" [rows]="10" [paginator]="true">
                                 <ng-template pTemplate="header">
                                     <tr>
                                         <th>#</th>

@@ -11,11 +11,13 @@
     --popover-item-active-background-color: var(--p-primary-50);
 }
 
+/* Navigation OGP — fond neutre profond, item actif en bleu translucide
+   souligné par un liseré d'accent jaune (charte, artboard « Shell »). */
 .layout-sidebar-light {
-    background: #03254E;
-    --sidebar-text-color: rgba(255, 255, 255, 0.8);
-    --sidebar-menu-item-hover: rgba(255, 255, 255, 0.08);
-    --sidebar-compact-parent-active: rgba(255, 255, 255, 0.12);
+    background: var(--p-surface-900);
+    --sidebar-text-color: var(--p-surface-300);
+    --sidebar-menu-item-hover: rgba(255, 255, 255, 0.06);
+    --sidebar-compact-parent-active: rgba(48, 99, 207, 0.35);
     --sidebar-active-item-text: #ffffff;
 
     .app-name {
@@ -24,31 +26,37 @@
 
     .layout-menu {
         .menu-separator {
-            border-top-color: rgba(255, 255, 255, 0.1) !important;
+            border-top-color: rgba(255, 255, 255, 0.08) !important;
         }
 
         .layout-root-menuitem {
             .layout-menuitem-root-text {
-                color: rgba(255, 255, 255, 0.35) !important;
+                color: var(--p-surface-500) !important;
+                font-size: 0.6875rem !important;
+                font-weight: 600 !important;
+                letter-spacing: 0.08em !important;
+                text-transform: uppercase;
             }
         }
 
         li a {
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--p-surface-300);
+            border-radius: 6px;
 
             &:hover {
-                background: rgba(255, 255, 255, 0.08) !important;
+                background: rgba(255, 255, 255, 0.06) !important;
                 color: #ffffff;
             }
 
             &.active-route {
-                background: rgba(255, 255, 255, 0.14) !important;
+                background: rgba(48, 99, 207, 0.35) !important;
                 color: #ffffff !important;
-                box-shadow: none !important;
-                border-left: 2px solid rgba(255, 255, 255, 0.5);
+                font-weight: 500;
+                border-left: none;
+                box-shadow: inset 3px 0 0 var(--ogp-accent) !important;
 
                 &:hover {
-                    background: rgba(255, 255, 255, 0.18) !important;
+                    background: rgba(48, 99, 207, 0.45) !important;
                 }
 
                 .layout-menuitem-icon {
@@ -58,7 +66,7 @@
         }
 
         li.active-menuitem > a {
-            background: rgba(255, 255, 255, 0.08) !important;
+            background: rgba(255, 255, 255, 0.06) !important;
             color: #ffffff !important;
         }
     }

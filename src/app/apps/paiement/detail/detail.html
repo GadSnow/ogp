@@ -12,7 +12,7 @@
         </div>
         } @else {
         <div class="card p-6 flex flex-col gap-5">
-            <div class="flex items-center justify-between text-xl font-semibold uppercase tracking-tight bg-[#03254E] text-white p-2 rounded-md">
+            <div class="flex items-center justify-between text-base font-semibold text-surface-900 dark:text-surface-0 pb-3 border-b">
                 <span>Détail du Paiement</span>
                 @if (paiement) {
                 <p-tag [value]="paiement.statut" [severity]="getSeverity(paiement.statut)" />
@@ -33,7 +33,7 @@
 
                 <div class="flex flex-col gap-1">
                     <span class="text-xs text-surface-500 uppercase tracking-wide">Montant</span>
-                    <span class="font-medium">{{ paiement.montant | currency:'GNF' }}</span>
+                    <span class="font-medium">{{ paiement.montant | currency:'GNF':'symbol':'1.0-0' }}</span>
                 </div>
 
                 <div class="flex flex-col gap-1">
@@ -72,15 +72,15 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-2 bg-surface-50 rounded p-3">
                 <div class="flex flex-col items-center gap-0.5">
                     <span class="text-xs text-surface-400">Montant net facture</span>
-                    <span class="text-sm font-semibold">{{ paiement.facture?.montantNet | currency:'GNF' }}</span>
+                    <span class="text-sm font-semibold">{{ paiement.facture?.montantNet | currency:'GNF':'symbol':'1.0-0' }}</span>
                 </div>
                 <div class="flex flex-col items-center gap-0.5 border-x border-surface-200">
                     <span class="text-xs text-surface-400">Montant payé</span>
-                    <span class="text-sm font-semibold text-blue-600">{{ paiement.facture?.montantPaye | currency:'GNF' }}</span>
+                    <span class="text-sm font-semibold text-blue-600">{{ paiement.facture?.montantPaye | currency:'GNF':'symbol':'1.0-0' }}</span>
                 </div>
                 <div class="flex flex-col items-center gap-0.5">
                     <span class="text-xs text-surface-400">Reste à payer</span>
-                    <span class="text-sm font-semibold" [class]="(paiement.facture?.montantResteAPaye ?? 0) > 0 ? 'text-red-600' : 'text-green-600'"> {{ paiement.facture?.montantResteAPaye | currency:'GNF' }} </span>
+                    <span class="text-sm font-semibold" [class]="(paiement.facture?.montantResteAPaye ?? 0) > 0 ? 'text-red-600' : 'text-green-600'"> {{ paiement.facture?.montantResteAPaye | currency:'GNF':'symbol':'1.0-0' }} </span>
                 </div>
             </div>
             }

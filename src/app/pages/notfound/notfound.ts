@@ -198,5 +198,4 @@ export class Notfound {
 
     isDarkTheme = computed(() => this.layoutService.isDarkTheme());
 
-    imageSrc = computed(() => '/demo/images/landing/' + (this.isDarkTheme() ? '404-dark.png' : '404.png'));
 }

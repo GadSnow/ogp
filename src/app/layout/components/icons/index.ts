@@ -11,6 +11,7 @@ export * from './googlelogo';
 export * from './key';
 export * from './logo';
 export * from './minilogo';
+export * from './ogplogo';
 export * from './payment';
 export * from './placeholderstar';
 export * from './surfaceline';

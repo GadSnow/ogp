@@ -1,176 +1,248 @@
-<div class="flex flex-col gap-6">
-    <!-- Sélecteur de période -->
-    <div class="flex flex-wrap items-center justify-end gap-3">
-        <span class="text-sm text-surface-400">{{ periodLabel() }}</span>
-        <p-select [options]="periods" optionLabel="label" optionValue="value" [(ngModel)]="selectedPeriod" class="w-52" />
-        @if (selectedPeriod() === 'custom') {
-        <p-datepicker [(ngModel)]="customRange" selectionMode="range" [showIcon]="true" placeholder="Choisir une plage de dates" [readonlyInput]="true" />
-        }
+<div class="flex flex-col gap-5">
+    <!-- En-tête : intitulé et portée temporelle des chiffres -->
+    <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+            <h1 class="text-xl font-bold tracking-tight text-surface-900 dark:text-surface-0">Tableau de bord</h1>
+            <p class="text-surface-500">Parc, recettes et recouvrement</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <p-select [options]="periods" optionLabel="label" optionValue="value" [(ngModel)]="selectedPeriod" class="w-52" />
+            @if (selectedPeriod() === 'custom') {
+            <p-datepicker [(ngModel)]="customRange" selectionMode="range" [showIcon]="true" placeholder="Choisir une plage de dates" [readonlyInput]="true" />
+            }
+        </div>
     </div>
 
-    <p-tabs value="0">
-        <p-tablist>
-            <p-tab value="0">Vue générale</p-tab>
-            <p-tab value="1">Impayés</p-tab>
-        </p-tablist>
+    <!-- Rangée 1 : le chiffre d'affaires en aplat de marque, les autres indicateurs en tons sémantiques -->
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-12">
+        @if (caTile(); as ca) {
+        <div class="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary-700 to-primary-950 p-6 lg:col-span-5">
+            <svg class="pointer-events-none absolute -right-16 -top-12 opacity-25" width="260" height="260" viewBox="0 0 260 260" aria-hidden="true">
+                <circle cx="105" cy="130" r="88" fill="none" stroke="var(--ogp-accent)" stroke-width="2" />
+                <circle cx="155" cy="95" r="88" fill="none" stroke="var(--p-primary-300)" stroke-width="2" />
+            </svg>
+            <div class="relative flex h-full flex-col justify-between gap-6">
+                <div class="flex items-center gap-2 text-primary-200">
+                    <i class="pi pi-wallet"></i>
+                    <span class="text-xs font-semibold uppercase tracking-[0.08em]">Chiffre d'affaires</span>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <span class="tabular text-4xl font-bold leading-none text-white">{{ ca.value }}</span>
+                    
+                </div>
+            </div>
+        </div>
+        }
 
-        <p-tabpanels>
-            <!-- Vue générale -->
-            <p-tabpanel value="0">
-                <div class="flex flex-col gap-6">
-                    <!-- KPI cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        @for (kpi of kpis(); track kpi.label) {
-                        <div custom-card>
-                            <h3 card-title class="text-xs">{{ kpi.label }}</h3>
-                            <div card-action>
-                                <span class="w-9 h-9 rounded-full flex items-center justify-center" [class]="kpi.iconBg">
-                                    <i [class]="kpi.icon"></i>
-                                </span>
-                            </div>
-                            <div class="px-5 py-4 flex flex-col gap-2">
-                                <span class="text-2xl font-bold">{{ kpi.value }}</span>
-                                @if (kpi.trend) {
-                                <div class="flex items-center gap-2">
-                                    <p-tag [severity]="kpi.trend.increase ? 'success' : 'danger'" [value]="(kpi.trend.increase ? '+' : '-') + kpi.trend.percent + '%'" />
-                                    <span class="text-xs text-surface-400">{{ kpi.trend.text }}</span>
-                                </div>
-                                }
-                            </div>
-                        </div>
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-3 lg:col-span-7">
+            @for (kpi of kpis(); track kpi.label) {
+            <div class="flex flex-col justify-between gap-4 rounded-lg border p-5" [class]="tileClass(kpi.tone)">
+                <div class="flex items-start justify-between gap-3">
+                    <span class="font-medium text-surface-600 dark:text-surface-300">{{ kpi.label }}</span>
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-full" [class]="iconClass(kpi.tone)">
+                        <i [class]="kpi.icon" style="font-size: 0.85rem"></i>
+                    </span>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <span class="tabular text-2xl font-bold leading-none text-surface-900 dark:text-surface-0">{{ kpi.value }}</span>
+                    @if (kpi.trend) {
+                    <span class="tabular text-xs text-surface-500"> {{ kpi.trend.increase ? '+' : '−' }}{{ kpi.trend.percent }} % sur un mois </span>
+                    } @else if (kpi.hint) {
+                    <span class="text-xs text-surface-500">{{ kpi.hint }}</span>
+                    }
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+    <!-- Rangée 2 : deux répartitions -->
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div custom-card>
+            <h3 card-title>État du parc</h3>
+            <div card-action>
+                <p-tag severity="secondary" [value]="tauxOccupation() + ' d\'occupation'" />
+            </div>
+            <div class="p-5">
+                @if (parcSlices().length) {
+                <div donut-chart [slices]="parcSlices()" [centerValue]="tauxOccupation()" centerLabel="occupés" [formatter]="formatUnites"></div>
+                } @else {
+                <p class="py-8 text-center text-surface-500">Aucun panneau enregistré.</p>
+                }
+            </div>
+        </div>
+
+        <div custom-card>
+            <h3 card-title>Panneaux par région</h3>
+            <div card-action>
+                <p-tag severity="secondary" [value]="totalPanneauxRegions() + ' panneaux'" />
+            </div>
+            <div class="p-5">
+                @if (regionSlices().length) {
+                <div donut-chart [slices]="regionSlices()" [formatter]="formatUnites"></div>
+                } @else {
+                <p class="py-8 text-center text-surface-500">Aucune région renseignée.</p>
+                }
+            </div>
+        </div>
+    </div>
+    <!-- Rangée 3 : évolution -->
+    <div custom-card>
+        <h3 card-title>Évolution du chiffre d'affaires</h3>
+        <div card-action>
+            <p-tag severity="secondary" [value]="periodLabel()" />
+        </div>
+        <div class="h-72 p-5">
+            <div line-chart [datasets]="caLineDatasets()" [labels]="caLineLabels()" [area]="true" [showPoints]="true" [xLabelFormatter]="monthFormatter" [valueFormatter]="formatGNF"></div>
+        </div>
+    </div>
+
+    <!-- Clients : le tableau porte le détail, le donut la concentration du CA -->
+    <div custom-card>
+        <h3 card-title>Meilleurs clients</h3>
+        <div card-action>
+            <p-tag severity="secondary" [value]="periodLabel()" />
+        </div>
+        <div class="grid grid-cols-1 gap-5 p-5 xl:grid-cols-[3fr_2fr]">
+            <p-table [value]="topClients()">
+                <ng-template #header>
+                    <tr>
+                        <th>#</th>
+                        <th>Client</th>
+                        <th>Campagnes</th>
+                        <th>Chiffre d'affaires</th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-client let-rowIndex="rowIndex">
+                    <tr>
+                        <td>{{ rowIndex + 1 }}</td>
+                        <td class="font-medium">{{ client.denomination }} <span class="text-surface-400">({{ client.sigle }})</span></td>
+                        <td>{{ client.nombreCampagnes }}</td>
+                        <td class="font-semibold text-primary">{{ client.ca | currency: 'GNF' : 'symbol' : '1.0-0' }}</td>
+                    </tr>
+                </ng-template>
+                <ng-template #emptymessage>
+                    <tr>
+                        <td colspan="4" class="p-0"><app-empty-state message="Aucun client sur la période" /></td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+            @if (clientsSlices().length) {
+            <div class="flex items-center border-t pt-5 xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0">
+                <div donut-chart class="w-full" [slices]="clientsSlices()" [formatter]="formatGNF" [centerValue]="clientsSlices().length + ''" centerLabel="clients"></div>
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- Recouvrement -->
+    <div custom-card>
+        <h3 card-title>Recouvrement</h3>
+        <div card-action>
+            <p-tag severity="secondary" [value]="periodLabel()" />
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 border-b p-5 sm:grid-cols-3">
+            <div class="flex flex-col gap-1 rounded-lg border border-danger-100 bg-danger-50 p-4 dark:border-danger-500/25 dark:bg-danger-500/10">
+                <span class="font-medium text-surface-600 dark:text-surface-300">Total impayé</span>
+                <span class="tabular text-2xl font-bold leading-none text-danger-700 dark:text-danger-500">{{ totalImpaye() | currency: 'GNF' : 'symbol' : '1.0-0' }}</span>
+            </div>
+            <div class="flex flex-col gap-1 rounded-lg border p-4">
+                <span class="font-medium text-surface-600 dark:text-surface-300">Factures en retard</span>
+                <span class="tabular text-2xl font-bold leading-none text-surface-900 dark:text-surface-0">{{ totalFacturesEnRetard() }}</span>
+            </div>
+            <div class="flex flex-col gap-1 rounded-lg border p-4">
+                <span class="font-medium text-surface-600 dark:text-surface-300">Sociétés concernées</span>
+                <span class="tabular text-2xl font-bold leading-none text-surface-900 dark:text-surface-0">{{ nombreSocietesConcernees() }}</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 p-5 xl:grid-cols-[3fr_2fr]">
+            <p-table [value]="impayesParClient()">
+                <ng-template #header>
+                    <tr>
+                        <th>Société</th>
+                        <th>Factures</th>
+                        <th>Montant facturé</th>
+                        <th>Reste à payer</th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-client>
+                    <tr>
+                        <td class="font-medium">{{ client.denomination }} <span class="text-surface-400">({{ client.sigle }})</span></td>
+                        <td>{{ client.nombreFactures }}</td>
+                        <td>{{ client.montantFacture | currency: 'GNF' : 'symbol' : '1.0-0' }}</td>
+                        <td class="font-semibold text-danger-700 dark:text-danger-500">{{ client.resteAPayer | currency: 'GNF' : 'symbol' : '1.0-0' }}</td>
+                    </tr>
+                </ng-template>
+                <ng-template #emptymessage>
+                    <tr>
+                        <td colspan="4" class="p-0"><app-empty-state message="Aucun impayé sur la période" hint="Toutes les factures émises sont soldées." /></td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+            @if (impayesSlices().length) {
+            <div class="flex items-center border-t pt-5 xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0">
+                <div donut-chart class="w-full" [slices]="impayesSlices()" [formatter]="formatGNF"></div>
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- Rangée 4 : derniers mouvements -->
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div custom-card>
+            <h3 card-title>Dernières factures</h3>
+            <div card-action>
+                <a [routerLink]="['/ogp/facture']" class="font-medium text-primary hover:underline">Tout voir</a>
+            </div>
+            <ul class="divide-y">
+                @for (f of facturesRecentes(); track f.id) {
+                <li class="flex items-center gap-3 px-5 py-3">
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-info-100 text-info-700 dark:bg-info-500/15">
+                        <i class="pi pi-file" style="font-size: 0.8rem"></i>
+                    </span>
+                    <div class="min-w-0 flex-1">
+                        <p class="truncate font-medium text-surface-900 dark:text-surface-0">{{ f.campagne?.client?.denomination ?? f.campagne?.nomCampagne ?? 'Facture' }}</p>
+                        <p class="tabular truncate text-xs text-surface-500">{{ f.reference ?? '—' }} · {{ f.dtCreated | date: 'dd/MM/yyyy' }}</p>
+                    </div>
+                    <div class="flex flex-col items-end gap-0.5">
+                        <span class="tabular font-semibold text-surface-900 dark:text-surface-0">{{ f.montantNet | currency: 'GNF' : 'symbol' : '1.0-0' }}</span>
+                        @if ((f.montantResteAPaye ?? 0) > 0) {
+                        <span class="tabular text-xs font-medium text-danger-700 dark:text-danger-500">Reste {{ f.montantResteAPaye | currency: 'GNF' : 'symbol' : '1.0-0' }}</span>
+                        } @else {
+                        <span class="text-xs font-medium text-ok-700 dark:text-ok-500">Soldée</span>
                         }
                     </div>
+                </li>
+                } @empty {
+                <li class="px-5 py-8 text-center text-surface-500">Aucune facture émise.</li>
+                }
+            </ul>
+        </div>
 
-                    <!-- État du parc de panneaux -->
-                    <div custom-card>
-                        <h3 card-title>État du parc de panneaux</h3>
-                        <div class="p-5 grid grid-cols-1 md:grid-cols-3 gap-6">
-                            @for (stat of panneauxStats(); track stat.label) {
-                            <div class="flex items-center gap-4">
-                                <span class="w-11 h-11 rounded-full flex items-center justify-center text-lg" [class]="stat.iconBg">
-                                    <i [class]="stat.icon"></i>
-                                </span>
-                                <div class="flex flex-col">
-                                    <span class="text-2xl font-bold" [class]="stat.valueClass">{{ stat.value }}</span>
-                                    <span class="text-xs text-surface-400">{{ stat.label }}</span>
-                                </div>
-                            </div>
-                            }
-                        </div>
+        <div custom-card>
+            <h3 card-title>Derniers paiements</h3>
+            <div card-action>
+                <a [routerLink]="['/ogp/paiement']" class="font-medium text-primary hover:underline">Tout voir</a>
+            </div>
+            <ul class="divide-y">
+                @for (p of paiementsRecents(); track p.id) {
+                <li class="flex items-center gap-3 px-5 py-3">
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-ok-100 text-ok-700 dark:bg-ok-500/15">
+                        <i class="pi pi-arrow-down-left" style="font-size: 0.8rem"></i>
+                    </span>
+                    <div class="min-w-0 flex-1">
+                        <p class="truncate font-medium text-surface-900 dark:text-surface-0">{{ p.facture?.campagne?.client?.denomination ?? p.reference ?? 'Paiement' }}</p>
+                        <p class="tabular truncate text-xs text-surface-500">{{ p.modePaiement?.mode ?? '—' }} · {{ p.dtCreated | date: 'dd/MM/yyyy' }}</p>
                     </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- Évolution du CA -->
-                        <div custom-card styleClass="lg:col-span-2">
-                            <h3 card-title>Évolution du chiffre d'affaires</h3>
-                            <div card-action>
-                                <p-tag severity="info" [value]="periodLabel()" />
-                            </div>
-                            <div class="p-5 h-72">
-                                <div line-chart [datasets]="caLineDatasets()" [labels]="caLineLabels()" [area]="true" [showPoints]="true" [xLabelFormatter]="monthFormatter" [valueFormatter]="formatGNF"></div>
-                            </div>
-                        </div>
-
-                        <!-- Répartition par région -->
-                        <div custom-card>
-                            <h3 card-title>Panneaux par région</h3>
-                            <div class="p-5 flex flex-col gap-4">
-                                @for (r of repartitionRegions(); track r.region) {
-                                <div class="flex flex-col gap-1">
-                                    <div class="flex items-center justify-between text-sm">
-                                        <span class="font-medium">{{ r.region }}</span>
-                                        <span class="text-surface-400">{{ r.nombrePanneaux }}</span>
-                                    </div>
-                                    <div class="h-2 rounded-full bg-surface-100 overflow-hidden">
-                                        <div class="h-2 rounded-full bg-primary" [style.width.%]="regionPercent(r.nombrePanneaux)"></div>
-                                    </div>
-                                </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Top clients -->
-                    <div custom-card>
-                        <h3 card-title>Top 5 clients</h3>
-                        <div class="p-2">
-                            <p-table [value]="topClients()">
-                                <ng-template #header>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Client</th>
-                                        <th>Campagnes</th>
-                                        <th>Chiffre d'affaires</th>
-                                    </tr>
-                                </ng-template>
-                                <ng-template #body let-client let-rowIndex="rowIndex">
-                                    <tr>
-                                        <td>{{ rowIndex + 1 }}</td>
-                                        <td class="font-medium">{{ client.denomination }} <span class="text-surface-400">({{ client.sigle }})</span></td>
-                                        <td>{{ client.nombreCampagnes }}</td>
-                                        <td class="font-semibold text-primary">{{ formatGNF(client.ca) }}</td>
-                                    </tr>
-                                </ng-template>
-                            </p-table>
-                        </div>
-                    </div>
-                </div>
-            </p-tabpanel>
-
-            <!-- Impayés -->
-            <p-tabpanel value="1">
-                <div class="flex flex-col gap-6">
-                    <!-- KPI impayés -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div custom-card>
-                            <h3 card-title class="text-xs">Total impayé sur la période</h3>
-                            <div class="px-5 py-4">
-                                <span class="text-2xl font-bold text-red-600">{{ formatGNF(totalImpaye()) }}</span>
-                            </div>
-                        </div>
-                        <div custom-card>
-                            <h3 card-title class="text-xs">Factures en retard</h3>
-                            <div class="px-5 py-4">
-                                <span class="text-2xl font-bold">{{ totalFacturesEnRetard() }}</span>
-                            </div>
-                        </div>
-                        <div custom-card>
-                            <h3 card-title class="text-xs">Sociétés concernées</h3>
-                            <div class="px-5 py-4">
-                                <span class="text-2xl font-bold">{{ nombreSocietesConcernees() }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Impayés par société -->
-                    <div custom-card>
-                        <h3 card-title>Impayés par société</h3>
-                        <div card-action>
-                            <p-tag severity="info" [value]="periodLabel()" />
-                        </div>
-                        <div class="p-2">
-                            <p-table [value]="impayesParClient()">
-                                <ng-template #header>
-                                    <tr>
-                                        <th>Société</th>
-                                        <th>Factures</th>
-                                        <th>Montant facturé</th>
-                                        <th>Reste à payer</th>
-                                    </tr>
-                                </ng-template>
-                                <ng-template #body let-client>
-                                    <tr>
-                                        <td class="font-medium">{{ client.denomination }} <span class="text-surface-400">({{ client.sigle }})</span></td>
-                                        <td>{{ client.nombreFactures }}</td>
-                                        <td>{{ formatGNF(client.montantFacture) }}</td>
-                                        <td class="font-semibold text-red-600">{{ formatGNF(client.resteAPayer) }}</td>
-                                    </tr>
-                                </ng-template>
-                            </p-table>
-                        </div>
-                    </div>
-                </div>
-            </p-tabpanel>
-        </p-tabpanels>
-    </p-tabs>
+                    <span class="tabular font-semibold text-ok-700 dark:text-ok-500">+ {{ p.montant | currency: 'GNF' : 'symbol' : '1.0-0' }}</span>
+                </li>
+                } @empty {
+                <li class="px-5 py-8 text-center text-surface-500">Aucun paiement encaissé.</li>
+                }
+            </ul>
+        </div>
+    </div>
 </div>

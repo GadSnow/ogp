@@ -33,23 +33,23 @@
         <div class="grid grid-cols-2 gap-3 bg-surface-50 rounded-lg p-4">
             <div class="flex flex-col gap-0.5">
                 <span class="text-xs text-surface-400">Montant brut</span>
-                <span class="text-sm font-semibold">{{ selectedFacture.montantBrute | currency:'GNF' }}</span>
+                <span class="text-sm font-semibold">{{ selectedFacture.montantBrute | currency:'GNF':'symbol':'1.0-0' }}</span>
             </div>
             <div class="flex flex-col gap-0.5">
                 <span class="text-xs text-surface-400">Remise</span>
-                <span class="text-sm font-semibold text-amber-600">− {{ selectedFacture.montantRemise | currency:'GNF' }}</span>
+                <span class="text-sm font-semibold text-amber-600">− {{ selectedFacture.montantRemise | currency:'GNF':'symbol':'1.0-0' }}</span>
             </div>
             <div class="flex flex-col gap-0.5">
                 <span class="text-xs text-surface-400">Montant net</span>
-                <span class="text-sm font-semibold text-green-600">{{ selectedFacture.montantNet | currency:'GNF' }}</span>
+                <span class="text-sm font-semibold text-green-600">{{ selectedFacture.montantNet | currency:'GNF':'symbol':'1.0-0' }}</span>
             </div>
             <div class="flex flex-col gap-0.5">
                 <span class="text-xs text-surface-400">Montant payé</span>
-                <span class="text-sm font-semibold text-blue-600">{{ selectedFacture.montantPaye | currency:'GNF' }}</span>
+                <span class="text-sm font-semibold text-blue-600">{{ selectedFacture.montantPaye | currency:'GNF':'symbol':'1.0-0' }}</span>
             </div>
             <div class="flex flex-col gap-0.5 col-span-2">
                 <span class="text-xs text-surface-400">Reste à payer</span>
-                <span class="text-sm font-semibold text-red-600">{{ selectedFacture.montantResteAPaye | currency:'GNF' }}</span>
+                <span class="text-sm font-semibold text-red-600">{{ selectedFacture.montantResteAPaye | currency:'GNF':'symbol':'1.0-0' }}</span>
             </div>
         </div>
     </div>
@@ -66,13 +66,13 @@
         @if (isLoading()) {
         <app-skeleton-table [rows]="10" [columns]="5"></app-skeleton-table>
         } @else {
-        <div class="flex justify-end mb-3">
-            <p-iconfield>
-                <p-inputicon class="pi pi-search" />
-                <input pInputText type="text" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
-            </p-iconfield>
-        </div>
-        <p-table #dt [value]="factures" [rows]="10" [paginator]="true" [responsiveLayout]="'scroll'" styleClass="p-datatable-sm overflow-hidden" [globalFilterFields]="['reference', 'campagne.nomCampagne', 'campagne.client.denomination']">
+        <div class="mb-4 flex flex-wrap items-center gap-3 rounded-lg border bg-surface-50 dark:bg-surface-800 px-3.5 py-3">
+                        <p-iconfield class="w-full sm:w-80">
+                            <p-inputicon class="pi pi-search" />
+                            <input pInputText type="text" class="w-full" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
+                        </p-iconfield>
+                    </div>
+        <p-table #dt [value]="factures" [rows]="10" [paginator]="true" [responsiveLayout]="'scroll'" [globalFilterFields]="['reference', 'campagne.nomCampagne', 'campagne.client.denomination']">
             <ng-template pTemplate="header">
                 <tr>
                     <th>#</th>
@@ -91,9 +91,9 @@
                     <td class="font-semibold text-primary">{{ f.reference ?? '—' }}</td>
                     <td>{{ f.campagne?.nomCampagne ?? '—' }}</td>
                     <td>{{ f.campagne?.client?.denomination ?? '—' }}</td>
-                    <td>{{ f.montantNet | currency:'GNF' }}</td>
+                    <td>{{ f.montantNet | currency:'GNF':'symbol':'1.0-0' }}</td>
                     <td>
-                        <span [class]="f.montantResteAPaye > 0 ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold'"> {{ f.montantResteAPaye | currency:'GNF' }} </span>
+                        <span [class]="f.montantResteAPaye > 0 ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold'"> {{ f.montantResteAPaye | currency:'GNF':'symbol':'1.0-0' }} </span>
                     </td>
                     <td>{{ f.dateEcheance | date:'dd/MM/yyyy' }}</td>
                     <td>
@@ -103,9 +103,8 @@
             </ng-template>
             <ng-template pTemplate="emptymessage">
                 <tr>
-                    <td colspan="8" class="text-center p-8 bg-surface-50 dark:bg-surface-900 border-b border-surface-200">
-                        <i class="pi pi-inbox text-4xl text-surface-400 mb-3 block"></i>
-                        <span class="text-surface-500 font-medium italic">Aucune facture trouvée.</span>
+                    <td colspan="8" class="p-0">
+                        <app-empty-state message="Aucune facture trouvée" />
                     </td>
                 </tr>
             </ng-template>

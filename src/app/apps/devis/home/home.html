@@ -8,13 +8,13 @@
         @if (isLoading()) {
         <app-skeleton-table [rows]="10" [columns]="7"></app-skeleton-table>
         } @else {
-        <div class="flex justify-end mb-3">
-            <p-iconfield>
-                <p-inputicon class="pi pi-search" />
-                <input pInputText type="text" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
-            </p-iconfield>
-        </div>
-        <p-table #dt [value]="devis" [rows]="10" [paginator]="true" [responsiveLayout]="'scroll'" styleClass="p-datatable-sm overflow-hidden" [globalFilterFields]="['numeroDevis', 'campagne.nomCampagne', 'client.denomination', 'campagne.client.denomination']">
+        <div class="mb-4 flex flex-wrap items-center gap-3 rounded-lg border bg-surface-50 dark:bg-surface-800 px-3.5 py-3">
+                        <p-iconfield class="w-full sm:w-80">
+                            <p-inputicon class="pi pi-search" />
+                            <input pInputText type="text" class="w-full" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
+                        </p-iconfield>
+                    </div>
+        <p-table #dt [value]="devis" [rows]="10" [paginator]="true" [responsiveLayout]="'scroll'" [globalFilterFields]="['numeroDevis', 'campagne.nomCampagne', 'client.denomination', 'campagne.client.denomination']">
             <ng-template pTemplate="header">
                 <tr>
                     <th>#</th>
@@ -57,9 +57,8 @@
             </ng-template>
             <ng-template pTemplate="emptymessage">
                 <tr>
-                    <td colspan="8" class="text-center p-8 bg-surface-50 dark:bg-surface-900 border-b border-surface-200">
-                        <i class="pi pi-inbox text-4xl text-surface-400 mb-3 block"></i>
-                        <span class="text-surface-500 font-medium italic">Aucun devis trouvé.</span>
+                    <td colspan="8" class="p-0">
+                        <app-empty-state message="Aucun devis trouvé" />
                     </td>
                 </tr>
             </ng-template>
