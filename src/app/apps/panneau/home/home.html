@@ -4,52 +4,107 @@
         <p-button label="Ajouter" [routerLink]="['add']" />
     </div>
 
+    <!-- Hors du bloc de chargement : recharger la liste ne doit pas démonter le
+         filtre, sinon il perdrait la zone sélectionnée à chaque requête. -->
+    <div class="mb-4">
+        <app-filtre-localisation (filtreChange)="surFiltreLocalisation($event)" />
+    </div>
+
     @if (isLoading()) {
     <app-skeleton-table></app-skeleton-table>
     } @else {
     <div>
-        @if (panneaux.length > 0) {
+        @if (panneaux().length > 0) {
         <div class="mb-4 flex flex-wrap items-center gap-3 rounded-lg border bg-surface-50 dark:bg-surface-800 px-3.5 py-3">
-                        <p-iconfield class="w-full sm:w-80">
-                            <p-inputicon class="pi pi-search" />
-                            <input pInputText type="text" class="w-full" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
-                        </p-iconfield>
-                    </div>
+            <p-iconfield class="w-full sm:w-80">
+                <p-inputicon class="pi pi-search" />
+                <input pInputText type="text" class="w-full" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
+            </p-iconfield>
+        </div>
         <p-table
             #dt
-            [value]="panneaux"
+            [value]="panneaux()"
             [paginator]="true"
             [rows]="10"
             [rowsPerPageOptions]="[5, 10, 20]"
-            [globalFilterFields]="['reference', 'secteur.secteur', 'caracteristiquePanneaux.type', 'caracteristiquePanneaux.caracteristique']"
+            [globalFilterFields]="[
+                'reference',
+                'secteur.secteur',
+                'secteur.quartier.quartier',
+                'secteur.quartier.commune.commune',
+                'secteur.quartier.commune.region.region',
+                'caracteristiquePanneaux.type',
+                'caracteristiquePanneaux.caracteristique',
+                'caracteristiquePanneaux.categoriePanneaux.categorie'
+            ]"
         >
             <ng-template #header>
                 <tr>
                     <th>#</th>
                     <th>Référence</th>
-                    <th>Prix (J/S/M)</th>
+                    <th>Localisation</th>
                     <th>Caractéristique</th>
-                    <th>Valide</th>
-                    <th>Disponible</th>
-                    <th>Prix spécial</th>
+                    <th>Tarifs</th>
+                    <th>Statut</th>
+                    <th>Créé le</th>
                     <th>Action</th>
                 </tr>
             </ng-template>
             <ng-template #body let-pan let-rowIndex="rowIndex">
                 <tr>
                     <td>{{ rowIndex + 1 }}</td>
-                    <td class="font-bold cursor-pointer hover:underline text-primary" [routerLink]="['details', pan.id]">{{ pan.reference }}</td>
+                    <td>
+                        <div class="flex flex-col leading-tight">
+                            <span class="font-bold cursor-pointer hover:underline text-primary" [routerLink]="['details', pan.id]">{{ pan.reference }}</span>
+                            <span class="text-xs text-surface-500 dark:text-surface-400">{{ pan.nombreFace }} face{{ pan.nombreFace > 1 ? 's' : '' }} · Face {{ pan.face }}</span>
+                        </div>
+                    </td>
 
-                    <td>{{ pan.priceDay }} / {{ pan.priceWeek }} / {{ pan.priceMonth }}</td>
-                    <td>{{ pan.caracteristiquePanneaux?.type }} ({{ pan.caracteristiquePanneaux?.caracteristique }})</td>
                     <td>
-                        <p-tag [value]="getStatus(pan.btValide)" [severity]="getSeverity(pan.btValide)" />
+                        @if (region(pan) || lieuDetail(pan)) {
+                        <div class="flex flex-col leading-tight">
+                            @if (region(pan)) {
+                            <span class="font-medium">{{ region(pan) }}</span>
+                            }
+                            @if (lieuDetail(pan)) {
+                            <span class="text-xs text-surface-500 dark:text-surface-400">{{ lieuDetail(pan) }}</span>
+                            }
+                        </div>
+                        } @else {
+                        <span class="text-surface-400">—</span>
+                        }
                     </td>
                     <td>
-                        <p-tag [value]="getStatus(pan.btAvailable)" [severity]="getSeverity(pan.btAvailable)" />
+                        <div class="flex flex-col leading-tight">
+                            <span class="font-medium">{{ ficheTechnique(pan) }}</span>
+                            @if (detailTechnique(pan)) {
+                            <span class="text-xs text-surface-500 dark:text-surface-400">{{ detailTechnique(pan) }}</span>
+                            }
+                        </div>
                     </td>
                     <td>
-                        <p-tag [value]="getStatus(pan.hasSpecialPrice)" [severity]="getSeverity(pan.hasSpecialPrice)" />
+                        <div class="flex flex-col leading-tight tabular">
+                            <span class="font-medium">{{ pan.priceDay | currency: 'GNF' : 'symbol' : '1.0-0' }} <span class="text-xs font-normal text-surface-500">/ jour</span></span>
+                            <span class="text-xs text-surface-500 dark:text-surface-400">
+                                {{ pan.priceWeek | number: '1.0-0' }} / sem · {{ pan.priceMonth | number: '1.0-0' }} / mois
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="flex flex-wrap items-center gap-1">
+                            <p-tag [value]="pan.btValide ? 'Validé' : 'Non validé'" [severity]="pan.btValide ? 'success' : 'danger'" />
+                            <p-tag [value]="pan.btAvailable ? 'Disponible' : 'Indisponible'" [severity]="pan.btAvailable ? 'success' : 'warn'" />
+                            <!-- Affiché seulement si vrai : l'absence signifie « tarif standard », un tag « Non » n'apporterait rien. -->
+                            @if (pan.hasSpecialPrice) {
+                            <p-tag value="Prix spécial" severity="info" />
+                            }
+                        </div>
+                    </td>
+                    <td>
+                        <div class="flex flex-col leading-tight tabular">
+                            <span>{{ pan.dtCreated | date: 'dd/MM/yyyy' }}</span>
+                            <span class="text-xs text-surface-500 dark:text-surface-400">{{ pan.dtCreated | date: 'HH:mm' }}</span>
+                        </div>
                     </td>
                     <td>
                         <p-button icon="pi pi-pencil" severity="secondary" pTooltip="Modifier" tooltipPosition="top" ariaLabel="Modifier" [text]="true" size="small" [routerLink]="['edit', pan.id]" />
@@ -58,7 +113,7 @@
             </ng-template>
         </p-table>
         } @else {
-        <app-empty-state message="Aucun panneau trouvé" />
+        <app-empty-state [message]="filtreActif() ? 'Aucun panneau dans cette zone' : 'Aucun panneau trouvé'" />
         }
     </div>
     }

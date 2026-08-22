@@ -13,6 +13,16 @@
         </div>
     </div>
 
+    @if (loadingVueGenerale()) {
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-12">
+        <div class="rounded-lg lg:col-span-5"><p-skeleton height="119px" styleClass="rounded-lg" /></div>
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-3 lg:col-span-7">
+            @for (i of [1, 2, 3]; track i) {
+            <p-skeleton height="119px" styleClass="rounded-lg" />
+            }
+        </div>
+    </div>
+    } @else {
     <!-- Rangée 1 : le chiffre d'affaires en aplat de marque, les autres indicateurs en tons sémantiques -->
     <div class="grid grid-cols-1 gap-5 lg:grid-cols-12">
         @if (caTile(); as ca) {
@@ -28,7 +38,6 @@
                 </div>
                 <div class="flex flex-col gap-2">
                     <span class="tabular text-4xl font-bold leading-none text-white">{{ ca.value }}</span>
-                    
                 </div>
             </div>
         </div>
@@ -55,6 +64,8 @@
             }
         </div>
     </div>
+    }
+
     <!-- Rangée 2 : deux répartitions -->
     <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <div custom-card>
@@ -63,11 +74,13 @@
                 <p-tag severity="secondary" [value]="tauxOccupation() + ' d\'occupation'" />
             </div>
             <div class="p-5">
-                @if (parcSlices().length) {
+                @if (loadingVueGenerale()) {
+                <app-skeleton-donut [rows]="2" />
+                } @else { @if (parcSlices().length) {
                 <div donut-chart [slices]="parcSlices()" [centerValue]="tauxOccupation()" centerLabel="occupés" [formatter]="formatUnites"></div>
                 } @else {
                 <p class="py-8 text-center text-surface-500">Aucun panneau enregistré.</p>
-                }
+                } }
             </div>
         </div>
 
@@ -77,11 +90,13 @@
                 <p-tag severity="secondary" [value]="totalPanneauxRegions() + ' panneaux'" />
             </div>
             <div class="p-5">
-                @if (regionSlices().length) {
+                @if (loadingVueGenerale()) {
+                <app-skeleton-donut [rows]="4" />
+                } @else { @if (regionSlices().length) {
                 <div donut-chart [slices]="regionSlices()" [formatter]="formatUnites"></div>
                 } @else {
                 <p class="py-8 text-center text-surface-500">Aucune région renseignée.</p>
-                }
+                } }
             </div>
         </div>
     </div>
@@ -92,7 +107,11 @@
             <p-tag severity="secondary" [value]="periodLabel()" />
         </div>
         <div class="h-72 p-5">
+            @if (loadingVueGenerale()) {
+            <p-skeleton height="100%" styleClass="rounded-lg" />
+            } @else {
             <div line-chart [datasets]="caLineDatasets()" [labels]="caLineLabels()" [area]="true" [showPoints]="true" [xLabelFormatter]="monthFormatter" [valueFormatter]="formatGNF"></div>
+            }
         </div>
     </div>
 
@@ -103,6 +122,9 @@
             <p-tag severity="secondary" [value]="periodLabel()" />
         </div>
         <div class="grid grid-cols-1 gap-5 p-5 xl:grid-cols-[3fr_2fr]">
+            @if (loadingVueGenerale()) {
+            <app-skeleton-table [rows]="5" [columns]="4" />
+            } @else {
             <p-table [value]="topClients()">
                 <ng-template #header>
                     <tr>
@@ -126,12 +148,13 @@
                     </tr>
                 </ng-template>
             </p-table>
-
-            @if (clientsSlices().length) {
+            } @if (loadingVueGenerale()) {
+            <div class="flex items-center border-t pt-5 xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0"><app-skeleton-donut class="w-full" [rows]="4" /></div>
+            } @else { @if (clientsSlices().length) {
             <div class="flex items-center border-t pt-5 xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0">
                 <div donut-chart class="w-full" [slices]="clientsSlices()" [formatter]="formatGNF" [centerValue]="clientsSlices().length + ''" centerLabel="clients"></div>
             </div>
-            }
+            } }
         </div>
     </div>
 
@@ -142,6 +165,16 @@
             <p-tag severity="secondary" [value]="periodLabel()" />
         </div>
 
+        @if (loadingImpayes()) {
+        <div class="grid grid-cols-1 gap-5 border-b p-5 sm:grid-cols-3">
+            @for (i of [1, 2, 3]; track i) {
+            <div class="flex flex-col gap-2 rounded-lg border p-4">
+                <p-skeleton height="12px" width="55%" />
+                <p-skeleton height="22px" width="75%" />
+            </div>
+            }
+        </div>
+        } @else {
         <div class="grid grid-cols-1 gap-5 border-b p-5 sm:grid-cols-3">
             <div class="flex flex-col gap-1 rounded-lg border border-danger-100 bg-danger-50 p-4 dark:border-danger-500/25 dark:bg-danger-500/10">
                 <span class="font-medium text-surface-600 dark:text-surface-300">Total impayé</span>
@@ -156,8 +189,12 @@
                 <span class="tabular text-2xl font-bold leading-none text-surface-900 dark:text-surface-0">{{ nombreSocietesConcernees() }}</span>
             </div>
         </div>
+        }
 
         <div class="grid grid-cols-1 gap-5 p-5 xl:grid-cols-[3fr_2fr]">
+            @if (loadingImpayes()) {
+            <app-skeleton-table [rows]="5" [columns]="4" />
+            } @else {
             <p-table [value]="impayesParClient()">
                 <ng-template #header>
                     <tr>
@@ -181,12 +218,13 @@
                     </tr>
                 </ng-template>
             </p-table>
-
-            @if (impayesSlices().length) {
+            } @if (loadingImpayes()) {
+            <div class="flex items-center border-t pt-5 xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0"><app-skeleton-donut class="w-full" [rows]="4" /></div>
+            } @else { @if (impayesSlices().length) {
             <div class="flex items-center border-t pt-5 xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0">
                 <div donut-chart class="w-full" [slices]="impayesSlices()" [formatter]="formatGNF"></div>
             </div>
-            }
+            } }
         </div>
     </div>
 
@@ -197,6 +235,9 @@
             <div card-action>
                 <a [routerLink]="['/ogp/facture']" class="font-medium text-primary hover:underline">Tout voir</a>
             </div>
+            @if (loadingFactures()) {
+            <app-skeleton-list [rows]="5" />
+            } @else {
             <ul class="divide-y">
                 @for (f of facturesRecentes(); track f.id) {
                 <li class="flex items-center gap-3 px-5 py-3">
@@ -220,6 +261,7 @@
                 <li class="px-5 py-8 text-center text-surface-500">Aucune facture émise.</li>
                 }
             </ul>
+            }
         </div>
 
         <div custom-card>
@@ -227,6 +269,9 @@
             <div card-action>
                 <a [routerLink]="['/ogp/paiement']" class="font-medium text-primary hover:underline">Tout voir</a>
             </div>
+            @if (loadingPaiements()) {
+            <app-skeleton-list [rows]="5" />
+            } @else {
             <ul class="divide-y">
                 @for (p of paiementsRecents(); track p.id) {
                 <li class="flex items-center gap-3 px-5 py-3">
@@ -243,6 +288,7 @@
                 <li class="px-5 py-8 text-center text-surface-500">Aucun paiement encaissé.</li>
                 }
             </ul>
+            }
         </div>
     </div>
 </div>

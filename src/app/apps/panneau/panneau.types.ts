@@ -50,3 +50,14 @@ export interface AddPanneau {
     priceWeek: number;
     priceMonth: number;
 }
+
+/**
+ * Filtre géographique de /panneau/getbylocalisation.
+ * Les quatre niveaux sont optionnels et cumulables.
+ */
+export interface LocalisationFiltre {
+    idRegion?: string;
+    idCommune?: string;
+    idQuartier?: string;
+    idSecteur?: string;
+}

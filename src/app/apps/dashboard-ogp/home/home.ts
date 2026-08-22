@@ -9,6 +9,7 @@ import { DatePicker } from 'primeng/datepicker';
 import { LineChart, LineChartDataset } from '@/app/layout/components/ui/charts/linechart';
 import { subMonths, startOfMonth, format, differenceInCalendarMonths } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DashboardOgpService } from '@/app/apps/dashboard-ogp/dashboard-ogp.service';
 import { DonutChart, DonutSlice } from '@/app/layout/components/ui/charts/donutchart';
@@ -18,6 +19,10 @@ import { Facture } from '@/app/apps/facture/facture.types';
 import { Paiement } from '@/app/apps/paiement/paiement.types';
 import { RouterLink } from '@angular/router';
 import { EmptyStateComponent } from '@/app/shared/utils/components/empty-state/empty-state.component';
+import { Skeleton } from 'primeng/skeleton';
+import { SkeletonTableComponent } from '@/app/shared/utils/components/skeleton-table/skeleton-table.component';
+import { SkeletonDonutComponent } from '@/app/shared/utils/components/skeleton-donut/skeleton-donut.component';
+import { SkeletonListComponent } from '@/app/shared/utils/components/skeleton-list/skeleton-list.component';
 
 type PeriodValue = 3 | 6 | 12 | 'custom';
 
@@ -101,7 +106,7 @@ interface ImpayesData {
 @Component({
     selector: 'app-home-dashboard-ogp',
     standalone: true,
-    imports: [CommonModule, FormsModule, CustomCard, Tag, TableModule, Select, DatePicker, LineChart, DonutChart, RouterLink, EmptyStateComponent],
+    imports: [CommonModule, FormsModule, CustomCard, Tag, TableModule, Select, DatePicker, LineChart, DonutChart, RouterLink, EmptyStateComponent, Skeleton, SkeletonTableComponent, SkeletonDonutComponent, SkeletonListComponent],
     providers: [CurrencyPipe],
     templateUrl: './home.html'
 })
@@ -157,45 +162,62 @@ export class HomeDashboardOgp {
     private vueGenerale = signal<VueGeneraleData | null>(null);
     private impayesData = signal<ImpayesData | null>(null);
 
+    /** Un drapeau par source : les quatre appels reviennent indépendamment. */
+    loadingVueGenerale = signal<boolean>(true);
+    loadingImpayes = signal<boolean>(true);
+    loadingFactures = signal<boolean>(true);
+    loadingPaiements = signal<boolean>(true);
+
     private factureService = inject(FactureService);
     private paiementService = inject(PaiementService);
     private factures = signal<Facture[]>([]);
     private paiements = signal<Paiement[]>([]);
 
-    /** Les endpoints /liste ne trient pas : on ordonne côté client sur la date de création. */
+    /** Nombre de mouvements affichés, transmis en `limit` aux endpoints /dernieres et /derniers. */
     private static readonly RECENTS = 5;
 
+    /** Le backend renvoie déjà les N derniers ; on retrie, l'ordre de la réponse n'étant pas contractuel. */
     private static parDatePlusRecente<T extends { dtCreated?: string }>(items: T[]): T[] {
         return [...items].sort((a, b) => new Date(b.dtCreated ?? 0).getTime() - new Date(a.dtCreated ?? 0).getTime());
     }
 
-    facturesRecentes = computed(() => HomeDashboardOgp.parDatePlusRecente(this.factures()).slice(0, HomeDashboardOgp.RECENTS));
-    paiementsRecents = computed(() => HomeDashboardOgp.parDatePlusRecente(this.paiements()).slice(0, HomeDashboardOgp.RECENTS));
+    facturesRecentes = computed(() => HomeDashboardOgp.parDatePlusRecente(this.factures()));
+    paiementsRecents = computed(() => HomeDashboardOgp.parDatePlusRecente(this.paiements()));
 
     constructor() {
         this.factureService
-            .getFactures()
-            .pipe(takeUntilDestroyed(this.destroyRef))
+            .getDernieresFactures(HomeDashboardOgp.RECENTS)
+            .pipe(
+                finalize(() => this.loadingFactures.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
             .subscribe({
                 next: (res) => this.factures.set(res?.data ?? []),
-                error: (err) => console.error('facture/liste - erreur', err)
+                error: (err) => console.error('facture/dernieres - erreur', err)
             });
 
         this.paiementService
-            .getPaiements()
-            .pipe(takeUntilDestroyed(this.destroyRef))
+            .getDerniersPaiements(HomeDashboardOgp.RECENTS)
+            .pipe(
+                finalize(() => this.loadingPaiements.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
             .subscribe({
                 next: (res) => this.paiements.set(res?.data ?? []),
-                error: (err) => console.error('paiement/liste - erreur', err)
+                error: (err) => console.error('paiement/derniers - erreur', err)
             });
 
         effect(() => {
             const dateDebut = this.dateDebut();
             const dateFin = this.dateFin();
 
+            this.loadingVueGenerale.set(true);
             this.dashboardService
                 .getVueGenerale(dateDebut, dateFin)
-                .pipe(takeUntilDestroyed(this.destroyRef))
+                .pipe(
+                    finalize(() => this.loadingVueGenerale.set(false)),
+                    takeUntilDestroyed(this.destroyRef)
+                )
                 .subscribe({
                     next: (res) => {
                         this.vueGenerale.set(res?.data ?? null);
@@ -203,9 +225,13 @@ export class HomeDashboardOgp {
                     error: (err) => console.error('dashboard/vue-generale - erreur', err)
                 });
 
+            this.loadingImpayes.set(true);
             this.dashboardService
                 .getImpayes(dateDebut, dateFin)
-                .pipe(takeUntilDestroyed(this.destroyRef))
+                .pipe(
+                    finalize(() => this.loadingImpayes.set(false)),
+                    takeUntilDestroyed(this.destroyRef)
+                )
                 .subscribe({
                     next: (res) => {
                         this.impayesData.set(res?.data ?? null);

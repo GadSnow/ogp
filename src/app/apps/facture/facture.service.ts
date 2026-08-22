@@ -17,6 +17,17 @@ export class FactureService {
         return this.httpClient.get<ApiResponse<Facture[]>>(`${this.apiUrl}/facture/liste`);
     }
 
+    /**
+     * Les N dernières factures, déjà ordonnées par le backend.
+     * `limit` vaut 10 côté serveur ; on l'envoie explicitement pour que l'appelant
+     * maîtrise la taille de la réponse.
+     */
+    getDernieresFactures(limit: number = 10): Observable<ApiResponse<Facture[]>> {
+        return this.httpClient.get<ApiResponse<Facture[]>>(`${this.apiUrl}/facture/dernieres`, {
+            params: { limit }
+        });
+    }
+
     getFacturesByCampagne(idCampagne: string): Observable<ApiResponse<Facture[]>> {
         return this.httpClient.get<ApiResponse<Facture[]>>(`${this.apiUrl}/facture/getbycampagne`, {
             params: { idCampagne }

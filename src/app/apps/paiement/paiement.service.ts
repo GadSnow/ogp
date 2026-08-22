@@ -17,6 +17,17 @@ export class PaiementService {
         return this.httpClient.get<ApiResponse<Paiement[]>>(`${this.apiUrl}/paiement/liste`);
     }
 
+    /**
+     * Les N derniers paiements, déjà ordonnés par le backend.
+     * `limit` vaut 10 côté serveur ; on l'envoie explicitement pour que l'appelant
+     * maîtrise la taille de la réponse.
+     */
+    getDerniersPaiements(limit: number = 10): Observable<ApiResponse<Paiement[]>> {
+        return this.httpClient.get<ApiResponse<Paiement[]>>(`${this.apiUrl}/paiement/derniers`, {
+            params: { limit }
+        });
+    }
+
     getPaiement(id: string): Observable<ApiResponse<Paiement>> {
         return this.httpClient.get<ApiResponse<Paiement>>(`${this.apiUrl}/paiement/getbyid`, {
             params: { idPaiement: id }

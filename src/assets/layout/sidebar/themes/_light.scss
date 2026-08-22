@@ -11,8 +11,7 @@
     --popover-item-active-background-color: var(--p-primary-50);
 }
 
-/* Navigation OGP — fond neutre profond, item actif en bleu translucide
-   souligné par un liseré d'accent jaune (charte, artboard « Shell »). */
+/* Navigation OGP — fond neutre profond, item actif signalé par un aplat bleu translucide. */
 .layout-sidebar-light {
     background: var(--p-surface-900);
     --sidebar-text-color: var(--p-surface-300);
@@ -53,7 +52,7 @@
                 color: #ffffff !important;
                 font-weight: 500;
                 border-left: none;
-                box-shadow: inset 3px 0 0 var(--ogp-accent) !important;
+                box-shadow: none !important;
 
                 &:hover {
                     background: rgba(48, 99, 207, 0.45) !important;
