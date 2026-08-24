@@ -8,7 +8,6 @@ import { CommuneService } from '@/app/apps/commune/commune.service';
 import { QuartierService } from '@/app/apps/quartier/quartier.service';
 import { SecteurService } from '@/app/apps/secteur/secteur.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -22,10 +21,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
     selector: 'app-edit-panneau',
-    imports: [Button, InputText, Select, ConfirmDialogModule, ReactiveFormsModule, Skeleton, CheckboxModule, InputNumberModule],
+    imports: [Button, InputText, Select, ReactiveFormsModule, Skeleton, CheckboxModule, InputNumberModule],
     templateUrl: './edit.html',
-    styleUrl: './edit.scss',
-    providers: [ConfirmationService]
+    styleUrl: './edit.scss'
 })
 export class EditPanneau implements OnInit {
     private panneauService = inject(PanneauService);

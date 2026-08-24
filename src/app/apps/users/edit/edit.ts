@@ -3,7 +3,6 @@ import { Button } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Skeleton } from 'primeng/skeleton';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -16,9 +15,9 @@ import { Profil } from '@/app/apps/profils/profils.types';
 
 @Component({
     selector: 'app-edit-user',
-    imports: [Button, InputText, Select, ToastModule, ConfirmDialogModule, Skeleton, RouterLink, ReactiveFormsModule],
+    imports: [Button, InputText, Select, ToastModule, Skeleton, RouterLink, ReactiveFormsModule],
     templateUrl: './edit.html',
-    providers: [ConfirmationService, MessageService]
+    providers: [MessageService]
 })
 export class EditUser {
     private usersService = inject(UsersService);

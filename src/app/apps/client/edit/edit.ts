@@ -4,7 +4,6 @@ import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { ClientService } from '@/app/apps/client/client.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -16,10 +15,9 @@ import { TypeClientService } from '@/app/apps/type-client/type-client.service';
 
 @Component({
     selector: 'app-edit-client',
-    imports: [Button, InputText, Select, ConfirmDialogModule, ReactiveFormsModule, Skeleton],
+    imports: [Button, InputText, Select, ReactiveFormsModule, Skeleton],
     templateUrl: './edit.html',
-    styleUrl: './edit.scss',
-    providers: [ConfirmationService]
+    styleUrl: './edit.scss'
 })
 export class EditClient implements OnInit {
     private clientService = inject(ClientService);

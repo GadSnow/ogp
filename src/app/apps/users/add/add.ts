@@ -3,7 +3,6 @@ import { Button } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { RouterLink, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
@@ -15,9 +14,9 @@ import { Profil } from '@/app/apps/profils/profils.types';
 
 @Component({
     selector: 'app-add-user',
-    imports: [Button, InputText, Select, ToastModule, ConfirmDialogModule, RouterLink, ReactiveFormsModule],
+    imports: [Button, InputText, Select, ToastModule, RouterLink, ReactiveFormsModule],
     templateUrl: './add.html',
-    providers: [ConfirmationService, MessageService]
+    providers: [MessageService]
 })
 export class AddUser {
     private usersService = inject(UsersService);

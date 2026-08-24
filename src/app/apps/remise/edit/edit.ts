@@ -4,7 +4,6 @@ import { InputText } from 'primeng/inputtext';
 import { Textarea } from 'primeng/textarea';
 import { RemiseService } from '@/app/apps/remise/remise.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -14,10 +13,9 @@ import { Skeleton } from 'primeng/skeleton';
 
 @Component({
     selector: 'app-edit-remise',
-    imports: [Button, InputText, Textarea, ConfirmDialogModule, ReactiveFormsModule, Skeleton],
+    imports: [Button, InputText, Textarea, ReactiveFormsModule, Skeleton],
     templateUrl: './edit.html',
-    styleUrl: './edit.scss',
-    providers: [ConfirmationService]
+    styleUrl: './edit.scss'
 })
 export class EditRemise implements OnInit {
     private remiseService = inject(RemiseService);

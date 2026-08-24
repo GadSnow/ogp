@@ -4,7 +4,6 @@ import { InputText } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { RadioButton } from 'primeng/radiobutton';
 import { ToastModule } from 'primeng/toast';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Skeleton } from 'primeng/skeleton';
 import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
@@ -19,9 +18,9 @@ import { SkeletonTableComponent } from '@/app/shared/utils/components/skeleton-t
 
 @Component({
     selector: 'app-add-profil',
-    imports: [Button, InputText, TableModule, RadioButton, ToastModule, ConfirmDialogModule, RouterLink, ReactiveFormsModule, FormsModule, SkeletonTableComponent],
+    imports: [Button, InputText, TableModule, RadioButton, ToastModule, RouterLink, ReactiveFormsModule, FormsModule, SkeletonTableComponent],
     templateUrl: './add.html',
-    providers: [ConfirmationService, MessageService]
+    providers: [MessageService]
 })
 export class AddProfil {
     private profilsService = inject(ProfilsService);

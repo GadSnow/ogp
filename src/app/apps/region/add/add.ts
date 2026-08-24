@@ -4,7 +4,6 @@ import { InputText } from 'primeng/inputtext';
 import { Textarea } from 'primeng/textarea';
 import { RegionService } from '@/app/apps/region/region.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -13,10 +12,9 @@ import { Skeleton } from 'primeng/skeleton';
 
 @Component({
     selector: 'app-add-region',
-    imports: [Button, InputText, Textarea, ConfirmDialogModule, ReactiveFormsModule, Skeleton],
+    imports: [Button, InputText, Textarea, ReactiveFormsModule, Skeleton],
     templateUrl: './add.html',
-    styleUrl: './add.scss',
-    providers: [ConfirmationService]
+    styleUrl: './add.scss'
 })
 export class AddRegion {
     private regionService = inject(RegionService);

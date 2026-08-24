@@ -4,7 +4,6 @@ import { InputText } from 'primeng/inputtext';
 import { Textarea } from 'primeng/textarea';
 import { CategoriePanneauxService } from '@/app/apps/categorie-panneaux/categorie-panneaux.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -14,10 +13,9 @@ import { Skeleton } from 'primeng/skeleton';
 
 @Component({
     selector: 'app-edit-categorie-panneaux',
-    imports: [Button, InputText, Textarea, ConfirmDialogModule, ReactiveFormsModule, Skeleton],
+    imports: [Button, InputText, Textarea, ReactiveFormsModule, Skeleton],
     templateUrl: './edit.html',
-    styleUrl: './edit.scss',
-    providers: [ConfirmationService]
+    styleUrl: './edit.scss'
 })
 export class EditCategoriePanneaux implements OnInit {
     private categoriePanneauxService = inject(CategoriePanneauxService);

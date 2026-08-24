@@ -4,7 +4,6 @@ import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { QuartierService } from '@/app/apps/quartier/quartier.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -16,10 +15,9 @@ import { Quartier } from '@/app/apps/quartier/quartier';
 
 @Component({
     selector: 'app-edit-quartier',
-    imports: [Button, InputText, Select, ConfirmDialogModule, ReactiveFormsModule, Skeleton],
+    imports: [Button, InputText, Select, ReactiveFormsModule, Skeleton],
     templateUrl: './edit.html',
-    styleUrl: './edit.scss',
-    providers: [ConfirmationService]
+    styleUrl: './edit.scss'
 })
 export class EditQuartier implements OnInit {
     private quartierService = inject(QuartierService);

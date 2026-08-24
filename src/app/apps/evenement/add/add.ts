@@ -8,7 +8,6 @@ import { TypeEvenementService } from '@/app/apps/type-evenement/type-evenement.s
 import { PanneauService } from '@/app/apps/panneau/panneau.service';
 import { UsersService } from '@/app/apps/users/users.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -21,10 +20,9 @@ import { DatePicker } from 'primeng/datepicker';
 
 @Component({
     selector: 'app-add-evenement',
-    imports: [Button, InputText, Select, ConfirmDialogModule, ReactiveFormsModule, Skeleton, InputNumberModule, DatePicker],
+    imports: [Button, InputText, Select, ReactiveFormsModule, Skeleton, InputNumberModule, DatePicker],
     templateUrl: './add.html',
-    styleUrl: './add.scss',
-    providers: [ConfirmationService]
+    styleUrl: './add.scss'
 })
 export class AddEvenement implements OnInit {
     private evenementService = inject(EvenementService);

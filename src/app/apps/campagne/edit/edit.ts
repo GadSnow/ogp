@@ -11,7 +11,6 @@ import { StatutCampagne } from '@/app/apps/campagne/statut-campagne.types';
 import { ClientService } from '@/app/apps/client/client.service';
 import { PanneauService } from '@/app/apps/panneau/panneau.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
@@ -24,9 +23,9 @@ import { CampagnePayload } from '@/app/apps/campagne/campagne.types';
 
 @Component({
     selector: 'app-edit-campagne',
-    imports: [Button, InputText, Select, MultiSelectModule, DatePicker, ToastModule, ConfirmDialogModule, ReactiveFormsModule, Skeleton, RouterLink, InputNumberModule],
+    imports: [Button, InputText, Select, MultiSelectModule, DatePicker, ToastModule, ReactiveFormsModule, Skeleton, RouterLink, InputNumberModule],
     templateUrl: './edit.html',
-    providers: [ConfirmationService, MessageService]
+    providers: [MessageService]
 })
 export class EditCampagne implements OnInit {
     private campagneService = inject(CampagneService);

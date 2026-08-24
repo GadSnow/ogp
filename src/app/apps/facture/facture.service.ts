@@ -28,15 +28,9 @@ export class FactureService {
         });
     }
 
-    getFacturesByCampagne(idCampagne: string): Observable<ApiResponse<Facture[]>> {
-        return this.httpClient.get<ApiResponse<Facture[]>>(`${this.apiUrl}/facture/getbycampagne`, {
-            params: { idCampagne }
-        });
-    }
-
-    addFacture(idCampagne: string): Observable<ApiResponse<Facture>> {
-        return this.httpClient.post<ApiResponse<Facture>>(`${this.apiUrl}/facture/add`, null, {
-            params: { idCampagne }
-        });
+    addFacture(idCampagne: string, idRemise?: string): Observable<ApiResponse<Facture>> {
+        const params: Record<string, string> = { idCampagne };
+        if (idRemise) params['idRemise'] = idRemise;
+        return this.httpClient.post<ApiResponse<Facture>>(`${this.apiUrl}/facture/add`, null, { params });
     }
 }

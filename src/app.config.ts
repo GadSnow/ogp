@@ -7,7 +7,7 @@ import { authInterceptor } from '@/app/core/interceptors/auth.interceptor';
 import { apiResponseInterceptor } from '@/app/core/interceptors/api-response.interceptor';
 import { OgpPreset } from '@/app/layout/theme/ogp-theme';
 import { primeNgFr } from '@/app/layout/theme/primeng-fr';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { HashLocationStrategy, LocationStrategy, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 
@@ -18,6 +18,9 @@ registerLocaleData(localeFr);
 export const appConfig: ApplicationConfig = {
     providers: [
         MessageService,
+        // Fourni une seule fois : l'unique <p-confirmdialog> global d'AppComponent
+        // écoute ce singleton, tous les confirm() de l'app y aboutissent.
+        ConfirmationService,
         { provide: LOCALE_ID, useValue: 'fr-FR' },
         { provide: DEFAULT_CURRENCY_CODE, useValue: 'GNF' },
         provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),

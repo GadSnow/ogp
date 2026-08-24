@@ -5,7 +5,6 @@ import { Select } from 'primeng/select';
 import { CommuneService } from '@/app/apps/commune/commune.service';
 import { RegionService } from '@/app/apps/region/region.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -16,10 +15,9 @@ import { ApiResponse } from '@/app/core/models/api-response.interface';
 
 @Component({
     selector: 'app-edit-commune',
-    imports: [Button, InputText, Select, ConfirmDialogModule, ReactiveFormsModule, Skeleton],
+    imports: [Button, InputText, Select, ReactiveFormsModule, Skeleton],
     templateUrl: './edit.html',
-    styleUrl: './edit.scss',
-    providers: [ConfirmationService]
+    styleUrl: './edit.scss'
 })
 export class EditCommune implements OnInit {
     private communeService = inject(CommuneService);

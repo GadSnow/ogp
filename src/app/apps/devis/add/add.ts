@@ -5,7 +5,6 @@ import { Select } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -25,9 +24,9 @@ interface CampagneDetails {
 
 @Component({
     selector: 'app-add-devis',
-    imports: [Button, Select, Skeleton, Tag, ToastModule, ConfirmDialogModule, FormsModule, DatePipe, RouterLink],
+    imports: [Button, Select, Skeleton, Tag, ToastModule, FormsModule, DatePipe, RouterLink],
     templateUrl: './add.html',
-    providers: [ConfirmationService, MessageService]
+    providers: [MessageService]
 })
 export class AddDevis {
     private devisService = inject(DevisService);

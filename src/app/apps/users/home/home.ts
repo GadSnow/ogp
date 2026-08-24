@@ -10,7 +10,6 @@ import { finalize } from 'rxjs';
 import { ApiResponse } from '@/app/core/models/api-response.interface';
 import { SkeletonTableComponent } from '@/app/shared/utils/components/skeleton-table/skeleton-table.component';
 import { CustomCard } from '@/app/layout/components/ui/customcard';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -21,9 +20,9 @@ import { Tooltip } from 'primeng/tooltip';
 
 @Component({
     selector: 'app-users-home',
-    imports: [TableModule, Tag, Button, RouterLink, SkeletonTableComponent, CustomCard, ConfirmDialogModule, ToastModule, IconFieldModule, InputIconModule, InputText, EmptyStateComponent, Tooltip],
+    imports: [TableModule, Tag, Button, RouterLink, SkeletonTableComponent, CustomCard, ToastModule, IconFieldModule, InputIconModule, InputText, EmptyStateComponent, Tooltip],
     templateUrl: './home.html',
-    providers: [ConfirmationService, MessageService]
+    providers: [MessageService]
 })
 export class UsersHome implements OnInit {
     private usersService = inject(UsersService);

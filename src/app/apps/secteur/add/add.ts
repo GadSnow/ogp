@@ -4,7 +4,6 @@ import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { SecteurService } from '@/app/apps/secteur/secteur.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -16,10 +15,9 @@ import { QuartierService } from '@/app/apps/quartier/quartier.service';
 
 @Component({
     selector: 'app-add-secteur',
-    imports: [Button, InputText, Select, ConfirmDialogModule, ReactiveFormsModule, Skeleton],
+    imports: [Button, InputText, Select, ReactiveFormsModule, Skeleton],
     templateUrl: './add.html',
-    styleUrl: './add.scss',
-    providers: [ConfirmationService]
+    styleUrl: './add.scss'
 })
 export class AddSecteur implements OnInit {
     private secteurService = inject(SecteurService);

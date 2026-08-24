@@ -4,7 +4,6 @@ import { InputText } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { RadioButton } from 'primeng/radiobutton';
 import { ToastModule } from 'primeng/toast';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Skeleton } from 'primeng/skeleton';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -18,9 +17,9 @@ import { SkeletonTableComponent } from '@/app/shared/utils/components/skeleton-t
 
 @Component({
     selector: 'app-edit-profil',
-    imports: [Button, InputText, TableModule, RadioButton, ToastModule, ConfirmDialogModule, Skeleton, RouterLink, ReactiveFormsModule, FormsModule, SkeletonTableComponent],
+    imports: [Button, InputText, TableModule, RadioButton, ToastModule, Skeleton, RouterLink, ReactiveFormsModule, FormsModule, SkeletonTableComponent],
     templateUrl: './edit.html',
-    providers: [ConfirmationService, MessageService]
+    providers: [MessageService]
 })
 export class EditProfil {
     private profilsService = inject(ProfilsService);

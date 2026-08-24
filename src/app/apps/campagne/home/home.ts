@@ -10,7 +10,6 @@ import { CustomCard } from '@/app/layout/components/ui/customcard';
 import { Button } from 'primeng/button';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -19,9 +18,8 @@ import { EmptyStateComponent } from '@/app/shared/utils/components/empty-state/e
 
 @Component({
     selector: 'app-home-campagne',
-    imports: [TableModule, Tag, SkeletonTableComponent, CustomCard, Button, RouterLink, DatePipe, ConfirmDialogModule, IconFieldModule, InputIconModule, InputText, EmptyStateComponent],
-    templateUrl: './home.html',
-    providers: [ConfirmationService]
+    imports: [TableModule, Tag, SkeletonTableComponent, CustomCard, Button, RouterLink, DatePipe, IconFieldModule, InputIconModule, InputText, EmptyStateComponent],
+    templateUrl: './home.html'
 })
 export class HomeCampagne implements OnInit {
     private campagneService = inject(CampagneService);

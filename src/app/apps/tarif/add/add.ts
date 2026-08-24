@@ -4,7 +4,6 @@ import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { TarifService } from '@/app/apps/tarif/tarif.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -19,10 +18,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
     selector: 'app-add-tarif',
-    imports: [Button, InputText, Select, ConfirmDialogModule, ReactiveFormsModule, Skeleton, CheckboxModule, InputNumberModule],
+    imports: [Button, InputText, Select, ReactiveFormsModule, Skeleton, CheckboxModule, InputNumberModule],
     templateUrl: './add.html',
-    styleUrl: './add.scss',
-    providers: [ConfirmationService]
+    styleUrl: './add.scss'
 })
 export class AddTarif implements OnInit {
     private tarifService = inject(TarifService);

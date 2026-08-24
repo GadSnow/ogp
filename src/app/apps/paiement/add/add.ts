@@ -6,7 +6,6 @@ import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
 import { Skeleton } from 'primeng/skeleton';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -18,9 +17,9 @@ import { ModePaiement } from '@/app/apps/mode-paiement/mode-paiement.types';
 
 @Component({
     selector: 'app-add-paiement',
-    imports: [Button, InputText, InputNumberModule, Select, Textarea, Skeleton, ToastModule, ConfirmDialogModule, ReactiveFormsModule, RouterLink],
+    imports: [Button, InputText, InputNumberModule, Select, Textarea, Skeleton, ToastModule, ReactiveFormsModule, RouterLink],
     templateUrl: './add.html',
-    providers: [ConfirmationService, MessageService]
+    providers: [MessageService]
 })
 export class AddPaiement implements OnInit {
     private paiementService = inject(PaiementService);

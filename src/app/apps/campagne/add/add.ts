@@ -9,7 +9,6 @@ import { CampagneService } from '@/app/apps/campagne/campagne.service';
 import { ClientService } from '@/app/apps/client/client.service';
 import { PanneauService } from '@/app/apps/panneau/panneau.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -22,9 +21,9 @@ import { CampagnePayload } from '@/app/apps/campagne/campagne.types';
 
 @Component({
     selector: 'app-add-campagne',
-    imports: [Button, InputText, Select, MultiSelectModule, DatePicker, ToastModule, ConfirmDialogModule, ReactiveFormsModule, Skeleton, RouterLink, InputNumberModule],
+    imports: [Button, InputText, Select, MultiSelectModule, DatePicker, ToastModule, ReactiveFormsModule, Skeleton, RouterLink, InputNumberModule],
     templateUrl: './add.html',
-    providers: [ConfirmationService, MessageService]
+    providers: [MessageService]
 })
 export class AddCampagne implements OnInit {
     private campagneService = inject(CampagneService);
