@@ -52,7 +52,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
                         <div class="flex flex-col gap-1.5">
                             <label for="email" class="font-medium text-surface-600 dark:text-surface-300">Identifiant</label>
                             <p-iconfield class="w-full">
-                                <input id="email" name="email" type="email" pInputText class="w-full" autocomplete="username" placeholder="ex : a.diallo@ogp.gn" [ngModel]="email()" (ngModelChange)="email.set($event)" required />
+                                <input id="email" name="email" type="email" pInputText class="w-full" autocomplete="username" [ngModel]="email()" (ngModelChange)="email.set($event)" required />
                                 <p-inputicon class="pi pi-envelope" />
                             </p-iconfield>
                         </div>
@@ -60,8 +60,16 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
                         <div class="flex flex-col gap-1.5">
                             <label for="password" class="font-medium text-surface-600 dark:text-surface-300">Mot de passe</label>
                             <p-iconfield class="w-full">
-                                <input id="password" name="password" type="password" pInputText class="w-full" autocomplete="current-password" placeholder="••••••••" [ngModel]="password()" (ngModelChange)="password.set($event)" required />
-                                <p-inputicon class="pi pi-lock" />
+                                <input id="password" name="password" [type]="showPassword() ? 'text' : 'password'" pInputText class="w-full" autocomplete="current-password" [ngModel]="password()" (ngModelChange)="password.set($event)" required />
+                                <p-inputicon
+                                    [class]="showPassword() ? 'pi pi-eye-slash cursor-pointer' : 'pi pi-eye cursor-pointer'"
+                                    role="button"
+                                    tabindex="0"
+                                    [attr.aria-label]="showPassword() ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+                                    (click)="showPassword.set(!showPassword())"
+                                    (keydown.enter)="showPassword.set(!showPassword())"
+                                    (keydown.space)="showPassword.set(!showPassword())"
+                                />
                             </p-iconfield>
                         </div>
 
@@ -80,6 +88,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class Login {
     email = signal<string>('');
     password = signal<string>('');
+    showPassword = signal<boolean>(false);
     loading = signal<boolean>(false);
     errorMessage = signal<string>('');
 
