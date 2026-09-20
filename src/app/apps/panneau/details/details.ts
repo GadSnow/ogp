@@ -7,12 +7,12 @@ import { Tag } from 'primeng/tag';
 import { Button } from 'primeng/button';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { Skeleton } from 'primeng/skeleton';
-import { MapLocation } from '@/app/shared/utils/components/map-location/map-location';
+import { CartePanneaux } from '@/app/shared/utils/components/carte-panneaux/carte-panneaux';
 
 @Component({
     selector: 'app-details-panneau',
     standalone: true,
-    imports: [CommonModule, Tag, Button, RouterLink, Skeleton, DecimalPipe, MapLocation],
+    imports: [CommonModule, Tag, Button, RouterLink, Skeleton, DecimalPipe, CartePanneaux],
     templateUrl: './details.html',
     styleUrl: './details.scss'
 })
@@ -33,7 +33,8 @@ export class DetailsPanneau implements OnInit {
 
     loadPanneau(id: string) {
         this.isLoading.set(true);
-        this.panneauService.getPanneau(id)
+        this.panneauService
+            .getPanneau(id)
             .pipe(finalize(() => this.isLoading.set(false)))
             .subscribe({
                 next: (res) => {

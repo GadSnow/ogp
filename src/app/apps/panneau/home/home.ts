@@ -8,7 +8,7 @@ import { ApiResponse } from '@/app/core/models/api-response.interface';
 import { SkeletonTableComponent } from '@/app/shared/utils/components/skeleton-table/skeleton-table.component';
 import { CustomCard } from '@/app/layout/components/ui/customcard';
 import { Button } from 'primeng/button';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
@@ -17,19 +17,41 @@ import { Tooltip } from 'primeng/tooltip';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FiltreLocalisationComponent } from '@/app/shared/utils/components/filtre-localisation/filtre-localisation.component';
+import { DialogModule } from 'primeng/dialog';
+import { CartePanneaux } from '@/app/shared/utils/components/carte-panneaux/carte-panneaux';
 
 @Component({
     selector: 'app-panneau-home',
-    imports: [TableModule, Tag, SkeletonTableComponent, CustomCard, Button, RouterLink, IconFieldModule, InputIconModule, InputText, EmptyStateComponent, Tooltip, FiltreLocalisationComponent, CurrencyPipe, DecimalPipe, DatePipe],
+    imports: [
+        TableModule,
+        Tag,
+        SkeletonTableComponent,
+        CustomCard,
+        Button,
+        RouterLink,
+        IconFieldModule,
+        InputIconModule,
+        InputText,
+        EmptyStateComponent,
+        Tooltip,
+        FiltreLocalisationComponent,
+        CurrencyPipe,
+        DecimalPipe,
+        DatePipe,
+        DialogModule,
+        CartePanneaux
+    ],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })
 export class PanneauHome implements OnInit {
     private panneauService = inject(PanneauService);
     private destroyRef = inject(DestroyRef);
+    private router = inject(Router);
 
     panneaux = signal<Panneau[]>([]);
     isLoading = signal<boolean>(true);
+    showCarte = signal<boolean>(false);
 
     /** Vrai dès qu'un niveau géographique est posé : distingue « rien en base » de « rien dans cette zone ». */
     filtreActif = signal<boolean>(false);
@@ -81,6 +103,12 @@ export class PanneauHome implements OnInit {
     /** Région du panneau : la ligne de tête de la colonne Localisation. */
     region(panneau: Panneau): string {
         return panneau.secteur?.quartier?.commune?.region?.region ?? '';
+    }
+
+    /** Depuis le popup de la carte : ferme le modal puis ouvre la fiche du panneau. */
+    voirDetail(panneau: Panneau): void {
+        this.showCarte.set(false);
+        this.router.navigate(['/ogp/panneau/details', panneau.id]);
     }
 
     /** Régie du panneau, avec repli sur un tiret pour les anciens panneaux (regies null). */

@@ -111,64 +111,58 @@
 @layer base {
     :root {
         /* Shadows */
-        --shadow-stroke:   0px 1px 2px 0px rgba(164, 172, 185, 0.24),
-                           0px 0px 0px 1px rgba(18, 55, 105, 0.08);
-        --shadow-card:     0px 1px 3px 0px rgba(0, 0, 0, 0.05),
-                           0px 0px 0px 1px rgba(18, 55, 105, 0.07);
-        --shadow-elevated: 0px 4px 16px 0px rgba(0, 0, 0, 0.08),
-                           0px 0px 0px 1px rgba(18, 55, 105, 0.06);
+        --shadow-stroke: 0px 1px 2px 0px rgba(164, 172, 185, 0.24), 0px 0px 0px 1px rgba(18, 55, 105, 0.08);
+        --shadow-card: 0px 1px 3px 0px rgba(0, 0, 0, 0.05), 0px 0px 0px 1px rgba(18, 55, 105, 0.07);
+        --shadow-elevated: 0px 4px 16px 0px rgba(0, 0, 0, 0.08), 0px 0px 0px 1px rgba(18, 55, 105, 0.06);
 
         /* Accent de marque (SCSS layout + composants) */
-        --ogp-accent:        #ffc71f;
-        --ogp-accent-soft:   #fff4d1;
+        --ogp-accent: #ffc71f;
+        --ogp-accent-soft: #fff4d1;
         --ogp-accent-strong: #f5b800;
-        --ogp-accent-ink:    #22242b;
+        --ogp-accent-ink: #22242b;
 
         /* Color tokens */
-        --border:      var(--p-surface-200);
-        --background:  var(--p-surface-0);
-        --foreground:  var(--p-surface-950);
-        --p-primary-active:          var(--p-primary-600);
+        --border: var(--p-surface-200);
+        --background: var(--p-surface-0);
+        --foreground: var(--p-surface-950);
+        --p-primary-active: var(--p-primary-600);
         --p-primary-active-contrast: #ffffff;
 
         /* Legacy PrimeNG vars */
-        --primary-color:         var(--p-primary-color);
-        --primary-contrast-color:var(--p-primary-contrast-color);
-        --text-color:            var(--p-text-color);
-        --text-muted-color:      var(--p-text-muted-color);
-        --surface-ground:        var(--p-surface-50);
-        --surface-border:        var(--p-content-border-color);
-        --surface-card:          var(--p-surface-0);
-        --surface-hover:         var(--p-content-hover-background);
-        --surface-overlay:       var(--p-overlay-popover-background);
-        --transition-duration:   var(--p-transition-duration);
-        --focus-ring-shadow:     var(--p-focus-ring-shadow);
-        --border-radius:         var(--p-content-border-radius);
+        --primary-color: var(--p-primary-color);
+        --primary-contrast-color: var(--p-primary-contrast-color);
+        --text-color: var(--p-text-color);
+        --text-muted-color: var(--p-text-muted-color);
+        --surface-ground: var(--p-surface-50);
+        --surface-border: var(--p-content-border-color);
+        --surface-card: var(--p-surface-0);
+        --surface-hover: var(--p-content-hover-background);
+        --surface-overlay: var(--p-overlay-popover-background);
+        --transition-duration: var(--p-transition-duration);
+        --focus-ring-shadow: var(--p-focus-ring-shadow);
+        --border-radius: var(--p-content-border-radius);
     }
 
     .app-dark {
-        --shadow-stroke:   0px 1px 2px 0px rgba(0, 0, 0, 0.2),
-                           0px 0px 0px 1px rgba(255, 255, 255, 0.06);
-        --shadow-card:     0px 1px 3px 0px rgba(0, 0, 0, 0.25),
-                           0px 0px 0px 1px rgba(255, 255, 255, 0.06);
-        --shadow-elevated: 0px 4px 16px 0px rgba(0, 0, 0, 0.35),
-                           0px 0px 0px 1px rgba(255, 255, 255, 0.07);
-        --border:          var(--p-surface-800);
-        --background:      var(--p-surface-900);
-        --foreground:      var(--p-surface-0);
-        --p-primary-active:          var(--p-primary-500);
+        --shadow-stroke: 0px 1px 2px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 1px rgba(255, 255, 255, 0.06);
+        --shadow-card: 0px 1px 3px 0px rgba(0, 0, 0, 0.25), 0px 0px 0px 1px rgba(255, 255, 255, 0.06);
+        --shadow-elevated: 0px 4px 16px 0px rgba(0, 0, 0, 0.35), 0px 0px 0px 1px rgba(255, 255, 255, 0.07);
+        --border: var(--p-surface-800);
+        --background: var(--p-surface-900);
+        --foreground: var(--p-surface-0);
+        --p-primary-active: var(--p-primary-500);
         --p-primary-active-contrast: #ffffff;
-        --surface-ground:  var(--p-surface-950);
-        --surface-card:    var(--p-surface-900);
+        --surface-ground: var(--p-surface-950);
+        --surface-card: var(--p-surface-900);
     }
 
     .p-noir {
-        --p-primary-active:          var(--p-surface-950);
+        --p-primary-active: var(--p-surface-950);
         --p-primary-active-contrast: #ffffff;
     }
 
     .p-noir.app-dark {
-        --p-primary-active:          #ffffff;
+        --p-primary-active: #ffffff;
         --p-primary-active-contrast: var(--p-surface-950);
     }
 
@@ -183,7 +177,13 @@
 
     body {
         @apply bg-background text-foreground overflow-x-clip p-0 m-0 min-h-full;
-        font-family: 'IBM Plex Sans', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+        font-family:
+            'IBM Plex Sans',
+            -apple-system,
+            'Segoe UI',
+            Helvetica,
+            Arial,
+            sans-serif;
         font-size: 0.8125rem;
         font-weight: 400;
         -webkit-font-smoothing: antialiased;
@@ -191,13 +191,27 @@
     }
 
     /* Scrollbar */
-    ::-webkit-scrollbar        { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track  { background: transparent; }
-    ::-webkit-scrollbar-thumb  { background: var(--p-surface-300); border-radius: 99px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--p-surface-400); }
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: var(--p-surface-300);
+        border-radius: 99px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--p-surface-400);
+    }
 
-    .app-dark ::-webkit-scrollbar-thumb       { background: var(--p-surface-700); }
-    .app-dark ::-webkit-scrollbar-thumb:hover { background: var(--p-surface-600); }
+    .app-dark ::-webkit-scrollbar-thumb {
+        background: var(--p-surface-700);
+    }
+    .app-dark ::-webkit-scrollbar-thumb:hover {
+        background: var(--p-surface-600);
+    }
 }
 
 /* Leaflet tiles — Tailwind's preflight forces img { max-width: 100% }, which
@@ -206,14 +220,132 @@
     max-width: none !important;
 }
 
-/* Leaflet marker — rendered outside Angular's component view, so it must be global. */
-.map-location-pin-dot {
-    width: 18px;
-    height: 18px;
+/* ---- Carte multi-panneaux (leaflet) : pin numérotée et popups. Le DOM est
+   injecté par Leaflet hors du view d'Angular → styles globaux obligatoires. ---- */
+.carte-panneaux-pin {
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: var(--p-primary-color);
-    border: 3px solid #ffffff;
+    border: 2px solid #ffffff;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carte-panneaux-tooltip {
+    background: #1e293b;
+    color: #ffffff;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.carte-panneaux-tooltip::before {
+    display: none;
+}
+
+.carte-panneaux-popup .leaflet-popup-content-wrapper {
+    padding: 0;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.carte-panneaux-popup .leaflet-popup-content {
+    margin: 0;
+    width: auto !important;
+    min-width: 240px;
+    max-width: 300px;
+}
+
+.carte-panneaux-popup .leaflet-popup-close-button {
+    margin: 8px 8px 0 0;
+    font-size: 18px;
+    color: #64748b;
+}
+
+.carte-panneaux-popup-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.7rem 1rem;
+    background: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: #1e293b;
+}
+
+.carte-panneaux-popup-badge {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+}
+
+.carte-panneaux-popup-badge-ok {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.carte-panneaux-popup-badge-ko {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.carte-panneaux-popup-body {
+    padding: 0.7rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    font-size: 0.8rem;
+    color: #334155;
+}
+
+.carte-panneaux-popup-row {
+    display: flex;
+    gap: 0.5rem;
+    line-height: 1.4;
+}
+
+.carte-panneaux-popup-label {
+    color: #94a3b8;
+    min-width: 5.5rem;
+    text-transform: uppercase;
+    font-size: 0.625rem;
+    letter-spacing: 0.04em;
+    padding-top: 2px;
+    flex-shrink: 0;
+}
+
+.carte-panneaux-popup-btn {
+    display: block;
+    text-align: center;
+    margin: 0.35rem 1rem 0.85rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.5rem;
+    background: var(--p-primary-color);
+    color: #ffffff !important;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+}
+
+.carte-panneaux-popup-btn:hover {
+    opacity: 0.9;
 }
 
 /* Table headers — unlayered and !important on purpose: PrimeNG injects its
