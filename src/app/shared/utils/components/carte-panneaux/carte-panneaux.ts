@@ -9,12 +9,15 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
 
+/** Centre de la Guinée : utilisé quand aucun panneau n'a de coordonnées. */
 const CENTRE_GUINEE: L.LatLngExpression = [9.9456, -9.6966];
-
+/** Zoom par défaut = celui obtenu en appuyant une fois sur « + » au niveau du pays. */
+const ZOOM_GUINEE = 7;
+/** Zoom minimum : empêche de dézoomer au point de sortir du cadre de la Guinée. */
 const ZOOM_MIN_GUINEE = 6;
-const ZOOM_GUINEE = 13;
-const ZOOM_MAX_FIT = 13;
-
+/** Zoom max lors du recadrage automatique sur les marqueurs. */
+const ZOOM_MAX_FIT = 11;
+/** Cadre de la Guinée ([sud-ouest, nord-est]) : la vue reste confinée au pays. */
 const BORNES_GUINEE: L.LatLngBoundsExpression = [
     [6.95, -15.5],
     [13.1, -7.4]
@@ -67,6 +70,12 @@ export class CartePanneaux implements AfterViewInit, OnDestroy {
     ajustementZoom = input<number>(-0.9);
     /** Marge (px) autour des marqueurs lors du recadrage auto : plus elle est petite, plus la vue est serrée. */
     paddingFit = input<number>(36);
+    /** Zoom initial quand aucun panneau n'a de coordonnées (défaut : niveau du pays). */
+    zoomInitial = input<number>(ZOOM_GUINEE);
+    /** Zoom minimum autorisé : empêche de sortir du cadre de la Guinée. */
+    zoomMin = input<number>(ZOOM_MIN_GUINEE);
+    /** Zoom max lors du recadrage automatique sur les marqueurs. */
+    zoomMaxFit = input<number>(ZOOM_MAX_FIT);
 
     /** Filtre courant de la recherche par référence. */
     recherche = signal('');
@@ -92,8 +101,8 @@ export class CartePanneaux implements AfterViewInit, OnDestroy {
     ngAfterViewInit() {
         this.map = L.map(this.mapEl.nativeElement, {
             center: CENTRE_GUINEE,
-            zoom: ZOOM_GUINEE,
-            minZoom: ZOOM_MIN_GUINEE,
+            zoom: this.zoomInitial(),
+            minZoom: this.zoomMin(),
             maxBounds: BORNES_GUINEE,
             maxBoundsViscosity: 1,
             /* Permet les niveaux de zoom fractionnaires (pas de 0.05). */
@@ -158,7 +167,7 @@ export class CartePanneaux implements AfterViewInit, OnDestroy {
         );
 
         if (panneauxGeolocalises.length === 0) {
-            this.map.setView(CENTRE_GUINEE, ZOOM_GUINEE);
+            this.map.setView(CENTRE_GUINEE, this.zoomInitial());
             return;
         }
 
@@ -193,14 +202,16 @@ export class CartePanneaux implements AfterViewInit, OnDestroy {
 
         this.map.fitBounds(L.latLngBounds(positions), {
             padding: [this.paddingFit(), this.paddingFit()],
-            maxZoom: ZOOM_MAX_FIT
+            maxZoom: this.zoomMaxFit()
         });
 
         /* Après fitBounds : ajustement selon l'usage. Valeur positive = rapprochement
            (plafonné au zoom max de recadrage), négative = dézoom (plancher Guinée). */
         const zoomAjuste = this.map.getZoom() + this.ajustementZoom();
         const zoomBorne =
-            this.ajustementZoom() >= 0 ? Math.min(zoomAjuste, ZOOM_MAX_FIT) : Math.max(zoomAjuste, ZOOM_MIN_GUINEE);
+            this.ajustementZoom() >= 0
+                ? Math.min(zoomAjuste, this.zoomMaxFit())
+                : Math.max(zoomAjuste, this.zoomMin());
         this.map.setZoom(zoomBorne);
     }
 

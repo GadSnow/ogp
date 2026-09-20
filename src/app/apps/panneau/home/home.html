@@ -131,6 +131,6 @@
                 <span class="text-surface-400">— cliquez sur un marqueur pour voir le détail</span>
             </span>
         </div>
-        <app-carte-panneaux #carte [panneaux]="panneaux()" [height]="'min(72vh, 640px)'" (voirDetail)="voirDetail($event)" />
+        <app-carte-panneaux #carte [panneaux]="panneaux()" [height]="'min(72vh, 640px)'" [zoomInitial]="13" [zoomMin]="6" [zoomMaxFit]="13" (voirDetail)="voirDetail($event)" />
     </div>
 </p-dialog>
