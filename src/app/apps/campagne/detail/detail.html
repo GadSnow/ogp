@@ -318,6 +318,13 @@
                     </tbody>
                 </table>
             </div>
+
+            @if (aDesPanneauxGeolocalises()) {
+            <div class="mt-5">
+                <h4 class="text-xs font-bold uppercase tracking-wide text-surface-600 mb-3 flex items-center gap-2"><i class="pi pi-map"></i> Carte des panneaux</h4>
+                <app-carte-panneaux [panneaux]="panneaux()" [height]="'22rem'" (voirDetail)="voirDetailPanneau($event)" />
+            </div>
+            }
             }
         </div>
 

@@ -1,5 +1,5 @@
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
 import { DatePipe, CurrencyPipe, LowerCasePipe } from '@angular/common';
@@ -24,6 +24,7 @@ import { Textarea } from 'primeng/textarea';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { CartePanneaux } from '@/app/shared/utils/components/carte-panneaux/carte-panneaux';
 
 /** La réponse /campagne/getbyid embarque déjà panneaux, devis et factures : une seule requête suffit. */
 interface CampagneDetailResponse {
@@ -35,7 +36,7 @@ interface CampagneDetailResponse {
 
 @Component({
     selector: 'app-detail-campagne',
-    imports: [RouterLink, Skeleton, Tag, DatePipe, CurrencyPipe, LowerCasePipe, Button, DialogModule, Drawer, Select, SelectButton, Textarea, FormsModule, ToastModule],
+    imports: [RouterLink, Skeleton, Tag, DatePipe, CurrencyPipe, LowerCasePipe, Button, DialogModule, Drawer, Select, SelectButton, Textarea, FormsModule, ToastModule, CartePanneaux],
     templateUrl: './detail.html',
     providers: [MessageService]
 })
@@ -45,6 +46,7 @@ export class DetailCampagne {
     private remiseService = inject(RemiseService);
     private factureService = inject(FactureService);
     private route = inject(ActivatedRoute);
+    private router = inject(Router);
     private destroyRef = inject(DestroyRef);
     private messageService = inject(MessageService);
     private confirmationService = inject(ConfirmationService);
@@ -55,6 +57,8 @@ export class DetailCampagne {
     panneaux = signal<Panneau[]>([]);
     devis = signal<Devis[]>([]);
     factures = signal<Facture[]>([]);
+    /** Vrai si au moins un panneau de la campagne a des coordonnées (affichage de la carte). */
+    aDesPanneauxGeolocalises = computed(() => this.panneaux().some((p) => p.latitude != null && p.longitude != null));
 
     showRejetDialog = signal(false);
     commentaireRejet = '';
@@ -337,5 +341,10 @@ export class DetailCampagne {
             }
         }
         return parts.join(', ');
+    }
+
+    /** Depuis le popup de la carte : ouvre la fiche du panneau. */
+    voirDetailPanneau(panneau: Panneau): void {
+        this.router.navigate(['/ogp/panneau/details', panneau.id]);
     }
 }

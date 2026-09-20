@@ -2,19 +2,19 @@
    avec infobulle au survol et popup détaillée au clic. Réutilisée à la fois
    dans la liste (modal « Carte des panneaux ») et dans la fiche d'un panneau. */
 
-import { AfterViewInit, Component, EffectRef, ElementRef, OnDestroy, ViewChild, effect, input, output } from '@angular/core';
+import { AfterViewInit, Component, EffectRef, ElementRef, OnDestroy, ViewChild, effect, input, output, signal } from '@angular/core';
 import * as L from 'leaflet';
 import { Panneau } from '@/app/apps/panneau/panneau.types';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputText } from 'primeng/inputtext';
 
-/** Centre de la Guinée : utilisé quand aucun panneau n'a de coordonnées. */
 const CENTRE_GUINEE: L.LatLngExpression = [9.9456, -9.6966];
-/** Zoom par défaut = celui obtenu en appuyant une fois sur « + » au niveau du pays. */
-const ZOOM_GUINEE = 7;
-/** Zoom minimum : empêche de dézoomer au point de sortir du cadre de la Guinée. */
+
 const ZOOM_MIN_GUINEE = 6;
-/** Zoom max lors du recadrage automatique sur les marqueurs. */
-const ZOOM_MAX_FIT = 11;
-/** Cadre de la Guinée ([sud-ouest, nord-est]) : la vue reste confinée au pays. */
+const ZOOM_GUINEE = 13;
+const ZOOM_MAX_FIT = 13;
+
 const BORNES_GUINEE: L.LatLngBoundsExpression = [
     [6.95, -15.5],
     [13.1, -7.4]
@@ -23,9 +23,26 @@ const BORNES_GUINEE: L.LatLngBoundsExpression = [
 @Component({
     selector: 'app-carte-panneaux',
     standalone: true,
-    template: `<div #mapEl class="carte-panneaux" [style.height]="height()"></div>`,
+    imports: [IconFieldModule, InputIconModule, InputText],
+    template: `
+        @if (afficherRecherche()) {
+        <div class="carte-panneaux-recherche">
+            <p-iconfield class="w-full">
+                <p-inputicon class="pi pi-search" />
+                <input pInputText type="text" class="w-full" placeholder="Rechercher par référence…" (input)="onRecherche($event)" />
+            </p-iconfield>
+        </div>
+        }
+        <div #mapEl class="carte-panneaux" [style.height]="height()"></div>
+    `,
     styles: [
         `
+            .carte-panneaux-recherche {
+                display: flex;
+                align-items: center;
+                padding: 0.5rem 0.5rem 0.6rem;
+            }
+
             .carte-panneaux {
                 width: 100%;
                 border-radius: 0.75rem;
@@ -42,8 +59,17 @@ export class CartePanneaux implements AfterViewInit, OnDestroy {
     height = input<string>('30rem');
     /** Affiche le bouton « Voir le détail » dans la popup (masqué dans la fiche panneau). */
     afficherLienDetail = input<boolean>(true);
+    /** Affiche la barre de recherche par référence au-dessus de la carte. */
+    afficherRecherche = input<boolean>(false);
     /** Recadrage par défaut : colle le paysage puis recentre légèrement. */
     defautZoomPaysage = input<'rapprocher' | 'eloigner'>('rapprocher');
+    /** Dézoom appliqué après le recadrage automatique (valeurs plus grandes = vue plus large). */
+    ajustementZoom = input<number>(-0.9);
+    /** Marge (px) autour des marqueurs lors du recadrage auto : plus elle est petite, plus la vue est serrée. */
+    paddingFit = input<number>(36);
+
+    /** Filtre courant de la recherche par référence. */
+    recherche = signal('');
 
     voirDetail = output<Panneau>();
 
@@ -54,6 +80,11 @@ export class CartePanneaux implements AfterViewInit, OnDestroy {
 
     constructor() {
         this.effectInit = effect(() => {
+            /* Lecture des signaux au niveau racine pour que l'effet en dépende
+               même quand la carte n'est pas encore initialisée : les changements
+               de panneaux ou de recherche re-déclenchent bien la mise à jour. */
+            this.panneaux();
+            this.recherche();
             if (this.map) this.renderMarqueurs();
         });
     }
@@ -102,7 +133,12 @@ export class CartePanneaux implements AfterViewInit, OnDestroy {
         this.renderMarqueurs();
     }
 
-    /** Index visible pour la pin (numérotation 1..n). */
+    /** Saisie de recherche : filtre les marqueurs par référence (insensible à la casse). */
+    onRecherche(event: Event): void {
+        this.recherche.set((event.target as HTMLInputElement).value);
+    }
+
+    /** Index visible pour la pin (numérotation 1..n, parmi les panneaux filtrés). */
     private numPanneau(index: number): string {
         return String(index + 1);
     }
@@ -113,7 +149,13 @@ export class CartePanneaux implements AfterViewInit, OnDestroy {
         this.marqueurs.forEach((m) => m.remove());
         this.marqueurs = [];
 
-        const panneauxGeolocalises = this.panneaux().filter((p) => p.latitude != null && p.longitude != null);
+        const filtre = this.recherche().trim().toLowerCase();
+        const panneauxGeolocalises = this.panneaux().filter(
+            (p) =>
+                p.latitude != null &&
+                p.longitude != null &&
+                (filtre === '' || (p.reference ?? '').toLowerCase().includes(filtre))
+        );
 
         if (panneauxGeolocalises.length === 0) {
             this.map.setView(CENTRE_GUINEE, ZOOM_GUINEE);
@@ -150,13 +192,16 @@ export class CartePanneaux implements AfterViewInit, OnDestroy {
         });
 
         this.map.fitBounds(L.latLngBounds(positions), {
-            padding: [36, 36],
+            padding: [this.paddingFit(), this.paddingFit()],
             maxZoom: ZOOM_MAX_FIT
         });
 
-        /* Le recadrage colle au paysage ; on rapproche ensuite très légèrement
-           (+0.1) pour ne pas rester trop collé aux marqueurs. */
-        this.map.setZoom(Math.min(this.map.getZoom() + 0.1, ZOOM_MAX_FIT));
+        /* Après fitBounds : ajustement selon l'usage. Valeur positive = rapprochement
+           (plafonné au zoom max de recadrage), négative = dézoom (plancher Guinée). */
+        const zoomAjuste = this.map.getZoom() + this.ajustementZoom();
+        const zoomBorne =
+            this.ajustementZoom() >= 0 ? Math.min(zoomAjuste, ZOOM_MAX_FIT) : Math.max(zoomAjuste, ZOOM_MIN_GUINEE);
+        this.map.setZoom(zoomBorne);
     }
 
     /** Câble le bouton « Voir le détail » injecté dans le DOM du popup. */
