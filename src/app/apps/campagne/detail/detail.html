@@ -87,7 +87,7 @@
     </ng-template>
 </p-drawer>
 
-<!-- Génération de facture : choix de la remise + simulation en direct -->
+<!-- Génération de facture : choix du type (si régie) + remise + simulation en direct -->
 <p-drawer [(visible)]="showFactureDrawer" position="right" header="Générer une facture" styleClass="!w-full sm:!w-[32rem]">
     <div class="flex flex-col gap-6 pt-1">
         <!-- Rappel campagne -->
@@ -99,8 +99,13 @@
                     <span class="text-xs text-surface-500">panneau{{ panneaux().length > 1 ? 'x' : '' }}</span>
                 </div>
                 <div class="flex flex-col gap-0.5 border-x border-surface-200 dark:border-surface-700">
+                    @if (typeFacture() === 'regie') {
+                    <span class="text-lg font-bold text-primary">—</span>
+                    <span class="text-xs text-surface-500">durée</span>
+                    } @else {
                     <span class="text-lg font-bold text-primary">{{ campagne()?.nombre }}</span>
                     <span class="text-xs text-surface-500">{{ getCycleLabel(campagne()?.cycle) | lowercase }}{{ (campagne()?.nombre ?? 0) > 1 ? 's' : '' }}</span>
+                    }
                 </div>
                 <div class="flex flex-col gap-0.5">
                     <span class="text-lg font-bold text-primary">{{ getCycleLabel(campagne()?.cycle) }}</span>
@@ -109,7 +114,28 @@
             </div>
         </div>
 
-        <!-- Choix de la remise -->
+        <!-- Choix du type : proposé uniquement si la campagne a une régie -->
+        @if (campagne()?.regies?.id) {
+        <div class="flex flex-col gap-2">
+            <span class="text-xs font-semibold uppercase tracking-wide text-surface-500">Type de facture</span>
+            <p-selectbutton
+                [options]="[{ label: 'Historique', value: 'historique' }, { label: 'Régie', value: 'regie' }]"
+                optionLabel="label"
+                optionValue="value"
+                [ngModel]="typeFacture()"
+                (ngModelChange)="choisirTypeFacture($event)"
+                [allowEmpty]="false"
+                class="w-full"
+                styleClass="w-full"
+            />
+            @if (typeFacture() === 'regie') {
+            <p class="text-xs text-surface-400">Somme des prix par défaut des panneaux, sans durée ni remise.{{ ' ' }}<span class="font-medium">{{ campagne()?.regies?.denomination }}</span></p>
+            }
+        </div>
+        }
+
+        <!-- Choix de la remise : masqué pour une facture de régie -->
+        @if (typeFacture() === 'historique') {
         <div class="flex flex-col gap-2">
             <span class="text-xs font-semibold uppercase tracking-wide text-surface-500">Remise</span>
 
@@ -132,18 +158,21 @@
             </p-select>
             }
         </div>
+        }
 
         <!-- Simulation -->
         <div class="rounded-lg bg-surface-50 dark:bg-surface-800 p-4 flex flex-col gap-3">
-            <span class="text-xs font-semibold uppercase tracking-wide text-surface-500">Simulation</span>
+            <span class="text-xs font-semibold uppercase tracking-wide text-surface-500">Résumé</span>
             <div class="flex items-center justify-between text-sm">
                 <span class="text-surface-600 dark:text-surface-300">Montant brut</span>
-                <span class="font-semibold tabular">{{ montantBrutSimule() | currency:'GNF':'symbol':'1.0-0' }}</span>
+                <span class="font-semibold tabular">{{ montantBrutFacture() | currency:'GNF':'symbol':'1.0-0' }}</span>
             </div>
+            @if (typeFacture() === 'historique') {
             <div class="flex items-center justify-between text-sm">
                 <span class="text-surface-600 dark:text-surface-300"> Remise @if (remiseFacture()) { <span class="text-surface-400">({{ remiseFacture()?.valeurRemise }} %)</span> } </span>
                 <span class="font-semibold text-amber-600 tabular">{{ montantRemiseFacture() | currency:'GNF':'symbol':'1.0-0' }}</span>
             </div>
+            }
             <div class="h-px bg-surface-200 dark:bg-surface-700"></div>
             <div class="flex items-center justify-between">
                 <span class="text-sm font-medium">Montant net</span>
@@ -199,6 +228,11 @@
                 <div class="flex flex-col gap-1">
                     <span class="text-xs text-surface-500 uppercase tracking-wide">Client</span>
                     <a [routerLink]="['/ogp/client/detail', campagne()?.client?.id]" class="font-medium text-primary hover:underline"> {{ campagne()?.client?.denomination }} @if (campagne()?.client?.sigle) { ({{ campagne()?.client?.sigle }}) } </a>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <span class="text-xs text-surface-500 uppercase tracking-wide">Régie</span>
+                    <span class="font-medium">{{ campagne()?.regies?.denomination ?? '—' }}</span>
                 </div>
 
                 <div class="flex flex-col gap-1">

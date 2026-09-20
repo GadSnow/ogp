@@ -1,6 +1,7 @@
 import { Client } from '@/app/apps/client/client.types';
 import { User } from '@/app/apps/evenement/evenement.types';
 import { Panneau } from '@/app/apps/panneau/panneau.types';
+import { Regie } from '@/app/apps/regie/regie.types';
 
 export interface Campagne {
     id: string;
@@ -16,6 +17,8 @@ export interface Campagne {
     statutPaiement: string;
     client: Client;
     user?: User;
+    /** Régie déduite des panneaux ; null pour les anciennes campagnes. */
+    regies?: Regie | null;
 }
 
 export interface AddCampagne {

@@ -19,6 +19,7 @@ import { Tooltip } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { Drawer } from 'primeng/drawer';
 import { Select } from 'primeng/select';
+import { SelectButton } from 'primeng/selectbutton';
 import { Textarea } from 'primeng/textarea';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -34,7 +35,7 @@ interface CampagneDetailResponse {
 
 @Component({
     selector: 'app-detail-campagne',
-    imports: [RouterLink, Skeleton, Tag, DatePipe, CurrencyPipe, LowerCasePipe, Button, Tooltip, DialogModule, Drawer, Select, Textarea, FormsModule, ToastModule],
+    imports: [RouterLink, Skeleton, Tag, DatePipe, CurrencyPipe, LowerCasePipe, Button, Tooltip, DialogModule, Drawer, Select, SelectButton, Textarea, FormsModule, ToastModule],
     templateUrl: './detail.html',
     providers: [MessageService]
 })
@@ -73,6 +74,8 @@ export class DetailCampagne {
     isFactureLoading = signal(false);
     /** Remise retenue pour la simulation de la facture ; null = sans remise. */
     remiseFacture = signal<Remise | null>(null);
+    /** Facture de régie (idRegie fourni) ou facture historique. */
+    typeFacture = signal<'historique' | 'regie'>('historique');
 
     /** Prix catalogue d'un panneau pour le cycle de la campagne. */
     private prixParCycle(panneau: Panneau): number {
@@ -102,14 +105,23 @@ export class DetailCampagne {
 
     montantNetSimule = computed<number>(() => this.montantBrutSimule() - this.montantRemiseSimule());
 
-    // Même base de calcul que le devis, mais pilotée par la remise choisie pour la facture.
+    // --- Facture ---
+
+    /** Somme des prix par défaut des panneaux : base de la facture de régie, sans durée. */
+    montantBrutRegie = computed<number>(() => this.panneaux().reduce((somme, p) => somme + (p.defaultPrice ?? 0), 0));
+
+    /** Base de la facture selon le type : régie (somme des prix par défaut) ou historique (tarif × durée). */
+    montantBrutFacture = computed<number>(() => (this.typeFacture() === 'regie' ? this.montantBrutRegie() : this.montantBrutSimule()));
+
+    /** Une facture de régie n'admet pas de remise. */
     montantRemiseFacture = computed<number>(() => {
+        if (this.typeFacture() === 'regie') return 0;
         const remise = this.remiseFacture();
         if (!remise) return 0;
-        return (this.montantBrutSimule() * (remise.valeurRemise ?? 0)) / 100;
+        return (this.montantBrutFacture() * (remise.valeurRemise ?? 0)) / 100;
     });
 
-    montantNetFacture = computed<number>(() => this.montantBrutSimule() - this.montantRemiseFacture());
+    montantNetFacture = computed<number>(() => this.montantBrutFacture() - this.montantRemiseFacture());
 
     constructor() {
         this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
@@ -191,6 +203,7 @@ export class DetailCampagne {
 
     ouvrirFactureDrawer() {
         this.remiseFacture.set(null);
+        this.typeFacture.set('historique');
         this.showFactureDrawer.set(true);
         if (this.remises().length === 0) this.loadRemises();
     }
@@ -199,12 +212,18 @@ export class DetailCampagne {
         this.remiseFacture.set(remise ?? null);
     }
 
+    choisirTypeFacture(type: 'historique' | 'regie') {
+        this.typeFacture.set(type);
+        if (type === 'regie') this.remiseFacture.set(null);
+    }
+
     genererFacture() {
         const idCampagne = this.campagne()?.id;
         if (!idCampagne) return;
         this.isFactureLoading.set(true);
+        const idRegie = this.typeFacture() === 'regie' ? this.campagne()?.regies?.id : undefined;
         this.factureService
-            .addFacture(idCampagne, this.remiseFacture()?.id)
+            .addFacture(idCampagne, idRegie ? undefined : this.remiseFacture()?.id, idRegie)
             .pipe(
                 finalize(() => this.isFactureLoading.set(false)),
                 takeUntilDestroyed(this.destroyRef)

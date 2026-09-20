@@ -37,37 +37,37 @@ export class AppMenu {
             icon: 'pi pi-fw pi-briefcase',
             items: [
                 {
-                    label: "Client",
+                    label: 'Client',
                     icon: 'pi pi-fw pi-users',
                     routerLink: ['/ogp/client']
                 },
                 {
-                    label: "Panneau",
+                    label: 'Panneau',
                     icon: 'pi pi-fw pi-map',
                     routerLink: ['/ogp/panneau']
                 },
                 {
-                    label: "Événement",
+                    label: 'Événement',
                     icon: 'pi pi-fw pi-calendar-plus',
                     routerLink: ['/ogp/evenement']
                 },
                 {
-                    label: "Campagne",
+                    label: 'Campagne',
                     icon: 'pi pi-fw pi-megaphone',
                     routerLink: ['/ogp/campagne']
                 },
                 {
-                    label: "Devis",
+                    label: 'Devis',
                     icon: 'pi pi-fw pi-file-edit',
                     routerLink: ['/ogp/devis']
                 },
                 {
-                    label: "Facture",
+                    label: 'Facture',
                     icon: 'pi pi-fw pi-receipt',
                     routerLink: ['/ogp/facture']
                 },
                 {
-                    label: "Paiement",
+                    label: 'Paiement',
                     icon: 'pi pi-fw pi-wallet',
                     routerLink: ['/ogp/paiement']
                 }
@@ -79,12 +79,12 @@ export class AppMenu {
             icon: 'pi pi-fw pi-cog',
             items: [
                 {
-                    label: "Catégorie panneaux",
+                    label: 'Catégorie panneaux',
                     icon: 'pi pi-fw pi-table',
                     routerLink: ['/ogp/categorie-panneaux']
                 },
                 {
-                    label: "Caractéristiques",
+                    label: 'Caractéristiques',
                     icon: 'pi pi-fw pi-table',
                     routerLink: ['/ogp/caracteristique-panneaux']
                 },
@@ -94,24 +94,29 @@ export class AppMenu {
                     routerLink: ['/ogp/type-evenement']
                 },
                 {
-                    label: "Type client",
+                    label: 'Type client',
                     icon: 'pi pi-fw pi-users',
                     routerLink: ['/ogp/type-client']
                 },
                 {
-                    label: "Mode de paiement",
+                    label: 'Mode de paiement',
                     icon: 'pi pi-fw pi-credit-card',
                     routerLink: ['/ogp/mode-paiement']
                 },
                 {
-                    label: "Tarif",
+                    label: 'Tarif',
                     icon: 'pi pi-fw pi-money-bill',
                     routerLink: ['/ogp/tarif']
                 },
                 {
-                    label: "Remise",
+                    label: 'Remise',
                     icon: 'pi pi-fw pi-percentage',
                     routerLink: ['/ogp/remise']
+                },
+                {
+                    label: 'Régie',
+                    icon: 'pi pi-fw pi-building',
+                    routerLink: ['/ogp/regie']
                 }
             ]
         },
@@ -121,22 +126,22 @@ export class AppMenu {
             icon: 'pi pi-fw pi-map-marker',
             items: [
                 {
-                    label: "Region",
+                    label: 'Region',
                     icon: 'pi pi-fw pi-map',
                     routerLink: ['/ogp/region']
                 },
                 {
-                    label: "Commune",
+                    label: 'Commune',
                     icon: 'pi pi-fw pi-map-marker',
                     routerLink: ['/ogp/commune']
                 },
                 {
-                    label: "Quartier",
+                    label: 'Quartier',
                     icon: 'pi pi-fw pi-map-marker',
                     routerLink: ['/ogp/quartier']
                 },
                 {
-                    label: "Secteur",
+                    label: 'Secteur',
                     icon: 'pi pi-fw pi-briefcase',
                     routerLink: ['/ogp/secteur']
                 }
@@ -148,17 +153,16 @@ export class AppMenu {
             icon: 'pi pi-fw pi-shield',
             items: [
                 {
-                    label: "Profils",
+                    label: 'Profils',
                     icon: 'pi pi-fw pi-id-card',
                     routerLink: ['/ogp/profils']
                 },
                 {
-                    label: "Utilisateurs",
+                    label: 'Utilisateurs',
                     icon: 'pi pi-fw pi-user',
                     routerLink: ['/ogp/users']
                 }
             ]
-        },
-
+        }
     ];
 }

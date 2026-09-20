@@ -1,5 +1,6 @@
 import { Secteur } from '@/app/apps/secteur/secteur.types';
 import { CaracteristiquePanneaux } from '@/app/apps/caracteristique-panneaux/caracteristique-panneaux.types';
+import { Regie } from '@/app/apps/regie/regie.types';
 
 export interface Tarif {
     id: string;
@@ -22,8 +23,10 @@ export interface Panneau {
     dtCreated?: string;
     dtLastUpdate?: string;
     reference: string;
-    latitude: number;
-    longitude: number;
+    /** Facultatif. */
+    latitude?: number;
+    /** Facultatif. */
+    longitude?: number;
     nombreFace: number;
     face: string;
     btValide: boolean;
@@ -32,6 +35,10 @@ export interface Panneau {
     priceDay: number;
     priceWeek: number;
     priceMonth: number;
+    /** Prix par défaut de la régie (par cycle). */
+    defaultPrice?: number;
+    /** Régie propriétaire du panneau ; null pour les anciens panneaux. */
+    regies: Regie | null;
     idUser?: string;
     caracteristiquePanneaux: CaracteristiquePanneaux;
     secteur: Secteur;
@@ -39,8 +46,10 @@ export interface Panneau {
 
 export interface AddPanneau {
     reference: string;
-    latitude: number;
-    longitude: number;
+    /** Facultatif. */
+    latitude?: number;
+    /** Facultatif. */
+    longitude?: number;
     nombreFace: number;
     face: string;
     btValide: boolean;
@@ -49,6 +58,7 @@ export interface AddPanneau {
     priceDay: number;
     priceWeek: number;
     priceMonth: number;
+    defaultPrice: number;
 }
 
 /**

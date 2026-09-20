@@ -9,7 +9,7 @@ import { Tooltip } from 'primeng/tooltip';
 import { finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FactureService } from '@/app/apps/facture/facture.service';
-import { Facture } from '@/app/apps/facture/facture.types';
+import { Facture, TypeFacture } from '@/app/apps/facture/facture.types';
 import { SkeletonTableComponent } from '@/app/shared/utils/components/skeleton-table/skeleton-table.component';
 import { CustomCard } from '@/app/layout/components/ui/customcard';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -40,11 +40,31 @@ export class HomeFacture {
         this.showDetail.set(true);
     }
 
+    /** Deux types de factures, distingués par le champ `regies`. */
+    typeFacture(facture: Facture): TypeFacture {
+        return facture.regies ? 'regie' : 'historique';
+    }
+
+    getTypeLabel(facture: Facture): string {
+        return this.typeFacture(facture) === 'regie' ? 'Régie' : 'Historique';
+    }
+
+    getTypeSeverity(facture: Facture): 'info' | 'secondary' {
+        return this.typeFacture(facture) === 'regie' ? 'info' : 'secondary';
+    }
+
     private loadFactures() {
         this.isLoading.set(true);
         this.factureService
             .getFactures()
-            .pipe(finalize(() => this.isLoading.set(false)), takeUntilDestroyed(this.destroyRef))
-            .subscribe({ next: (res) => { this.factures = res.data ?? []; } });
+            .pipe(
+                finalize(() => this.isLoading.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe({
+                next: (res) => {
+                    this.factures = res.data ?? [];
+                }
+            });
     }
 }

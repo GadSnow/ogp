@@ -34,36 +34,65 @@
                         @if (isInvalid('idCaracteristiquePanneau')) { <small class="p-error">Ce champ est requis.</small> }
                     </div>
 
-                    <!-- Latitude -->
+                    <!-- Regie -->
                     <div class="flex flex-col gap-2">
-                        <label for="latitude">Latitude</label>
-                        <input id="latitude" type="number" pInputText formControlName="latitude" [class.ng-invalid]="isInvalid('latitude')" [class.ng-dirty]="isInvalid('latitude')" step="any" />
+                        <label for="idRegie">Régie</label>
+                        @if (loadingRegies()) {
+                        <p-skeleton width="100%" height="2.8rem" borderRadius="6px"></p-skeleton>
+                        } @else {
+                        <p-select
+                            id="idRegie"
+                            [options]="regies"
+                            optionLabel="denomination"
+                            optionValue="id"
+                            formControlName="idRegie"
+                            class="w-full"
+                            [filter]="true"
+                            filterBy="denomination,sigle"
+                            [class.ng-invalid]="isInvalid('idRegie')"
+                            [class.ng-dirty]="isInvalid('idRegie')"
+                        ></p-select>
+                        } @if (isInvalid('idRegie')) { <small class="p-error">La régie est obligatoire.</small> }
                     </div>
 
-                    <!-- Longitude -->
+                    <!-- Prix par défaut -->
+                    <div class="flex flex-col gap-2">
+                        <label for="defaultPrice">Prix par défaut (GNF)</label>
+                        <p-inputnumber
+                            id="defaultPrice"
+                            formControlName="defaultPrice"
+                            mode="currency"
+                            currency="GNF"
+                            locale="fr-FR"
+                            class="w-full"
+                            [class.ng-invalid]="isInvalid('defaultPrice')"
+                            [class.ng-dirty]="isInvalid('defaultPrice')"
+                        ></p-inputnumber>
+                        @if (isInvalid('defaultPrice')) { <small class="p-error">Le prix par défaut est obligatoire.</small> }
+                    </div>
+
+                    <!-- Latitude (facultatif) -->
+                    <div class="flex flex-col gap-2">
+                        <label for="latitude">Latitude</label>
+                        <input id="latitude" type="number" pInputText formControlName="latitude" step="any" />
+                    </div>
+
+                    <!-- Longitude (facultatif) -->
                     <div class="flex flex-col gap-2">
                         <label for="longitude">Longitude</label>
-                        <input id="longitude" type="number" pInputText formControlName="longitude" [class.ng-invalid]="isInvalid('longitude')" [class.ng-dirty]="isInvalid('longitude')" step="any" />
+                        <input id="longitude" type="number" pInputText formControlName="longitude" step="any" />
                     </div>
 
                     <!-- Nombre de faces -->
                     <div class="flex flex-col gap-2">
                         <label for="nombreFace">Nombre de faces</label>
-                        <p-select
-                            id="nombreFace"
-                            [options]="nombreFaces"
-                            formControlName="nombreFace"
-                            class="w-full"
-                            [class.ng-invalid]="isInvalid('nombreFace')"
-                            [class.ng-dirty]="isInvalid('nombreFace')"
-                        ></p-select>
+                        <p-select id="nombreFace" [options]="nombreFaces" formControlName="nombreFace" class="w-full" [class.ng-invalid]="isInvalid('nombreFace')" [class.ng-dirty]="isInvalid('nombreFace')"></p-select>
                         @if (isInvalid('nombreFace')) { <small class="p-error">Ce champ est requis.</small> }
                     </div>
-
                 </div>
 
                 @if (form.get('hasSpecialPrice')?.value) {
-                <h5 class="font-bold text-lg mb-4 mt-2">Prix et Statut</h5>
+                <h5 class="font-bold text-lg mb-4 mt-2">Prix spécial</h5>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div class="flex flex-col gap-2">
                         <label for="priceDay">Prix par Jour</label>
@@ -132,9 +161,7 @@
                 <div class="flex justify-end mt-8">
                     <p-button label="Valider" severity="primary" (onClick)="submit()" [disabled]="form.invalid || isLoading()" />
                 </div>
-
-
-</form>
+            </form>
             }
         </div>
     </div>

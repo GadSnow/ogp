@@ -1,0 +1,69 @@
+<div class="flex justify-center mt-4">
+    <div class="w-full md:w-4/5">
+        <div class="card p-6 flex flex-col gap-5">
+            <div class="text-base font-semibold text-surface-900 dark:text-surface-0 pb-3 border-b">Enregistrement d'une régie</div>
+
+            @if (isLoading()) {
+            <div class="flex flex-col gap-4">
+                <p-skeleton width="100%" height="20rem"></p-skeleton>
+            </div>
+            } @else {
+            <form [formGroup]="form">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <!-- Dénomination -->
+                    <div class="flex flex-col gap-2">
+                        <label for="denomination">Dénomination</label>
+                        <input id="denomination" type="text" pInputText formControlName="denomination" [class.ng-invalid]="isInvalid('denomination')" [class.ng-dirty]="isInvalid('denomination')" />
+                        @if (isInvalid('denomination')) { <small class="p-error">Ce champ est requis.</small> }
+                    </div>
+
+                    <!-- Sigle (facultatif) -->
+                    <div class="flex flex-col gap-2">
+                        <label for="sigle">Sigle</label>
+                        <input id="sigle" type="text" pInputText formControlName="sigle" />
+                    </div>
+
+                    <!-- Nom Responsable -->
+                    <div class="flex flex-col gap-2">
+                        <label for="nomResponsable">Nom du responsable</label>
+                        <input id="nomResponsable" type="text" pInputText formControlName="nomResponsable" [class.ng-invalid]="isInvalid('nomResponsable')" [class.ng-dirty]="isInvalid('nomResponsable')" />
+                        @if (isInvalid('nomResponsable')) { <small class="p-error">Ce champ est requis.</small> }
+                    </div>
+
+                    <!-- Prénom Responsable -->
+                    <div class="flex flex-col gap-2">
+                        <label for="prenomResponsable">Prénom du responsable</label>
+                        <input id="prenomResponsable" type="text" pInputText formControlName="prenomResponsable" [class.ng-invalid]="isInvalid('prenomResponsable')" [class.ng-dirty]="isInvalid('prenomResponsable')" />
+                        @if (isInvalid('prenomResponsable')) { <small class="p-error">Ce champ est requis.</small> }
+                    </div>
+
+                    <!-- Email Responsable -->
+                    <div class="flex flex-col gap-2">
+                        <label for="emailResponsable">Email du responsable</label>
+                        <input id="emailResponsable" type="email" pInputText formControlName="emailResponsable" [class.ng-invalid]="isInvalid('emailResponsable')" [class.ng-dirty]="isInvalid('emailResponsable')" />
+                        @if (isInvalid('emailResponsable')) { <small class="p-error">Email invalide.</small> }
+                    </div>
+
+                    <!-- Téléphone Responsable -->
+                    <div class="flex flex-col gap-2">
+                        <label for="telephoneResponsable">Téléphone du responsable</label>
+                        <input id="telephoneResponsable" type="text" pInputText formControlName="telephoneResponsable" [class.ng-invalid]="isInvalid('telephoneResponsable')" [class.ng-dirty]="isInvalid('telephoneResponsable')" />
+                        @if (isInvalid('telephoneResponsable')) { <small class="p-error">Ce champ est requis.</small> }
+                    </div>
+
+                    <!-- Adresse -->
+                    <div class="flex flex-col gap-2 md:col-span-2">
+                        <label for="adresse">Adresse</label>
+                        <input id="adresse" type="text" pInputText formControlName="adresse" [class.ng-invalid]="isInvalid('adresse')" [class.ng-dirty]="isInvalid('adresse')" />
+                        @if (isInvalid('adresse')) { <small class="p-error">Ce champ est requis.</small> }
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <p-button label="Valider" severity="primary" (onClick)="submit()" [disabled]="form.invalid || isLoading()" />
+                </div>
+            </form>
+            }
+        </div>
+    </div>
+</div>

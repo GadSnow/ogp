@@ -6,15 +6,21 @@ import { Campagne, CampagnePayload } from '@/app/apps/campagne/campagne.types';
 import { ApiResponse } from '@/app/core/models/api-response.interface';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class CampagneService {
-
     private httpClient = inject(HttpClient);
     private apiUrl: string = environment.apiUrl;
 
     getCampagnes(): Observable<ApiResponse<Campagne[]>> {
         return this.httpClient.get<ApiResponse<Campagne[]>>(`${this.apiUrl}/campagne/liste`);
+    }
+
+    /** Campagnes rattachées à une régie. */
+    getCampagnesByRegie(idRegie: string): Observable<ApiResponse<Campagne[]>> {
+        return this.httpClient.get<ApiResponse<Campagne[]>>(`${this.apiUrl}/campagne/getbyregie`, {
+            params: { idRegie }
+        });
     }
 
     addCampagne(clientMsisdn: string, payload: CampagnePayload): Observable<ApiResponse<Campagne>> {
@@ -52,5 +58,4 @@ export class CampagneService {
         if (commentaire) params['commentaire'] = commentaire;
         return this.httpClient.get<ApiResponse<any>>(`${this.apiUrl}/campagne/statut/update`, { params });
     }
-
 }

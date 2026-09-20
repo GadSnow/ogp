@@ -60,6 +60,18 @@
                         <span class="text-xs text-surface-400 uppercase tracking-wide">Face</span>
                         <span class="font-semibold text-primary">{{ panneau()?.face ?? '—' }}</span>
                     </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Régie</span>
+                        <span class="font-medium">{{ panneau()?.regies?.denomination ?? '—' }}</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs text-surface-400 uppercase tracking-wide">Prix par défaut</span>
+                        <span class="font-medium">
+                            @if (panneau()?.defaultPrice != null) { {{ panneau()?.defaultPrice | number }} GNF } @else {
+                            <span>—</span>
+                            }
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -106,8 +118,9 @@
                     <i class="pi pi-chevron-right text-surface-300 text-xs"></i>
                     <span class="bg-surface-800 text-surface-0 text-xs font-semibold px-2 py-0.5 rounded"> {{ panneau()?.secteur?.secteur }} </span>
                 </div>
-                @if (panneau()?.latitude && panneau()?.longitude) {
-                <app-map-location class="block mt-4" [latitude]="panneau()!.latitude" [longitude]="panneau()!.longitude" [label]="'Panneau #' + panneau()?.reference" />
+                @let pos = panneau();
+                @if (pos?.latitude != null && pos?.longitude != null) {
+                <app-map-location class="block mt-4" [latitude]="pos!.latitude!" [longitude]="pos!.longitude!" [label]="'Panneau #' + pos?.reference" />
                 }
             </div>
 

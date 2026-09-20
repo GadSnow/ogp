@@ -21,7 +21,7 @@ import { AppRightMenu } from './app.rightmenu';
     template: `
         <!-- Left: hamburger + page title -->
         <div class="topbar-left">
-            @if (showMenuButton()) {
+            @if (showMenuButton() || !isDesktop()) {
                 <button type="button" (click)="layoutService.toggleMenu()" class="menu-button">
                     <i class="pi pi-bars"></i>
                 </button>
@@ -46,11 +46,6 @@ import { AppRightMenu } from './app.rightmenu';
         <!-- Right: actions -->
         <div class="topbar-right">
             <div class="topbar-actions">
-
-                <!-- Mobile hamburger -->
-                <button type="button" (click)="layoutService.toggleMenu()" class="menu-button menu-button-mobile">
-                    <i class="pi pi-bars"></i>
-                </button>
 
                 <!-- Notifications -->
                 <!-- <div class="relative">
@@ -113,6 +108,8 @@ export class AppHeader {
     private activatedRoute = inject(ActivatedRoute);
 
     search = signal('');
+
+    isDesktop = computed(() => this.layoutService.isDesktop());
 
     currentUser = computed(() => this.authService.getCurrentUser());
 

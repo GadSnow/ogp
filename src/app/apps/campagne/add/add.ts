@@ -75,8 +75,11 @@ export class AddCampagne implements OnInit {
         this.loadClients();
         this.loadPanneaux();
 
-        ['dateDebut', 'cycle', 'duree'].forEach(field => {
-            this.form.get(field)?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.calculateDateFin());
+        ['dateDebut', 'cycle', 'duree'].forEach((field) => {
+            this.form
+                .get(field)
+                ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe(() => this.calculateDateFin());
         });
     }
 
@@ -103,21 +106,48 @@ export class AddCampagne implements OnInit {
 
     loadClients() {
         this.loadingClients.set(true);
-        this.clientService.getClients().pipe(finalize(() => this.loadingClients.set(false)), takeUntilDestroyed(this.destroyRef)).subscribe(res => {
-            this.clients = res.data;
-        });
+        this.clientService
+            .getClients()
+            .pipe(
+                finalize(() => this.loadingClients.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe((res) => {
+                this.clients = res.data;
+            });
     }
 
     loadPanneaux() {
         this.loadingPanneaux.set(true);
-        this.panneauService.getDisponibles().pipe(finalize(() => this.loadingPanneaux.set(false)), takeUntilDestroyed(this.destroyRef)).subscribe(res => {
-            this.panneaux = res.data;
-        });
+        this.panneauService
+            .getDisponibles()
+            .pipe(
+                finalize(() => this.loadingPanneaux.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe((res) => {
+                this.panneaux = res.data;
+            });
     }
 
     isInvalid(field: string): boolean {
         const control = this.form.get(field);
         return !!(control && control.invalid && (control.dirty || control.touched));
+    }
+
+    /** Libellé d'un panneau dans le multi-select : référence + régie. */
+    libellePanneau(panneau: Panneau): string {
+        return panneau.regies ? `${panneau.reference} — ${panneau.regies.denomination}` : panneau.reference;
+    }
+
+    /**
+     * La régie d'une campagne est déduite des panneaux. On refuse la soumission
+     * quand les panneaux sélectionnés appartiennent à des régies différentes.
+     */
+    private panneauxDeRegiesDifferents(selected: Panneau[]): boolean {
+        const regies = new Set(selected.filter((p) => p.regies).map((p) => p.regies!.id));
+        const sansRegie = selected.some((p) => !p.regies);
+        return regies.size > 1 || (regies.size === 1 && sansRegie);
     }
 
     formatDate(date: any): string {
@@ -132,7 +162,7 @@ export class AddCampagne implements OnInit {
     submit(): void {
         this.confirmationService.confirm({
             message: 'Voulez-vous créer cette campagne ?',
-            header: "Confirmation",
+            header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             accept: () => this.validate()
         });
@@ -142,8 +172,15 @@ export class AddCampagne implements OnInit {
         this.isLoading.set(true);
 
         const { idClient, selectedPanneaux, duree, ...campagneData } = this.form.getRawValue();
+
+        if (this.panneauxDeRegiesDifferents(selectedPanneaux)) {
+            this.isLoading.set(false);
+            this.messageService.add({ severity: 'error', summary: 'Message', detail: "Les panneaux sélectionnés proviennent de régies différentes. Sélectionnez des panneaux d'une même régie." });
+            return;
+        }
+
         campagneData.nombre = duree;
-        const selectedClient = this.clients.find(c => c.id === idClient);
+        const selectedClient = this.clients.find((c) => c.id === idClient);
         const clientMsisdn = selectedClient?.telephoneResponsable || '';
 
         const payload: CampagnePayload = {

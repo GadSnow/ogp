@@ -17,6 +17,8 @@ import { CaracteristiquePanneauxService } from '@/app/apps/caracteristique-panne
 import { CaracteristiquePanneaux } from '@/app/apps/caracteristique-panneaux/caracteristique-panneaux.types';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { RegieService } from '@/app/apps/regie/regie.service';
+import { Regie } from '@/app/apps/regie/regie.types';
 
 @Component({
     selector: 'app-add-panneau',
@@ -27,6 +29,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 export class AddPanneau implements OnInit {
     private panneauService = inject(PanneauService);
     private caractService = inject(CaracteristiquePanneauxService);
+    private regieService = inject(RegieService);
     private regionService = inject(RegionService);
     private communeService = inject(CommuneService);
     private quartierService = inject(QuartierService);
@@ -38,12 +41,14 @@ export class AddPanneau implements OnInit {
     private destroyRef = inject(DestroyRef);
 
     isLoading = signal(false);
+    loadingRegies = signal(false);
     loadingRegions = signal(false);
     loadingCommunes = signal(false);
     loadingQuartiers = signal(false);
     loadingSecteurs = signal(false);
 
     caracteristiques: CaracteristiquePanneaux[] = [];
+    regies: Regie[] = [];
     regions: any[] = [];
     communes: any[] = [];
     quartiers: any[] = [];
@@ -52,12 +57,11 @@ export class AddPanneau implements OnInit {
 
     form: FormGroup;
 
-
     constructor() {
         this.form = this.fb.group({
             reference: ['', Validators.required],
-            latitude: [0, Validators.required],
-            longitude: [0, Validators.required],
+            latitude: [null],
+            longitude: [null],
             nombreFace: [1, Validators.required],
             btValide: [true],
             btAvailable: [true],
@@ -65,6 +69,8 @@ export class AddPanneau implements OnInit {
             priceDay: [0, Validators.required],
             priceWeek: [0, Validators.required],
             priceMonth: [0, Validators.required],
+            defaultPrice: [0, Validators.required],
+            idRegie: ['', Validators.required],
             idCaracteristiquePanneau: ['', Validators.required],
             idRegion: ['', Validators.required],
             idCommune: [{ value: '', disabled: true }, Validators.required],
@@ -75,103 +81,138 @@ export class AddPanneau implements OnInit {
 
     ngOnInit() {
         this.loadCaracteristiques();
+        this.loadRegies();
         this.loadRegions();
 
         // Listen to dropdown changes
-        this.form.get('idRegion')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(id => {
-            if (this.form.get('idRegion')?.value !== id) return; // Prevent infinite loop during reset
-            this.form.get('idCommune')?.reset();
-            this.form.get('idQuartier')?.reset();
-            this.form.get('idSecteur')?.reset();
-            this.communes = [];
-            this.quartiers = [];
-            this.secteurs = [];
-            if (id) {
-                this.form.get('idCommune')?.enable();
-                this.loadCommunes(id);
-            } else {
-                this.form.get('idCommune')?.disable();
-            }
-            this.form.get('idQuartier')?.disable();
-            this.form.get('idSecteur')?.disable();
-        });
-
-        this.form.get('idCommune')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(id => {
-            if (this.form.get('idCommune')?.value !== id) return;
-            this.form.get('idQuartier')?.reset();
-            this.form.get('idSecteur')?.reset();
-            this.quartiers = [];
-            this.secteurs = [];
-            if (id) {
-                this.form.get('idQuartier')?.enable();
-                this.loadQuartiers(id);
-            } else {
+        this.form
+            .get('idRegion')
+            ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((id) => {
+                if (this.form.get('idRegion')?.value !== id) return; // Prevent infinite loop during reset
+                this.form.get('idCommune')?.reset();
+                this.form.get('idQuartier')?.reset();
+                this.form.get('idSecteur')?.reset();
+                this.communes = [];
+                this.quartiers = [];
+                this.secteurs = [];
+                if (id) {
+                    this.form.get('idCommune')?.enable();
+                    this.loadCommunes(id);
+                } else {
+                    this.form.get('idCommune')?.disable();
+                }
                 this.form.get('idQuartier')?.disable();
-            }
-            this.form.get('idSecteur')?.disable();
-        });
-
-        this.form.get('idQuartier')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(id => {
-            if (this.form.get('idQuartier')?.value !== id) return;
-            this.form.get('idSecteur')?.reset();
-            this.secteurs = [];
-            if (id) {
-                this.form.get('idSecteur')?.enable();
-                this.loadSecteurs(id);
-            } else {
                 this.form.get('idSecteur')?.disable();
-            }
-        });
+            });
 
-        this.form.get('hasSpecialPrice')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(hasSpecial => {
-            const priceControls = ['priceDay', 'priceWeek', 'priceMonth'];
-            if (!hasSpecial) {
-                priceControls.forEach(ctrl => {
-                    this.form.get(ctrl)?.setValue(0);
-                    this.form.get(ctrl)?.clearValidators();
-                    this.form.get(ctrl)?.updateValueAndValidity();
-                });
-            } else {
-                priceControls.forEach(ctrl => {
-                    this.form.get(ctrl)?.setValidators([Validators.required]);
-                    this.form.get(ctrl)?.updateValueAndValidity();
-                });
-            }
-        });
+        this.form
+            .get('idCommune')
+            ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((id) => {
+                if (this.form.get('idCommune')?.value !== id) return;
+                this.form.get('idQuartier')?.reset();
+                this.form.get('idSecteur')?.reset();
+                this.quartiers = [];
+                this.secteurs = [];
+                if (id) {
+                    this.form.get('idQuartier')?.enable();
+                    this.loadQuartiers(id);
+                } else {
+                    this.form.get('idQuartier')?.disable();
+                }
+                this.form.get('idSecteur')?.disable();
+            });
+
+        this.form
+            .get('idQuartier')
+            ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((id) => {
+                if (this.form.get('idQuartier')?.value !== id) return;
+                this.form.get('idSecteur')?.reset();
+                this.secteurs = [];
+                if (id) {
+                    this.form.get('idSecteur')?.enable();
+                    this.loadSecteurs(id);
+                } else {
+                    this.form.get('idSecteur')?.disable();
+                }
+            });
+
+        this.form
+            .get('hasSpecialPrice')
+            ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((hasSpecial) => {
+                const priceControls = ['priceDay', 'priceWeek', 'priceMonth'];
+                if (!hasSpecial) {
+                    priceControls.forEach((ctrl) => {
+                        this.form.get(ctrl)?.setValue(0);
+                        this.form.get(ctrl)?.clearValidators();
+                        this.form.get(ctrl)?.updateValueAndValidity();
+                    });
+                } else {
+                    priceControls.forEach((ctrl) => {
+                        this.form.get(ctrl)?.setValidators([Validators.required]);
+                        this.form.get(ctrl)?.updateValueAndValidity();
+                    });
+                }
+            });
     }
 
     loadCaracteristiques() {
-        this.caractService.getCaracteristiques().subscribe(res => {
+        this.caractService.getCaracteristiques().subscribe((res) => {
             this.caracteristiques = res.data;
         });
     }
 
+    loadRegies() {
+        this.loadingRegies.set(true);
+        this.regieService
+            .getRegies()
+            .pipe(finalize(() => this.loadingRegies.set(false)))
+            .subscribe((res) => {
+                this.regies = res.data ?? [];
+            });
+    }
+
     loadRegions() {
         this.loadingRegions.set(true);
-        this.regionService.getRegions().pipe(finalize(() => this.loadingRegions.set(false))).subscribe(res => {
-            this.regions = res.data;
-        });
+        this.regionService
+            .getRegions()
+            .pipe(finalize(() => this.loadingRegions.set(false)))
+            .subscribe((res) => {
+                this.regions = res.data;
+            });
     }
 
     loadCommunes(idRegion: string) {
         this.loadingCommunes.set(true);
-        this.communeService.getCommunesByRegion(idRegion).pipe(finalize(() => this.loadingCommunes.set(false))).subscribe(res => {
-            this.communes = res.data;
-        });
+        this.communeService
+            .getCommunesByRegion(idRegion)
+            .pipe(finalize(() => this.loadingCommunes.set(false)))
+            .subscribe((res) => {
+                this.communes = res.data;
+            });
     }
 
     loadQuartiers(idCommune: string) {
         this.loadingQuartiers.set(true);
-        this.quartierService.getQuartiersByCommune(idCommune).pipe(finalize(() => this.loadingQuartiers.set(false))).subscribe(res => {
-            this.quartiers = res.data;
-        });
+        this.quartierService
+            .getQuartiersByCommune(idCommune)
+            .pipe(finalize(() => this.loadingQuartiers.set(false)))
+            .subscribe((res) => {
+                this.quartiers = res.data;
+            });
     }
 
     loadSecteurs(idQuartier: string) {
         this.loadingSecteurs.set(true);
-        this.secteurService.getSecteursByQuartier(idQuartier).pipe(finalize(() => this.loadingSecteurs.set(false))).subscribe(res => {
-            this.secteurs = res.data;
-        });
+        this.secteurService
+            .getSecteursByQuartier(idQuartier)
+            .pipe(finalize(() => this.loadingSecteurs.set(false)))
+            .subscribe((res) => {
+                this.secteurs = res.data;
+            });
     }
 
     isInvalid(field: string): boolean {
@@ -191,7 +232,7 @@ export class AddPanneau implements OnInit {
     validate() {
         this.isLoading.set(true);
 
-        const { idCaracteristiquePanneau, idRegion, idCommune, idQuartier, idSecteur, ...formValue } = this.form.getRawValue();
+        const { idRegie, idCaracteristiquePanneau, idRegion, idCommune, idQuartier, idSecteur, ...formValue } = this.form.getRawValue();
 
         if (!formValue.hasSpecialPrice) {
             formValue.priceDay = 0;
@@ -200,7 +241,7 @@ export class AddPanneau implements OnInit {
         }
 
         this.panneauService
-            .addPanneau(idCaracteristiquePanneau, idSecteur, formValue)
+            .addPanneau(idCaracteristiquePanneau, idSecteur, idRegie, formValue)
             .pipe(
                 finalize(() => this.isLoading.set(false)),
                 takeUntilDestroyed(this.destroyRef)

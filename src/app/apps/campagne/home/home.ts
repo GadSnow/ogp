@@ -3,6 +3,8 @@ import { CampagneService } from '@/app/apps/campagne/campagne.service';
 import { Campagne } from '@/app/apps/campagne/campagne.types';
 import { TableModule } from 'primeng/table';
 import { Tag } from 'primeng/tag';
+import { Select } from 'primeng/select';
+import { Skeleton } from 'primeng/skeleton';
 import { finalize } from 'rxjs';
 import { ApiResponse } from '@/app/core/models/api-response.interface';
 import { SkeletonTableComponent } from '@/app/shared/utils/components/skeleton-table/skeleton-table.component';
@@ -15,21 +17,42 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
 import { EmptyStateComponent } from '@/app/shared/utils/components/empty-state/empty-state.component';
+import { RegieService } from '@/app/apps/regie/regie.service';
+import { Regie } from '@/app/apps/regie/regie.types';
 
 @Component({
     selector: 'app-home-campagne',
-    imports: [TableModule, Tag, SkeletonTableComponent, CustomCard, Button, RouterLink, DatePipe, IconFieldModule, InputIconModule, InputText, EmptyStateComponent],
+    imports: [TableModule, Tag, Select, Skeleton, SkeletonTableComponent, CustomCard, Button, RouterLink, DatePipe, IconFieldModule, InputIconModule, InputText, EmptyStateComponent],
     templateUrl: './home.html'
 })
 export class HomeCampagne implements OnInit {
     private campagneService = inject(CampagneService);
+    private regieService = inject(RegieService);
     private confirmationService = inject(ConfirmationService);
     private messageService = inject(MessageService);
     campagnes: Campagne[] = [];
+    regies: Regie[] = [];
     isLoading = signal<boolean>(true);
+    loadingRegies = signal<boolean>(true);
 
     ngOnInit() {
+        this.loadRegies();
         this.loadCampagnes();
+    }
+
+    loadRegies() {
+        this.loadingRegies.set(true);
+        this.regieService
+            .getRegies()
+            .pipe(finalize(() => this.loadingRegies.set(false)))
+            .subscribe({
+                next: (res) => {
+                    this.regies = res.data ?? [];
+                },
+                error: () => {
+                    this.regies = [];
+                }
+            });
     }
 
     loadCampagnes() {
@@ -42,6 +65,25 @@ export class HomeCampagne implements OnInit {
                     this.campagnes = response.data;
                 },
                 error: (error) => {}
+            });
+    }
+
+    surFiltreRegie(idRegie: string | null) {
+        if (!idRegie) {
+            this.loadCampagnes();
+            return;
+        }
+        this.isLoading.set(true);
+        this.campagneService
+            .getCampagnesByRegie(idRegie)
+            .pipe(finalize(() => this.isLoading.set(false)))
+            .subscribe({
+                next: (response: ApiResponse<Campagne[]>) => {
+                    this.campagnes = response.data;
+                },
+                error: () => {
+                    this.campagnes = [];
+                }
             });
     }
 

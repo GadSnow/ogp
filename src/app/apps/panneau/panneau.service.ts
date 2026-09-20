@@ -6,10 +6,9 @@ import { AddPanneau, LocalisationFiltre, Panneau, PanneauDetail } from '@/app/ap
 import { ApiResponse } from '@/app/core/models/api-response.interface';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class PanneauService {
-
     private httpClient = inject(HttpClient);
     private apiUrl: string = environment.apiUrl;
 
@@ -36,11 +35,12 @@ export class PanneauService {
         return this.httpClient.get<ApiResponse<Panneau[]>>(`${this.apiUrl}/panneau/getbylocalisation`, { params });
     }
 
-    addPanneau(idCaracteristique: string, idSecteur: string, panneau: AddPanneau): Observable<ApiResponse<Panneau>> {
+    addPanneau(idCaracteristique: string, idSecteur: string, idRegie: string, panneau: AddPanneau): Observable<ApiResponse<Panneau>> {
         return this.httpClient.post<ApiResponse<Panneau>>(`${this.apiUrl}/panneau/add`, panneau, {
             params: {
                 idCaracteristique: idCaracteristique,
-                idSecteur: idSecteur
+                idSecteur: idSecteur,
+                idRegie: idRegie
             }
         });
     }
@@ -53,13 +53,13 @@ export class PanneauService {
         });
     }
 
-    updatePanneau(idCaracteristique: string, idSecteur: string, panneau: Partial<Panneau>): Observable<ApiResponse<Panneau>> {
+    updatePanneau(idCaracteristique: string, idSecteur: string, idRegie: string, panneau: Partial<Panneau>): Observable<ApiResponse<Panneau>> {
         return this.httpClient.put<ApiResponse<Panneau>>(`${this.apiUrl}/panneau/update`, panneau, {
             params: {
                 idCaracteristique: idCaracteristique,
-                idSecteur: idSecteur
+                idSecteur: idSecteur,
+                idRegie: idRegie
             }
         });
     }
-
 }

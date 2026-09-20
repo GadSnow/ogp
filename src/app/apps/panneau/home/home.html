@@ -29,6 +29,8 @@
             [rowsPerPageOptions]="[5, 10, 20]"
             [globalFilterFields]="[
                 'reference',
+                'regies.denomination',
+                'regies.sigle',
                 'secteur.secteur',
                 'secteur.quartier.quartier',
                 'secteur.quartier.commune.commune',
@@ -42,6 +44,7 @@
                 <tr>
                     <th>#</th>
                     <th>Référence</th>
+                    <th>Régie</th>
                     <th>Localisation</th>
                     <th>Caractéristique</th>
                     <th>Tarifs</th>
@@ -59,14 +62,16 @@
                             <span class="text-xs text-surface-500 dark:text-surface-400">{{ pan.nombreFace }} face{{ pan.nombreFace > 1 ? 's' : '' }}</span>
                         </div>
                     </td>
+                    <td>
+                        <span class="font-medium">{{ regie(pan) }}</span>
+                    </td>
 
                     <td>
                         @if (region(pan) || lieuDetail(pan)) {
                         <div class="flex flex-col leading-tight">
                             @if (region(pan)) {
                             <span class="font-medium">{{ region(pan) }}</span>
-                            }
-                            @if (lieuDetail(pan)) {
+                            } @if (lieuDetail(pan)) {
                             <span class="text-xs text-surface-500 dark:text-surface-400">{{ lieuDetail(pan) }}</span>
                             }
                         </div>
@@ -85,9 +90,7 @@
                     <td>
                         <div class="flex flex-col leading-tight tabular">
                             <span class="font-medium">{{ pan.priceDay | currency: 'GNF' : 'symbol' : '1.0-0' }} <span class="text-xs font-normal text-surface-500">/ jour</span></span>
-                            <span class="text-xs text-surface-500 dark:text-surface-400">
-                                {{ pan.priceWeek | number: '1.0-0' }} / sem · {{ pan.priceMonth | number: '1.0-0' }} / mois
-                            </span>
+                            <span class="text-xs text-surface-500 dark:text-surface-400"> {{ pan.priceWeek | number: '1.0-0' }} / sem · {{ pan.priceMonth | number: '1.0-0' }} / mois </span>
                         </div>
                     </td>
                     <td>

@@ -6,10 +6,9 @@ import { Facture } from '@/app/apps/facture/facture.types';
 import { ApiResponse } from '@/app/core/models/api-response.interface';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class FactureService {
-
     private httpClient = inject(HttpClient);
     private apiUrl: string = environment.apiUrl;
 
@@ -28,9 +27,20 @@ export class FactureService {
         });
     }
 
-    addFacture(idCampagne: string, idRemise?: string): Observable<ApiResponse<Facture>> {
+    addFacture(idCampagne: string, idRemise?: string, idRegie?: string): Observable<ApiResponse<Facture>> {
         const params: Record<string, string> = { idCampagne };
         if (idRemise) params['idRemise'] = idRemise;
+        if (idRegie) params['idRegie'] = idRegie;
         return this.httpClient.post<ApiResponse<Facture>>(`${this.apiUrl}/facture/add`, null, { params });
+    }
+
+    /**
+     * Mise à jour d'une facture. Pour une facture de régie (regies renseigné),
+     * idRemise est ignoré par le backend.
+     */
+    updateFacture(idFacture: string, idRemise?: string): Observable<ApiResponse<Facture>> {
+        const params: Record<string, string> = { idFacture };
+        if (idRemise) params['idRemise'] = idRemise;
+        return this.httpClient.put<ApiResponse<Facture>>(`${this.apiUrl}/facture/update`, null, { params });
     }
 }

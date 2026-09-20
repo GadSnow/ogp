@@ -86,11 +86,14 @@ export class EditCampagne implements OnInit {
         this.loadPanneaux();
         this.loadStatuts();
 
-        ['dateDebut', 'cycle', 'duree'].forEach(field => {
-            this.form.get(field)?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.calculateDateFin());
+        ['dateDebut', 'cycle', 'duree'].forEach((field) => {
+            this.form
+                .get(field)
+                ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe(() => this.calculateDateFin());
         });
 
-        this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
+        this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
             this.idCampagne = params.get('id');
             if (this.idCampagne) {
                 this.loadCampagne(this.idCampagne);
@@ -121,56 +124,95 @@ export class EditCampagne implements OnInit {
 
     loadClients() {
         this.loadingClients.set(true);
-        this.clientService.getClients().pipe(finalize(() => this.loadingClients.set(false)), takeUntilDestroyed(this.destroyRef)).subscribe(res => {
-            this.clients = res.data;
-        });
+        this.clientService
+            .getClients()
+            .pipe(
+                finalize(() => this.loadingClients.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe((res) => {
+                this.clients = res.data;
+            });
     }
 
     loadPanneaux() {
         this.loadingPanneaux.set(true);
-        this.panneauService.getDisponibles().pipe(finalize(() => this.loadingPanneaux.set(false)), takeUntilDestroyed(this.destroyRef)).subscribe(res => {
-            this.panneaux = res.data;
-            if (this.campagnePanneauxIds.length > 0) {
-                this.form.patchValue({
-                    selectedPanneaux: this.panneaux.filter(p => this.campagnePanneauxIds.includes(p.id))
-                });
-            }
-        });
+        this.panneauService
+            .getDisponibles()
+            .pipe(
+                finalize(() => this.loadingPanneaux.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe((res) => {
+                this.panneaux = res.data;
+                if (this.campagnePanneauxIds.length > 0) {
+                    this.form.patchValue({
+                        selectedPanneaux: this.panneaux.filter((p) => this.campagnePanneauxIds.includes(p.id))
+                    });
+                }
+            });
     }
 
     loadStatuts() {
         this.loadingStatuts.set(true);
-        this.statutCampagneService.getStatuts().pipe(finalize(() => this.loadingStatuts.set(false)), takeUntilDestroyed(this.destroyRef)).subscribe(res => {
-            this.statuts = res.data;
-        });
+        this.statutCampagneService
+            .getStatuts()
+            .pipe(
+                finalize(() => this.loadingStatuts.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe((res) => {
+                this.statuts = res.data;
+            });
     }
 
     loadCampagne(id: string) {
         this.loadingData.set(true);
-        this.campagneService.getCampagne(id).pipe(finalize(() => this.loadingData.set(false)), takeUntilDestroyed(this.destroyRef)).subscribe({
-            next: (res) => {
-                const { campagne, panneaux } = res.data as any;
-                this.campagnePanneauxIds = panneaux.map((p: any) => p.id);
-                this.form.patchValue({
-                    nomCampagne: campagne.nomCampagne,
-                    description: campagne.description,
-                    cycle: campagne.cycle,
-                    duree: campagne.nombre,
-                    dateDebut: new Date(campagne.dateDebut),
-                    statut: campagne.statut,
-                    idClient: campagne.client?.id,
-                    selectedPanneaux: this.panneaux.filter(p => this.campagnePanneauxIds.includes(p.id))
-                });
-            },
-            error: (err) => {
-                this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Impossible de charger la campagne' });
-            }
-        });
+        this.campagneService
+            .getCampagne(id)
+            .pipe(
+                finalize(() => this.loadingData.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe({
+                next: (res) => {
+                    const { campagne, panneaux } = res.data as any;
+                    this.campagnePanneauxIds = panneaux.map((p: any) => p.id);
+                    this.form.patchValue({
+                        nomCampagne: campagne.nomCampagne,
+                        description: campagne.description,
+                        cycle: campagne.cycle,
+                        duree: campagne.nombre,
+                        dateDebut: new Date(campagne.dateDebut),
+                        statut: campagne.statut,
+                        idClient: campagne.client?.id,
+                        selectedPanneaux: this.panneaux.filter((p) => this.campagnePanneauxIds.includes(p.id))
+                    });
+                },
+                error: (err) => {
+                    this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Impossible de charger la campagne' });
+                }
+            });
     }
 
     isInvalid(field: string): boolean {
         const control = this.form.get(field);
         return !!(control && control.invalid && (control.dirty || control.touched));
+    }
+
+    /** Libellé d'un panneau dans le multi-select : référence + régie. */
+    libellePanneau(panneau: Panneau): string {
+        return panneau.regies ? `${panneau.reference} — ${panneau.regies.denomination}` : panneau.reference;
+    }
+
+    /**
+     * La régie d'une campagne est déduite des panneaux. On refuse la soumission
+     * quand les panneaux sélectionnés appartiennent à des régies différentes.
+     */
+    private panneauxDeRegiesDifferents(selected: Panneau[]): boolean {
+        const regies = new Set(selected.filter((p) => p.regies).map((p) => p.regies!.id));
+        const sansRegie = selected.some((p) => !p.regies);
+        return regies.size > 1 || (regies.size === 1 && sansRegie);
     }
 
     formatDate(date: any): string {
@@ -185,7 +227,7 @@ export class EditCampagne implements OnInit {
     submit(): void {
         this.confirmationService.confirm({
             message: 'Voulez-vous modifier cette campagne ?',
-            header: "Confirmation",
+            header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             accept: () => this.validate()
         });
@@ -196,8 +238,15 @@ export class EditCampagne implements OnInit {
         this.isLoading.set(true);
 
         const { idClient, selectedPanneaux, duree, ...campagneData } = this.form.getRawValue();
+
+        if (this.panneauxDeRegiesDifferents(selectedPanneaux)) {
+            this.isLoading.set(false);
+            this.messageService.add({ severity: 'error', summary: 'Message', detail: "Les panneaux sélectionnés proviennent de régies différentes. Sélectionnez des panneaux d'une même régie." });
+            return;
+        }
+
         campagneData.nombre = duree;
-        const selectedClient = this.clients.find(c => c.id === idClient);
+        const selectedClient = this.clients.find((c) => c.id === idClient);
         const clientMsisdn = selectedClient?.telephoneResponsable || '';
 
         const payload: CampagnePayload = {

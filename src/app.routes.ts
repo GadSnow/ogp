@@ -31,6 +31,10 @@ export const appRoutes: Routes = [
                 loadChildren: () => import('@/app/apps/region/region.routes')
             },
             {
+                path: 'regie',
+                loadChildren: () => import('@/app/apps/regie/regie.routes')
+            },
+            {
                 path: 'mode-paiement',
                 loadChildren: () => import('@/app/apps/mode-paiement/mode-paiement.routes')
             },

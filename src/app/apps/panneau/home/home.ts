@@ -83,6 +83,11 @@ export class PanneauHome implements OnInit {
         return panneau.secteur?.quartier?.commune?.region?.region ?? '';
     }
 
+    /** Régie du panneau, avec repli sur un tiret pour les anciens panneaux (regies null). */
+    regie(panneau: Panneau): string {
+        return panneau.regies?.denomination ?? '—';
+    }
+
     /**
      * « Commune · Quartier · Secteur » : le détail affiché sous la région.
      * Les niveaux absents sont omis, un panneau sans quartier afficherait sinon des

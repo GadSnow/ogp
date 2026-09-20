@@ -55,15 +55,7 @@
                     <!-- Durée -->
                     <div class="flex flex-col gap-2">
                         <label for="duree">{{ dureeLabel }}</label>
-                        <p-inputnumber
-                            id="duree"
-                            formControlName="duree"
-                            [min]="1"
-                            [showButtons]="true"
-                            class="w-full"
-                            [class.ng-invalid]="isInvalid('duree')"
-                            [class.ng-dirty]="isInvalid('duree')"
-                        ></p-inputnumber>
+                        <p-inputnumber id="duree" formControlName="duree" [min]="1" [showButtons]="true" class="w-full" [class.ng-invalid]="isInvalid('duree')" [class.ng-dirty]="isInvalid('duree')"></p-inputnumber>
                         @if (isInvalid('duree')) { <small class="p-error">La durée est obligatoire.</small> }
                     </div>
 
@@ -80,13 +72,7 @@
                             Date de Fin
                             <span class="text-xs text-surface-400 font-normal italic">(calculée automatiquement)</span>
                         </label>
-                        <p-datepicker
-                            id="dateFin"
-                            formControlName="dateFin"
-                            [showIcon]="true"
-                            styleClass="w-full opacity-60"
-                            [disabled]="true"
-                        ></p-datepicker>
+                        <p-datepicker id="dateFin" formControlName="dateFin" [showIcon]="true" styleClass="w-full opacity-60" [disabled]="true"></p-datepicker>
                     </div>
 
                     <!-- Panneaux MultiSelect -->
@@ -102,11 +88,20 @@
                             optionLabel="reference"
                             display="chip"
                             [filter]="true"
-                            filterBy="reference"
+                            filterBy="reference,regies.denomination,regies.sigle"
                             class="w-full"
                             [class.ng-invalid]="isInvalid('selectedPanneaux')"
                             [class.ng-dirty]="isInvalid('selectedPanneaux')"
                         >
+                            <ng-template let-p pTemplate="selectedItem">
+                                <span>{{ libellePanneau(p) }}</span>
+                            </ng-template>
+                            <ng-template let-p pTemplate="item">
+                                <div class="flex items-center justify-between gap-4 w-full">
+                                    <span>{{ p.reference }}</span>
+                                    <span class="text-xs text-surface-500 dark:text-surface-400">{{ p.regies?.denomination }}</span>
+                                </div>
+                            </ng-template>
                         </p-multiselect>
                         }
                     </div>
@@ -123,9 +118,7 @@
                     <p-button label="Annuler" severity="secondary" [outlined]="true" [routerLink]="['/ogp/campagne']" />
                     <p-button label="Créer la Campagne" severity="primary" (onClick)="submit()" [disabled]="form.invalid || isLoading()" />
                 </div>
-
-
-</form>
+            </form>
         </div>
     </div>
 </div>
