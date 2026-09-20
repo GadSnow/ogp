@@ -16,6 +16,7 @@ import { RemiseService } from '@/app/apps/remise/remise.service';
 import { Campagne } from '@/app/apps/campagne/campagne.types';
 import { Panneau } from '@/app/apps/panneau/panneau.types';
 import { Remise } from '@/app/apps/remise/remise.types';
+import { getCampagneStatutLabel } from '@/app/shared/utils/statuts';
 
 interface CampagneDetails {
     campagne: Campagne;
@@ -57,29 +58,53 @@ export class AddDevis {
 
     private loadCampagnes() {
         this.loadingCampagnes.set(true);
-        this.campagneService.getCampagnes()
-            .pipe(finalize(() => this.loadingCampagnes.set(false)), takeUntilDestroyed(this.destroyRef))
-            .subscribe({ next: (res) => { this.campagnes = res.data; } });
+        this.campagneService
+            .getCampagnes()
+            .pipe(
+                finalize(() => this.loadingCampagnes.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe({
+                next: (res) => {
+                    this.campagnes = res.data;
+                }
+            });
     }
 
     private loadRemises() {
         this.loadingRemises.set(true);
-        this.remiseService.getRemises()
-            .pipe(finalize(() => this.loadingRemises.set(false)), takeUntilDestroyed(this.destroyRef))
-            .subscribe({ next: (res) => { this.remises = res.data; } });
+        this.remiseService
+            .getRemises()
+            .pipe(
+                finalize(() => this.loadingRemises.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe({
+                next: (res) => {
+                    this.remises = res.data;
+                }
+            });
     }
 
     onCampagneChange(id: string | null) {
         this.campagneDetails = null;
         if (!id) return;
         this.loadingCampagneDetails.set(true);
-        this.campagneService.getCampagne(id)
-            .pipe(finalize(() => this.loadingCampagneDetails.set(false)), takeUntilDestroyed(this.destroyRef))
-            .subscribe({ next: (res) => { this.campagneDetails = res.data as any; } });
+        this.campagneService
+            .getCampagne(id)
+            .pipe(
+                finalize(() => this.loadingCampagneDetails.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe({
+                next: (res) => {
+                    this.campagneDetails = res.data as any;
+                }
+            });
     }
 
     onRemiseChange(id: string | null) {
-        this.selectedRemise = this.remises.find(r => r.id === id) ?? null;
+        this.selectedRemise = this.remises.find((r) => r.id === id) ?? null;
     }
 
     submit() {
@@ -94,8 +119,12 @@ export class AddDevis {
     private validate() {
         if (!this.selectedCampagneId) return;
         this.isLoading.set(true);
-        this.devisService.addDevis(this.selectedCampagneId, this.selectedRemiseId ?? undefined)
-            .pipe(finalize(() => this.isLoading.set(false)), takeUntilDestroyed(this.destroyRef))
+        this.devisService
+            .addDevis(this.selectedCampagneId, this.selectedRemiseId ?? undefined)
+            .pipe(
+                finalize(() => this.isLoading.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
             .subscribe({
                 next: () => {
                     this.messageService.add({ severity: 'success', summary: 'Message', detail: 'Devis généré avec succès' });
@@ -105,5 +134,9 @@ export class AddDevis {
                     this.messageService.add({ severity: 'error', summary: 'Message', detail: err.error?.message || 'Erreur' });
                 }
             });
+    }
+
+    getStatutLabel(statut: string) {
+        return getCampagneStatutLabel(statut);
     }
 }

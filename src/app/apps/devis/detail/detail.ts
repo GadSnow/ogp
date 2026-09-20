@@ -9,6 +9,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DevisService } from '@/app/apps/devis/devis.service';
 import { Devis } from '@/app/apps/devis/devis.types';
 import { Panneau } from '@/app/apps/panneau/panneau.types';
+import { getCampagneStatutLabel, getStatutPaiementLabel } from '@/app/shared/utils/statuts';
 
 interface DevisDetail extends Devis {
     campagne?: any;
@@ -17,7 +18,7 @@ interface DevisDetail extends Devis {
 
 @Component({
     selector: 'app-detail-devis',
-    imports: [RouterLink, Skeleton, Tag, TabsModule, DatePipe, DecimalPipe,],
+    imports: [RouterLink, Skeleton, Tag, TabsModule, DatePipe, DecimalPipe],
     templateUrl: './detail.html'
 })
 export class DetailDevis {
@@ -29,7 +30,7 @@ export class DetailDevis {
     devis: DevisDetail | null = null;
 
     constructor() {
-        this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
+        this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
             const id = params.get('id');
             if (id) this.loadData(id);
         });
@@ -37,8 +38,24 @@ export class DetailDevis {
 
     private loadData(id: string) {
         this.isLoading.set(true);
-        this.devisService.getDevisById(id)
-            .pipe(finalize(() => this.isLoading.set(false)), takeUntilDestroyed(this.destroyRef))
-            .subscribe({ next: (res) => { this.devis = res.data as any; } });
+        this.devisService
+            .getDevisById(id)
+            .pipe(
+                finalize(() => this.isLoading.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe({
+                next: (res) => {
+                    this.devis = res.data as any;
+                }
+            });
+    }
+
+    getStatutLabel(statut?: string) {
+        return getCampagneStatutLabel(statut);
+    }
+
+    getPaiementLabel(statut?: string) {
+        return getStatutPaiementLabel(statut);
     }
 }

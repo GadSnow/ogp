@@ -9,6 +9,7 @@ import { finalize } from 'rxjs';
 import { ApiResponse } from '@/app/core/models/api-response.interface';
 import { SkeletonTableComponent } from '@/app/shared/utils/components/skeleton-table/skeleton-table.component';
 import { CustomCard } from '@/app/layout/components/ui/customcard';
+import { getCampagneStatutLabel, getCampagneStatutSeverity } from '@/app/shared/utils/statuts';
 import { Button } from 'primeng/button';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
@@ -111,16 +112,10 @@ export class HomeCampagne implements OnInit {
     }
 
     getSeverity(statut: string) {
-        switch (statut?.toLowerCase()) {
-            case 'actif':
-            case 'terminee':
-                return 'success';
-            case 'en cours':
-                return 'info';
-            case 'annulee':
-                return 'danger';
-            default:
-                return 'secondary';
-        }
+        return getCampagneStatutSeverity(statut);
+    }
+
+    getStatutLabel(statut: string) {
+        return getCampagneStatutLabel(statut);
     }
 }

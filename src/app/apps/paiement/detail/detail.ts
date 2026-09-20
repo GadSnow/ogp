@@ -7,6 +7,7 @@ import { finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PaiementService } from '@/app/apps/paiement/paiement.service';
 import { Paiement } from '@/app/apps/paiement/paiement.types';
+import { getPaiementStatutLabel, getPaiementStatutSeverity } from '@/app/shared/utils/statuts';
 
 @Component({
     selector: 'app-detail-paiement',
@@ -32,20 +33,22 @@ export class DetailPaiement {
         this.isLoading.set(true);
         this.paiementService
             .getPaiement(id)
-            .pipe(finalize(() => this.isLoading.set(false)), takeUntilDestroyed(this.destroyRef))
-            .subscribe({ next: (res) => { this.paiement = res.data; } });
+            .pipe(
+                finalize(() => this.isLoading.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe({
+                next: (res) => {
+                    this.paiement = res.data;
+                }
+            });
     }
 
     getSeverity(statut?: string) {
-        switch (statut) {
-            case 'success':
-                return 'success';
-            case 'pending':
-                return 'warn';
-            case 'failed':
-                return 'danger';
-            default:
-                return 'info';
-        }
+        return getPaiementStatutSeverity(statut);
+    }
+
+    getStatutLabel(statut?: string) {
+        return getPaiementStatutLabel(statut);
     }
 }

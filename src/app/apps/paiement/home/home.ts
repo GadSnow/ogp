@@ -14,6 +14,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
 import { EmptyStateComponent } from '@/app/shared/utils/components/empty-state/empty-state.component';
+import { getPaiementStatutLabel, getPaiementStatutSeverity } from '@/app/shared/utils/statuts';
 
 @Component({
     selector: 'app-home-paiement',
@@ -32,23 +33,25 @@ export class HomePaiement {
     }
 
     getSeverity(statut?: string) {
-        switch (statut) {
-            case 'success':
-                return 'success';
-            case 'pending':
-                return 'warn';
-            case 'failed':
-                return 'danger';
-            default:
-                return 'info';
-        }
+        return getPaiementStatutSeverity(statut);
+    }
+
+    getStatutLabel(statut?: string) {
+        return getPaiementStatutLabel(statut);
     }
 
     private loadPaiements() {
         this.isLoading.set(true);
         this.paiementService
             .getPaiements()
-            .pipe(finalize(() => this.isLoading.set(false)), takeUntilDestroyed(this.destroyRef))
-            .subscribe({ next: (res) => { this.paiements = res.data ?? []; } });
+            .pipe(
+                finalize(() => this.isLoading.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe({
+                next: (res) => {
+                    this.paiements = res.data ?? [];
+                }
+            });
     }
 }

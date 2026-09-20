@@ -14,6 +14,7 @@ import { DevisService } from '@/app/apps/devis/devis.service';
 import { Client } from '@/app/apps/client/client.types';
 import { Campagne } from '@/app/apps/campagne/campagne.types';
 import { Devis } from '@/app/apps/devis/devis.types';
+import { getCampagneStatutLabel } from '@/app/shared/utils/statuts';
 
 @Component({
     selector: 'app-detail-client',
@@ -33,7 +34,7 @@ export class DetailClient {
     devis: Devis[] = [];
 
     constructor() {
-        this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
+        this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
             const id = params.get('id');
             if (id) this.loadData(id);
         });
@@ -41,18 +42,21 @@ export class DetailClient {
 
     private loadData(id: string) {
         this.isLoading.set(true);
-        forkJoin([
-            this.clientService.getClient(id),
-            this.campagneService.getCampagnesByClient(id),
-            this.devisService.getDevisByClient(id)
-        ])
-        .pipe(finalize(() => this.isLoading.set(false)), takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-            next: ([clientRes, campagnesRes, devisRes]) => {
-                this.client = clientRes.data;
-                this.campagnes = campagnesRes.data;
-                this.devis = devisRes.data;
-            }
-        });
+        forkJoin([this.clientService.getClient(id), this.campagneService.getCampagnesByClient(id), this.devisService.getDevisByClient(id)])
+            .pipe(
+                finalize(() => this.isLoading.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe({
+                next: ([clientRes, campagnesRes, devisRes]) => {
+                    this.client = clientRes.data;
+                    this.campagnes = campagnesRes.data;
+                    this.devis = devisRes.data;
+                }
+            });
+    }
+
+    getStatutLabel(statut: string) {
+        return getCampagneStatutLabel(statut);
     }
 }

@@ -14,8 +14,8 @@ import { RemiseService } from '@/app/apps/remise/remise.service';
 import { Remise } from '@/app/apps/remise/remise.types';
 import { FactureService } from '@/app/apps/facture/facture.service';
 import { Facture } from '@/app/apps/facture/facture.types';
+import { getCampagneStatutLabel, getCampagneStatutSeverity, getStatutPaiementLabel, getStatutPaiementSeverity } from '@/app/shared/utils/statuts';
 import { Button } from 'primeng/button';
-import { Tooltip } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { Drawer } from 'primeng/drawer';
 import { Select } from 'primeng/select';
@@ -35,7 +35,7 @@ interface CampagneDetailResponse {
 
 @Component({
     selector: 'app-detail-campagne',
-    imports: [RouterLink, Skeleton, Tag, DatePipe, CurrencyPipe, LowerCasePipe, Button, Tooltip, DialogModule, Drawer, Select, SelectButton, Textarea, FormsModule, ToastModule],
+    imports: [RouterLink, Skeleton, Tag, DatePipe, CurrencyPipe, LowerCasePipe, Button, DialogModule, Drawer, Select, SelectButton, Textarea, FormsModule, ToastModule],
     templateUrl: './detail.html',
     providers: [MessageService]
 })
@@ -282,31 +282,20 @@ export class DetailCampagne {
             });
     }
 
-    getStatutSeverity(statut: string) {
-        switch (statut?.toLowerCase()) {
-            case 'actif':
-            case 'terminee':
-                return 'success';
-            case 'en cours':
-                return 'info';
-            case 'annulee':
-                return 'danger';
-            default:
-                return 'secondary';
-        }
+    getStatutLabel(statut: string | null | undefined) {
+        return getCampagneStatutLabel(statut);
     }
 
-    getPaiementSeverity(statut: string) {
-        switch (statut?.toLowerCase()) {
-            case 'paye':
-                return 'success';
-            case 'partial':
-                return 'warn';
-            case 'pending':
-                return 'secondary';
-            default:
-                return 'secondary';
-        }
+    getStatutSeverity(statut: string | null | undefined) {
+        return getCampagneStatutSeverity(statut);
+    }
+
+    getPaiementLabel(statut: string | null | undefined) {
+        return getStatutPaiementLabel(statut);
+    }
+
+    getPaiementSeverity(statut: string | null | undefined) {
+        return getStatutPaiementSeverity(statut);
     }
 
     getCycleLabel(cycle: string | undefined): string {
