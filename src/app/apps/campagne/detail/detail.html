@@ -19,26 +19,26 @@
     <div class="flex flex-col gap-6 pt-1">
         <!-- Rappel campagne -->
         <div class="rounded-lg border border-surface-200 dark:border-surface-700 p-4 flex flex-col gap-3">
-            <span class="text-xs font-semibold uppercase tracking-wide text-surface-500">Base de calcul</span>
+            <span class="text-xs font-bold uppercase tracking-wide text-surface-600">Base de calcul</span>
             <div class="grid grid-cols-3 gap-3 text-center">
                 <div class="flex flex-col gap-0.5">
                     <span class="text-lg font-bold text-primary">{{ panneaux().length }}</span>
-                    <span class="text-xs text-surface-500">panneau{{ panneaux().length > 1 ? 'x' : '' }}</span>
+                    <span class="text-xs text-surface-600">panneau{{ panneaux().length > 1 ? 'x' : '' }}</span>
                 </div>
                 <div class="flex flex-col gap-0.5 border-x border-surface-200 dark:border-surface-700">
                     <span class="text-lg font-bold text-primary">{{ campagne()?.nombre }}</span>
-                    <span class="text-xs text-surface-500">{{ getCycleLabel(campagne()?.cycle) | lowercase }}{{ (campagne()?.nombre ?? 0) > 1 ? 's' : '' }}</span>
+                    <span class="text-xs text-surface-600">{{ getCycleLabel(campagne()?.cycle) | lowercase }}{{ (campagne()?.nombre ?? 0) > 1 ? 's' : '' }}</span>
                 </div>
                 <div class="flex flex-col gap-0.5">
                     <span class="text-lg font-bold text-primary">{{ getCycleLabel(campagne()?.cycle) }}</span>
-                    <span class="text-xs text-surface-500">cycle</span>
+                    <span class="text-xs text-surface-600">cycle</span>
                 </div>
             </div>
         </div>
 
         <!-- Choix de la remise -->
         <div class="flex flex-col gap-2">
-            <span class="text-xs font-semibold uppercase tracking-wide text-surface-500">Remise</span>
+            <span class="text-xs font-bold uppercase tracking-wide text-surface-600">Remise</span>
 
             @if (loadingRemises()) {
             <p-skeleton width="100%" height="2.75rem" />
@@ -48,7 +48,7 @@
             <!-- showClear : effacer la sélection = devis sans remise -->
             <p-select [options]="remises()" [ngModel]="remiseChoisie()" (ngModelChange)="choisirRemise($event)" optionLabel="typeRemise" placeholder="Sans remise" [showClear]="true" styleClass="w-full" appendTo="body">
                 <ng-template let-r pTemplate="selectedItem">
-                    <span>{{ r.typeRemise }} <span class="text-surface-400">— {{ r.valeurRemise }} %</span></span>
+                    <span>{{ r.typeRemise }} <span class="text-surface-500">— {{ r.valeurRemise }} %</span></span>
                 </ng-template>
                 <ng-template let-r pTemplate="item">
                     <div class="flex items-center justify-between gap-4 w-full">
@@ -62,13 +62,13 @@
 
         <!-- Simulation -->
         <div class="rounded-lg bg-surface-50 dark:bg-surface-800 p-4 flex flex-col gap-3">
-            <span class="text-xs font-semibold uppercase tracking-wide text-surface-500">Simulation</span>
+            <span class="text-xs font-bold uppercase tracking-wide text-surface-600">Simulation</span>
             <div class="flex items-center justify-between text-sm">
                 <span class="text-surface-600 dark:text-surface-300">Montant brut</span>
                 <span class="font-semibold tabular">{{ montantBrutSimule() | currency:'GNF':'symbol':'1.0-0' }}</span>
             </div>
             <div class="flex items-center justify-between text-sm">
-                <span class="text-surface-600 dark:text-surface-300"> Remise @if (remiseChoisie()) { <span class="text-surface-400">({{ remiseChoisie()?.valeurRemise }} %)</span> } </span>
+                <span class="text-surface-600 dark:text-surface-300"> Remise @if (remiseChoisie()) { <span class="text-surface-500">({{ remiseChoisie()?.valeurRemise }} %)</span> } </span>
                 <span class="font-semibold text-amber-600 tabular">{{ montantRemiseSimule() | currency:'GNF':'symbol':'1.0-0' }}</span>
             </div>
             <div class="h-px bg-surface-200 dark:bg-surface-700"></div>
@@ -92,24 +92,24 @@
     <div class="flex flex-col gap-6 pt-1">
         <!-- Rappel campagne -->
         <div class="rounded-lg border border-surface-200 dark:border-surface-700 p-4 flex flex-col gap-3">
-            <span class="text-xs font-semibold uppercase tracking-wide text-surface-500">Base de calcul</span>
+            <span class="text-xs font-bold uppercase tracking-wide text-surface-600">Base de calcul</span>
             <div class="grid grid-cols-3 gap-3 text-center">
                 <div class="flex flex-col gap-0.5">
                     <span class="text-lg font-bold text-primary">{{ panneaux().length }}</span>
-                    <span class="text-xs text-surface-500">panneau{{ panneaux().length > 1 ? 'x' : '' }}</span>
+                    <span class="text-xs text-surface-600">panneau{{ panneaux().length > 1 ? 'x' : '' }}</span>
                 </div>
                 <div class="flex flex-col gap-0.5 border-x border-surface-200 dark:border-surface-700">
                     @if (typeFacture() === 'regie') {
                     <span class="text-lg font-bold text-primary">—</span>
-                    <span class="text-xs text-surface-500">durée</span>
+                    <span class="text-xs text-surface-600">durée</span>
                     } @else {
                     <span class="text-lg font-bold text-primary">{{ campagne()?.nombre }}</span>
-                    <span class="text-xs text-surface-500">{{ getCycleLabel(campagne()?.cycle) | lowercase }}{{ (campagne()?.nombre ?? 0) > 1 ? 's' : '' }}</span>
+                    <span class="text-xs text-surface-600">{{ getCycleLabel(campagne()?.cycle) | lowercase }}{{ (campagne()?.nombre ?? 0) > 1 ? 's' : '' }}</span>
                     }
                 </div>
                 <div class="flex flex-col gap-0.5">
                     <span class="text-lg font-bold text-primary">{{ getCycleLabel(campagne()?.cycle) }}</span>
-                    <span class="text-xs text-surface-500">cycle</span>
+                    <span class="text-xs text-surface-600">cycle</span>
                 </div>
             </div>
         </div>
@@ -117,7 +117,7 @@
         <!-- Choix du type : proposé uniquement si la campagne a une régie -->
         @if (campagne()?.regies?.id) {
         <div class="flex flex-col gap-2">
-            <span class="text-xs font-semibold uppercase tracking-wide text-surface-500">Type de facture</span>
+            <span class="text-xs font-bold uppercase tracking-wide text-surface-600">Type de facture</span>
             <p-selectbutton
                 [options]="[{ label: 'Historique', value: 'historique' }, { label: 'Régie', value: 'regie' }]"
                 optionLabel="label"
@@ -137,7 +137,7 @@
         <!-- Choix de la remise : masqué pour une facture de régie -->
         @if (typeFacture() === 'historique') {
         <div class="flex flex-col gap-2">
-            <span class="text-xs font-semibold uppercase tracking-wide text-surface-500">Remise</span>
+            <span class="text-xs font-bold uppercase tracking-wide text-surface-600">Remise</span>
 
             @if (loadingRemises()) {
             <p-skeleton width="100%" height="2.75rem" />
@@ -147,7 +147,7 @@
             <!-- showClear : effacer la sélection = facture sans remise -->
             <p-select [options]="remises()" [ngModel]="remiseFacture()" (ngModelChange)="choisirRemiseFacture($event)" optionLabel="typeRemise" placeholder="Sans remise" [showClear]="true" styleClass="w-full" appendTo="body">
                 <ng-template let-r pTemplate="selectedItem">
-                    <span>{{ r.typeRemise }} <span class="text-surface-400">— {{ r.valeurRemise }} %</span></span>
+                    <span>{{ r.typeRemise }} <span class="text-surface-500">— {{ r.valeurRemise }} %</span></span>
                 </ng-template>
                 <ng-template let-r pTemplate="item">
                     <div class="flex items-center justify-between gap-4 w-full">
@@ -162,14 +162,14 @@
 
         <!-- Simulation -->
         <div class="rounded-lg bg-surface-50 dark:bg-surface-800 p-4 flex flex-col gap-3">
-            <span class="text-xs font-semibold uppercase tracking-wide text-surface-500">Résumé</span>
+            <span class="text-xs font-bold uppercase tracking-wide text-surface-600">Résumé</span>
             <div class="flex items-center justify-between text-sm">
                 <span class="text-surface-600 dark:text-surface-300">Montant brut</span>
                 <span class="font-semibold tabular">{{ montantBrutFacture() | currency:'GNF':'symbol':'1.0-0' }}</span>
             </div>
             @if (typeFacture() === 'historique') {
             <div class="flex items-center justify-between text-sm">
-                <span class="text-surface-600 dark:text-surface-300"> Remise @if (remiseFacture()) { <span class="text-surface-400">({{ remiseFacture()?.valeurRemise }} %)</span> } </span>
+                <span class="text-surface-600 dark:text-surface-300"> Remise @if (remiseFacture()) { <span class="text-surface-500">({{ remiseFacture()?.valeurRemise }} %)</span> } </span>
                 <span class="font-semibold text-amber-600 tabular">{{ montantRemiseFacture() | currency:'GNF':'symbol':'1.0-0' }}</span>
             </div>
             }
@@ -202,8 +202,8 @@
             <p-skeleton width="18rem" height="2rem"></p-skeleton>
             } @if (campagne() && campagne()?.statut === 'proposition') {
             <div class="flex gap-2">
-                <p-button icon="pi pi-check" pTooltip="Valider" tooltipPosition="bottom" [outlined]="true" size="small" severity="success" [loading]="isActionLoading()" (onClick)="onValider()" />
-                <p-button icon="pi pi-times" pTooltip="Rejeter" tooltipPosition="bottom" [outlined]="true" size="small" severity="danger" [loading]="isActionLoading()" (onClick)="onRejeter()" />
+                <p-button label="Valider" icon="pi pi-check" size="small" severity="success" [loading]="isActionLoading()" (onClick)="onValider()" />
+                <p-button label="Rejeter" icon="pi pi-times" size="small" severity="danger" [loading]="isActionLoading()" (onClick)="onRejeter()" />
             </div>
             }
         </div>
@@ -218,60 +218,60 @@
 
         <!-- Infos générales -->
         <div class="card p-6 mb-4">
-            <h3 class="text-base font-semibold mb-4 text-surface-700 uppercase tracking-wide flex items-center gap-2"><i class="pi pi-info-circle"></i> Informations générales</h3>
+            <h3 class="text-base font-bold mb-4 text-surface-800 dark:text-surface-200 uppercase tracking-wide flex items-center gap-2"><i class="pi pi-info-circle"></i> Informations générales</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Nom de la campagne</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Nom de la campagne</span>
                     <span class="font-medium">{{ campagne()?.nomCampagne }}</span>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Client</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Client</span>
                     <a [routerLink]="['/ogp/client/detail', campagne()?.client?.id]" class="font-medium text-primary hover:underline"> {{ campagne()?.client?.denomination }} @if (campagne()?.client?.sigle) { ({{ campagne()?.client?.sigle }}) } </a>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Régie</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Régie</span>
                     <span class="font-medium">{{ campagne()?.regies?.denomination ?? '—' }}</span>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Cycle</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Cycle</span>
                     <span class="font-medium">{{ getCycleLabel(campagne()?.cycle) }}</span>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Date de début</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Date de début</span>
                     <span class="font-medium">{{ campagne()?.dateDebut | date:'dd/MM/yyyy' }}</span>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Date de fin</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Date de fin</span>
                     <span class="font-medium">{{ campagne()?.dateFin | date:'dd/MM/yyyy' }}</span>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Créé le</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Créé le</span>
                     <span class="font-medium">{{ campagne()?.dtCreated | date:'dd/MM/yyyy HH:mm' }}</span>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Statut</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Statut</span>
                     <div>
-                        <p-tag [value]="campagne()?.statut" [severity]="getStatutSeverity(campagne()?.statut ?? '')" />
+                        <p-tag [value]="getStatutLabel(campagne()?.statut)" [severity]="getStatutSeverity(campagne()?.statut)" />
                     </div>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Statut de paiement</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Statut de paiement</span>
                     <div>
-                        <p-tag [value]="campagne()?.statutPaiement" [severity]="getPaiementSeverity(campagne()?.statutPaiement ?? '')" />
+                        <p-tag [value]="getPaiementLabel(campagne()?.statutPaiement)" [severity]="getPaiementSeverity(campagne()?.statutPaiement)" />
                     </div>
                 </div>
 
                 @if (campagne()?.description) {
                 <div class="flex flex-col gap-1 md:col-span-2 lg:col-span-3">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Description</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Description</span>
                     <span class="font-medium">{{ campagne()?.description }}</span>
                 </div>
                 }
@@ -280,7 +280,7 @@
 
         <!-- Panneaux -->
         <div class="card p-6 mb-4">
-            <h3 class="text-base font-semibold mb-4 text-surface-700 uppercase tracking-wide flex items-center gap-2"><i class="pi pi-map-marker"></i> Panneaux ({{ panneaux().length }})</h3>
+            <h3 class="text-base font-bold mb-4 text-surface-800 dark:text-surface-200 uppercase tracking-wide flex items-center gap-2"><i class="pi pi-map-marker"></i> Panneaux ({{ panneaux().length }})</h3>
 
             @if (panneaux().length === 0) {
             <p class="text-surface-400 text-sm">Aucun panneau associé à cette campagne.</p>
@@ -305,7 +305,7 @@
                             <td class="py-3 pr-4 text-surface-600">
                                 @if (p.caracteristiquePanneaux) {
                                 <span>{{ p.caracteristiquePanneaux.categoriePanneaux?.categorie }}</span>
-                                <span class="text-surface-400"> / {{ p.caracteristiquePanneaux.type }}</span>
+                                <span class="text-surface-500"> / {{ p.caracteristiquePanneaux.type }}</span>
                                 } @else {
                                 <span class="text-surface-300">—</span>
                                 }
@@ -324,7 +324,7 @@
         <!-- Devis -->
         <div class="card p-6">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                <h3 class="text-base font-semibold text-surface-700 uppercase tracking-wide flex items-center gap-2"><i class="pi pi-file"></i> Devis ({{ devis().length }})</h3>
+                <h3 class="text-base font-bold text-surface-800 dark:text-surface-200 uppercase tracking-wide flex items-center gap-2"><i class="pi pi-file"></i> Devis ({{ devis().length }})</h3>
                 <p-button label="Générer un devis" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="ouvrirDevisDrawer()" />
             </div>
             @if (devis().length === 0) {
@@ -336,22 +336,22 @@
                     <!-- En-tête devis -->
                     <div class="flex items-center justify-between">
                         <span class="font-semibold text-primary">{{ d.numeroDevis }}</span>
-                        <span class="text-xs text-surface-400">Émis le {{ d.dateEmission | date:'dd/MM/yyyy' }}</span>
+                        <span class="text-xs text-surface-600">Émis le {{ d.dateEmission | date:'dd/MM/yyyy' }}</span>
                     </div>
 
                     <!-- Dates -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="flex flex-col gap-0.5">
-                            <span class="text-xs text-surface-400 uppercase tracking-wide">Validité</span>
+                            <span class="text-xs text-surface-600 uppercase tracking-wide">Validité</span>
                             <span class="text-sm font-medium">jusqu'au {{ d.dateValidite | date:'dd/MM/yyyy' }}</span>
                         </div>
                         <div class="flex flex-col gap-0.5">
-                            <span class="text-xs text-surface-400 uppercase tracking-wide">Période prévue</span>
+                            <span class="text-xs text-surface-600 uppercase tracking-wide">Période prévue</span>
                             <span class="text-sm font-medium"> {{ d.dateDebutPrevu | date:'dd/MM/yyyy' }} → {{ d.dateFinPrevu | date:'dd/MM/yyyy' }} </span>
                         </div>
                         @if (d.remise) {
                         <div class="flex flex-col gap-0.5">
-                            <span class="text-xs text-surface-400 uppercase tracking-wide">Remise</span>
+                            <span class="text-xs text-surface-600 uppercase tracking-wide">Remise</span>
                             <span class="text-sm font-medium">{{ d.remise.typeRemise }} — {{ d.remise.valeurRemise }}%</span>
                         </div>
                         }
@@ -360,22 +360,22 @@
                     <!-- Montants -->
                     <div class="grid grid-cols-3 gap-2 bg-surface-50 rounded p-3">
                         <div class="flex flex-col items-center gap-0.5">
-                            <span class="text-xs text-surface-400">Montant brut</span>
+                            <span class="text-xs text-surface-600">Montant brut</span>
                             <span class="text-sm font-semibold">{{ d.montantBrute | currency:'GNF':'symbol':'1.0-0' }}</span>
                         </div>
                         <div class="flex flex-col items-center gap-0.5 border-x border-surface-200">
-                            <span class="text-xs text-surface-400">Remise</span>
+                            <span class="text-xs text-surface-600">Remise</span>
                             <span class="text-sm font-semibold text-amber-600">{{ d.montantRemise | currency:'GNF':'symbol':'1.0-0' }}</span>
                         </div>
                         <div class="flex flex-col items-center gap-0.5">
-                            <span class="text-xs text-surface-400">Montant net</span>
+                            <span class="text-xs text-surface-600">Montant net</span>
                             <span class="text-sm font-semibold text-green-600">{{ d.montantNet | currency:'GNF':'symbol':'1.0-0' }}</span>
                         </div>
                     </div>
 
                     @if (d.observations) {
                     <div class="flex flex-col gap-0.5">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Observations</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Observations</span>
                         <span class="text-sm">{{ d.observations }}</span>
                     </div>
                     }
@@ -388,8 +388,10 @@
         <!-- Factures -->
         <div class="card p-6 mt-4">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                <h3 class="text-base font-semibold text-surface-700 uppercase tracking-wide flex items-center gap-2"><i class="pi pi-receipt"></i> Factures ({{ factures().length }})</h3>
+                <h3 class="text-base font-bold text-surface-800 dark:text-surface-200 uppercase tracking-wide flex items-center gap-2"><i class="pi pi-receipt"></i> Factures ({{ factures().length }})</h3>
+                @if (campagne()?.statut !== 'proposition') {
                 <p-button label="Générer une facture" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="ouvrirFactureDrawer()" />
+                }
             </div>
 
             @if (factures().length === 0) {
@@ -401,25 +403,25 @@
                     <div class="flex items-center justify-between">
                         <span class="font-semibold text-primary">{{ f.reference ?? '—' }}</span>
                         @if (f.dateEcheance) {
-                        <span class="text-xs text-surface-400">Échéance : {{ f.dateEcheance | date:'dd/MM/yyyy' }}</span>
+                        <span class="text-xs text-surface-600">Échéance : {{ f.dateEcheance | date:'dd/MM/yyyy' }}</span>
                         }
                     </div>
 
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-2 bg-surface-50 rounded p-3">
                         <div class="flex flex-col items-center gap-0.5">
-                            <span class="text-xs text-surface-400">Montant brut</span>
+                            <span class="text-xs text-surface-600">Montant brut</span>
                             <span class="text-sm font-semibold">{{ f.montantBrute | currency:'GNF':'symbol':'1.0-0' }}</span>
                         </div>
                         <div class="flex flex-col items-center gap-0.5 border-x border-surface-200">
-                            <span class="text-xs text-surface-400">Remise</span>
+                            <span class="text-xs text-surface-600">Remise</span>
                             <span class="text-sm font-semibold text-amber-600">{{ f.montantRemise | currency:'GNF':'symbol':'1.0-0' }}</span>
                         </div>
                         <div class="flex flex-col items-center gap-0.5 border-r border-surface-200">
-                            <span class="text-xs text-surface-400">Montant net</span>
+                            <span class="text-xs text-surface-600">Montant net</span>
                             <span class="text-sm font-semibold text-green-600">{{ f.montantNet | currency:'GNF':'symbol':'1.0-0' }}</span>
                         </div>
                         <div class="flex flex-col items-center gap-0.5">
-                            <span class="text-xs text-surface-400">Reste à payer</span>
+                            <span class="text-xs text-surface-600">Reste à payer</span>
                             <span class="text-sm font-semibold" [class]="(f.montantResteAPaye ?? 0) > 0 ? 'text-red-600' : 'text-green-600'"> {{ f.montantResteAPaye | currency:'GNF':'symbol':'1.0-0' }} </span>
                         </div>
                     </div>

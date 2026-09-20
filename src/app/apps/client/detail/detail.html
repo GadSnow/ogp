@@ -5,7 +5,7 @@
             @if (client) {
             <h2 class="text-2xl font-bold uppercase tracking-wide">
                 {{ client.denomination }} @if (client.sigle) {
-                <span class="text-lg font-normal text-surface-400 ml-2">({{ client.sigle }})</span>
+                <span class="text-lg font-normal text-surface-500 ml-2">({{ client.sigle }})</span>
                 }
             </h2>
             } @else {
@@ -33,42 +33,42 @@
                     <p-tabpanel value="0">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                             <div class="flex flex-col gap-1">
-                                <span class="text-sm text-surface-500">Dénomination</span>
+                                <span class="text-sm text-surface-600">Dénomination</span>
                                 <span class="font-medium">{{ client?.denomination }}</span>
                             </div>
 
                             <div class="flex flex-col gap-1">
-                                <span class="text-sm text-surface-500">Sigle</span>
+                                <span class="text-sm text-surface-600">Sigle</span>
                                 <span class="font-medium">{{ client?.sigle }}</span>
                             </div>
 
                             <div class="flex flex-col gap-1">
-                                <span class="text-sm text-surface-500">Domaine d'activité</span>
+                                <span class="text-sm text-surface-600">Domaine d'activité</span>
                                 <span class="font-medium">{{ client?.domaineActivite }}</span>
                             </div>
 
                             <div class="flex flex-col gap-1">
-                                <span class="text-sm text-surface-500">Type de client</span>
+                                <span class="text-sm text-surface-600">Type de client</span>
                                 <span class="font-medium">{{ client?.typeClient?.typeClient }}</span>
                             </div>
 
                             <div class="flex flex-col gap-1 md:col-span-2 border-t border-surface-200 pt-4 mt-2">
-                                <span class="text-sm font-semibold text-surface-600 mb-2">Responsable</span>
+                                <span class="text-sm font-bold text-surface-700 mb-2">Responsable</span>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div class="flex flex-col gap-1">
-                                        <span class="text-xs text-surface-400">Nom & Prénom</span>
+                                        <span class="text-xs text-surface-600">Nom & Prénom</span>
                                         <span class="font-medium">{{ client?.nomResponsable }} {{ client?.prenomResponsable }}</span>
                                     </div>
                                     <div class="flex flex-col gap-1">
-                                        <span class="text-xs text-surface-400">Email</span>
+                                        <span class="text-xs text-surface-600">Email</span>
                                         <span class="font-medium">{{ client?.emailResponsable }}</span>
                                     </div>
                                     <div class="flex flex-col gap-1">
-                                        <span class="text-xs text-surface-400">Téléphone</span>
+                                        <span class="text-xs text-surface-600">Téléphone</span>
                                         <span class="font-medium">{{ client?.telephoneResponsable }}</span>
                                     </div>
                                     <div class="flex flex-col gap-1">
-                                        <span class="text-xs text-surface-400">Adresse</span>
+                                        <span class="text-xs text-surface-600">Adresse</span>
                                         <span class="font-medium">{{ client?.adresse }}</span>
                                     </div>
                                 </div>
@@ -98,7 +98,7 @@
                                         <td>{{ camp.dateDebut | date:'dd/MM/yyyy' }}</td>
                                         <td>{{ camp.dateFin | date:'dd/MM/yyyy' }}</td>
                                         <td>{{ camp.cycle }}</td>
-                                        <td>{{ camp.statut }}</td>
+                                        <td>{{ getStatutLabel(camp.statut) }}</td>
                                     </tr>
                                 </ng-template>
                                 <ng-template pTemplate="emptymessage">

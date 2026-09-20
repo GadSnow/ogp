@@ -12,58 +12,58 @@
         </div>
         } @else {
         <div class="card p-6 flex flex-col gap-5">
-            <div class="flex items-center justify-between text-base font-semibold text-surface-900 dark:text-surface-0 pb-3 border-b">
+            <div class="flex items-center justify-between text-base font-bold text-surface-900 dark:text-surface-0 pb-3 border-b">
                 <span>Détail du Paiement</span>
                 @if (paiement) {
-                <p-tag [value]="paiement.statut" [severity]="getSeverity(paiement.statut)" />
+                <p-tag [value]="getStatutLabel(paiement.statut)" [severity]="getSeverity(paiement.statut)" />
                 }
             </div>
 
             @if (paiement) {
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Référence</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Référence</span>
                     <span class="font-medium">{{ paiement.reference ?? '—' }}</span>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Référence externe</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Référence externe</span>
                     <span class="font-medium">{{ paiement.referenceExterne ?? '—' }}</span>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Montant</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Montant</span>
                     <span class="font-medium">{{ paiement.montant | currency:'GNF':'symbol':'1.0-0' }}</span>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Mode de paiement</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Mode de paiement</span>
                     <span class="font-medium">{{ paiement.modePaiement?.mode ?? '—' }}</span>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Date</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Date</span>
                     <span class="font-medium">{{ paiement.dtCreated | date:'dd/MM/yyyy HH:mm' }}</span>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Facture</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Facture</span>
                     <a [routerLink]="['/ogp/campagne/detail', paiement.facture?.campagne?.id]" class="font-medium text-primary hover:underline"> {{ paiement.facture?.reference ?? '—' }} </a>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Campagne</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Campagne</span>
                     <span class="font-medium">{{ paiement.facture?.campagne?.nomCampagne ?? '—' }}</span>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Client</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Client</span>
                     <span class="font-medium">{{ paiement.facture?.campagne?.client?.denomination ?? '—' }}</span>
                 </div>
 
                 @if (paiement.message) {
                 <div class="flex flex-col gap-1 md:col-span-2 lg:col-span-3">
-                    <span class="text-xs text-surface-500 uppercase tracking-wide">Message</span>
+                    <span class="text-xs text-surface-600 uppercase tracking-wide">Message</span>
                     <span class="font-medium">{{ paiement.message }}</span>
                 </div>
                 }
@@ -71,15 +71,15 @@
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-2 bg-surface-50 rounded p-3">
                 <div class="flex flex-col items-center gap-0.5">
-                    <span class="text-xs text-surface-400">Montant net facture</span>
+                    <span class="text-xs text-surface-600">Montant net facture</span>
                     <span class="text-sm font-semibold">{{ paiement.facture?.montantNet | currency:'GNF':'symbol':'1.0-0' }}</span>
                 </div>
                 <div class="flex flex-col items-center gap-0.5 border-x border-surface-200">
-                    <span class="text-xs text-surface-400">Montant payé</span>
+                    <span class="text-xs text-surface-600">Montant payé</span>
                     <span class="text-sm font-semibold text-blue-600">{{ paiement.facture?.montantPaye | currency:'GNF':'symbol':'1.0-0' }}</span>
                 </div>
                 <div class="flex flex-col items-center gap-0.5">
-                    <span class="text-xs text-surface-400">Reste à payer</span>
+                    <span class="text-xs text-surface-600">Reste à payer</span>
                     <span class="text-sm font-semibold" [class]="(paiement.facture?.montantResteAPaye ?? 0) > 0 ? 'text-red-600' : 'text-green-600'"> {{ paiement.facture?.montantResteAPaye | currency:'GNF':'symbol':'1.0-0' }} </span>
                 </div>
             </div>

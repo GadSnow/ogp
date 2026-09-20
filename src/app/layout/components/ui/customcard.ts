@@ -31,7 +31,7 @@ export class CustomCard {
     // la mise en capitales étant réservée aux libellés de champ et d'en-tête de tableau.
     hostClass = computed(() => `flex flex-col rounded-lg border bg-surface-0 dark:bg-surface-900 ${this.styleClass()}`);
     headerClass = computed(() => `min-h-14 pl-5 pr-3 py-3 flex items-center justify-between gap-2 border-b ${this.headerStyleClass()}`);
-    titleClass = computed(() => `text-base font-semibold text-surface-900 dark:text-surface-0 ${this.titleStyleClass()}`);
+    titleClass = computed(() => `text-base font-bold text-surface-900 dark:text-surface-0 ${this.titleStyleClass()}`);
     actionClass = computed(() => `flex items-center justify-end gap-2 ${this.actionStyleClass()}`);
     contentClass = computed(() => `flex-1 overflow-auto ${this.contentStyleClass()}`);
 }

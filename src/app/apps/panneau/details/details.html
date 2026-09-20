@@ -4,7 +4,7 @@
         <div class="flex items-center justify-between mb-6">
             <p-button icon="pi pi-angle-left" [text]="true" label="Retour à la liste" [routerLink]="['/ogp/panneau']" severity="secondary" size="small" />
             @if (panneau()) {
-            <p-button label="Modifier" icon="pi pi-pencil" [routerLink]="['/ogp/panneau/edit', panneau()?.id]" severity="secondary" [outlined]="true" size="small" />
+            <p-button label="Modifier" icon="pi pi-pencil" [routerLink]="['/ogp/panneau/edit', panneau()?.id]" severity="primary" size="small" />
             }
         </div>
 
@@ -29,7 +29,7 @@
                         <p-tag [value]="panneau()!.btValide ? 'Validé' : 'Non validé'" [severity]="getSeverity(panneau()!.btValide)" [rounded]="true" />
                         <p-tag [value]="panneau()!.btAvailable ? 'Disponible' : 'Indisponible'" [severity]="getSeverity(panneau()!.btAvailable)" [rounded]="true" />
                     </div>
-                    <p class="text-xs text-surface-400 flex items-center gap-1">
+                    <p class="text-xs text-surface-600 flex items-center gap-1">
                         <i class="pi pi-clock"></i>
                         Créé le {{ panneau()?.dtCreated | date:'dd/MM/yyyy HH:mm' }}
                     </p>
@@ -38,34 +38,34 @@
 
             <!-- Identité -->
             <div class="px-6 py-5 border-b border-surface-100">
-                <h3 class="text-xs font-bold uppercase tracking-widest text-surface-400 mb-4 flex items-center gap-2"><i class="pi pi-id-card"></i> Identité</h3>
+                <h3 class="text-xs font-bold uppercase tracking-widest text-surface-800 dark:text-surface-200 mb-4 flex items-center gap-2"><i class="pi pi-id-card"></i> Identité</h3>
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
                     <div class="flex flex-col gap-1">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Référence</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Référence</span>
                         <span class="font-bold text-primary text-lg">#{{ panneau()?.reference }}</span>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Latitude</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Latitude</span>
                         <span class="font-medium font-mono text-sm">{{ panneau()?.latitude }}</span>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Longitude</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Longitude</span>
                         <span class="font-medium font-mono text-sm">{{ panneau()?.longitude }}</span>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Nombre de faces</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Nombre de faces</span>
                         <span class="font-medium">{{ panneau()?.nombreFace ?? '—' }}</span>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Face</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Face</span>
                         <span class="font-semibold text-primary">{{ panneau()?.face ?? '—' }}</span>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Régie</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Régie</span>
                         <span class="font-medium">{{ panneau()?.regies?.denomination ?? '—' }}</span>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Prix par défaut</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Prix par défaut</span>
                         <span class="font-medium">
                             @if (panneau()?.defaultPrice != null) { {{ panneau()?.defaultPrice | number }} GNF } @else {
                             <span>—</span>
@@ -77,29 +77,29 @@
 
             <!-- Caractéristiques techniques -->
             <div class="px-6 py-5 border-b border-surface-100">
-                <h3 class="text-xs font-bold uppercase tracking-widest text-surface-400 mb-4 flex items-center gap-2"><i class="pi pi-cog"></i> Caractéristiques techniques</h3>
+                <h3 class="text-xs font-bold uppercase tracking-widest text-surface-800 dark:text-surface-200 mb-4 flex items-center gap-2"><i class="pi pi-cog"></i> Caractéristiques techniques</h3>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
                     <div class="flex flex-col gap-1">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Catégorie</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Catégorie</span>
                         <span class="font-semibold">{{ panneau()?.caracteristiquePanneaux?.categoriePanneaux?.categorie ?? '—' }}</span>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Type</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Type</span>
                         <span class="font-medium">{{ panneau()?.caracteristiquePanneaux?.type ?? '—' }}</span>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Caractéristique</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Caractéristique</span>
                         <span class="font-medium">{{ panneau()?.caracteristiquePanneaux?.caracteristique ?? '—' }}</span>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Dimensions</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Dimensions</span>
                         <span class="font-medium">{{ panneau()?.caracteristiquePanneaux?.dimenssion ?? '—' }} m</span>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Surface (L × l)</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Surface (L × l)</span>
                         <span class="font-medium">
                             {{ panneau()?.caracteristiquePanneaux?.longeur }}m
-                            <span class="text-surface-400 text-xs mx-1">×</span>
+                            <span class="text-surface-500 text-xs mx-1">×</span>
                             {{ panneau()?.caracteristiquePanneaux?.largeur }}m
                         </span>
                     </div>
@@ -108,36 +108,35 @@
 
             <!-- Localisation -->
             <div class="px-6 py-5 border-b border-surface-100">
-                <h3 class="text-xs font-bold uppercase tracking-widest text-surface-400 mb-4 flex items-center gap-2"><i class="pi pi-map-marker"></i> Localisation</h3>
+                <h3 class="text-xs font-bold uppercase tracking-widest text-surface-800 dark:text-surface-200 mb-4 flex items-center gap-2"><i class="pi pi-map-marker"></i> Localisation</h3>
                 <div class="flex flex-wrap items-center gap-2 text-sm">
-                    <span class="text-surface-400">{{ panneau()?.secteur?.quartier?.commune?.region?.region }}</span>
+                    <span class="text-surface-500">{{ panneau()?.secteur?.quartier?.commune?.region?.region }}</span>
                     <i class="pi pi-chevron-right text-surface-300 text-xs"></i>
-                    <span class="text-surface-500">{{ panneau()?.secteur?.quartier?.commune?.commune }}</span>
+                    <span class="text-surface-600">{{ panneau()?.secteur?.quartier?.commune?.commune }}</span>
                     <i class="pi pi-chevron-right text-surface-300 text-xs"></i>
-                    <span class="text-surface-600 font-medium">{{ panneau()?.secteur?.quartier?.quartier }}</span>
+                    <span class="font-medium text-surface-700">{{ panneau()?.secteur?.quartier?.quartier }}</span>
                     <i class="pi pi-chevron-right text-surface-300 text-xs"></i>
                     <span class="bg-surface-800 text-surface-0 text-xs font-semibold px-2 py-0.5 rounded"> {{ panneau()?.secteur?.secteur }} </span>
                 </div>
-                @let pos = panneau();
-                @if (pos?.latitude != null && pos?.longitude != null) {
-                <app-map-location class="block mt-4" [latitude]="pos!.latitude!" [longitude]="pos!.longitude!" [label]="'Panneau #' + pos?.reference" />
+                @let pos = panneau(); @if (pos?.latitude != null && pos?.longitude != null) {
+                <app-carte-panneaux class="block mt-4" [panneaux]="[pos!]" [afficherLienDetail]="false" [height]="'22rem'" />
                 }
             </div>
 
             <!-- Tarif standard -->
             @if (tarif()) {
             <div class="px-6 py-5 border-b border-surface-100">
-                <h3 class="text-xs font-bold uppercase tracking-widest text-surface-400 mb-4 flex items-center gap-2"><i class="pi pi-tag"></i> Tarif standard</h3>
+                <h3 class="text-xs font-bold uppercase tracking-widest text-surface-800 dark:text-surface-200 mb-4 flex items-center gap-2"><i class="pi pi-tag"></i> Tarif standard</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="flex flex-col gap-1 rounded-xl border border-surface-200 p-4">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Par jour</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Par jour</span>
                         <span class="text-2xl font-black text-surface-800">{{ tarif()?.priceDay | number }}</span>
-                        <span class="text-xs text-surface-400 font-semibold">GNF</span>
+                        <span class="text-xs text-surface-600 font-semibold">GNF</span>
                     </div>
                     <div class="flex flex-col gap-1 rounded-xl border border-surface-200 p-4">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Par semaine</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Par semaine</span>
                         <span class="text-2xl font-black text-surface-800">{{ tarif()?.priceWeek | number }}</span>
-                        <span class="text-xs text-surface-400 font-semibold">GNF</span>
+                        <span class="text-xs text-surface-600 font-semibold">GNF</span>
                     </div>
                     <div class="flex flex-col gap-1 rounded-xl border border-primary-200 bg-primary-50 p-4">
                         <span class="text-xs text-primary-500 uppercase tracking-wide font-semibold">Par mois</span>
@@ -151,17 +150,17 @@
             <!-- Tarification spéciale -->
             @if (panneau()?.hasSpecialPrice) {
             <div class="px-6 py-5">
-                <h3 class="text-xs font-bold uppercase tracking-widest text-surface-400 mb-4 flex items-center gap-2"><i class="pi pi-star"></i> Tarification spéciale</h3>
+                <h3 class="text-xs font-bold uppercase tracking-widest text-surface-800 dark:text-surface-200 mb-4 flex items-center gap-2"><i class="pi pi-star"></i> Tarification spéciale</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="flex flex-col gap-1 rounded-xl border border-surface-200 p-4">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Par jour</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Par jour</span>
                         <span class="text-2xl font-black text-surface-800">{{ panneau()?.priceDay | number }}</span>
-                        <span class="text-xs text-surface-400 font-semibold">GNF</span>
+                        <span class="text-xs text-surface-600 font-semibold">GNF</span>
                     </div>
                     <div class="flex flex-col gap-1 rounded-xl border border-surface-200 p-4">
-                        <span class="text-xs text-surface-400 uppercase tracking-wide">Par semaine</span>
+                        <span class="text-xs text-surface-600 uppercase tracking-wide">Par semaine</span>
                         <span class="text-2xl font-black text-surface-800">{{ panneau()?.priceWeek | number }}</span>
-                        <span class="text-xs text-surface-400 font-semibold">GNF</span>
+                        <span class="text-xs text-surface-600 font-semibold">GNF</span>
                     </div>
                     <div class="flex flex-col gap-1 rounded-xl border border-primary-200 bg-primary-50 p-4">
                         <span class="text-xs text-primary-500 uppercase tracking-wide font-semibold">Par mois</span>

@@ -9,18 +9,17 @@
         <app-skeleton-table [rows]="10" [columns]="6"></app-skeleton-table>
         } @else {
         <div class="mb-4 flex flex-wrap items-center gap-3 rounded-lg border bg-surface-50 dark:bg-surface-800 px-3.5 py-3">
-                        <p-iconfield class="w-full sm:w-80">
-                            <p-inputicon class="pi pi-search" />
-                            <input pInputText type="text" class="w-full" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
-                        </p-iconfield>
-                    </div>
+            <p-iconfield class="w-full sm:w-80">
+                <p-inputicon class="pi pi-search" />
+                <input pInputText type="text" class="w-full" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
+            </p-iconfield>
+        </div>
         <p-table
             #dt
             [value]="paiements"
             [rows]="10"
             [paginator]="true"
             [responsiveLayout]="'scroll'"
-           
             [globalFilterFields]="['reference', 'facture.reference', 'facture.campagne.nomCampagne', 'facture.campagne.client.denomination', 'modePaiement.mode', 'statut']"
         >
             <ng-template pTemplate="header">
@@ -46,7 +45,7 @@
                     <td>{{ p.facture?.campagne?.client?.denomination ?? '—' }}</td>
                     <td>{{ p.montant | currency:'GNF':'symbol':'1.0-0' }}</td>
                     <td>{{ p.modePaiement?.mode ?? '—' }}</td>
-                    <td><p-tag [value]="p.statut" [severity]="getSeverity(p.statut)" /></td>
+                    <td><p-tag [value]="getStatutLabel(p.statut)" [severity]="getSeverity(p.statut)" /></td>
                     <td>{{ p.dtCreated | date:'dd/MM/yyyy HH:mm' }}</td>
                     <td>
                         <p-button icon="pi pi-eye" [text]="true" size="small" [routerLink]="['/ogp/paiement/detail', p.id]" />

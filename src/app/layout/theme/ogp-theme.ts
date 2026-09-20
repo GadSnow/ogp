@@ -81,6 +81,13 @@ export const ogpPresetExt = {
                     focusBackground: '{primary.100}',
                     color: '{primary.700}',
                     focusColor: '{primary.800}'
+                },
+                // Légibilité : le preset Aura plafonne le texte sémantique à
+                // surface-700 et le muted à surface-500, d'où une dominante grise.
+                // On fonce le texte principal et le texte atténué en mode clair.
+                text: {
+                    color: '{surface.800}',
+                    mutedColor: '{surface.600}'
                 }
             },
             dark: {
