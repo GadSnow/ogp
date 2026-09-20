@@ -6,6 +6,7 @@ import { Tag } from 'primeng/tag';
 import { TableModule } from 'primeng/table';
 import { Select } from 'primeng/select';
 import { DatePicker } from 'primeng/datepicker';
+import { Button } from 'primeng/button';
 import { LineChart, LineChartDataset } from '@/app/layout/components/ui/charts/linechart';
 import { subMonths, startOfMonth, format, differenceInCalendarMonths } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -106,7 +107,7 @@ interface ImpayesData {
 @Component({
     selector: 'app-home-dashboard-ogp',
     standalone: true,
-    imports: [CommonModule, FormsModule, CustomCard, Tag, TableModule, Select, DatePicker, LineChart, DonutChart, RouterLink, EmptyStateComponent, Skeleton, SkeletonTableComponent, SkeletonDonutComponent, SkeletonListComponent],
+    imports: [CommonModule, FormsModule, CustomCard, Tag, TableModule, Select, DatePicker, Button, LineChart, DonutChart, RouterLink, EmptyStateComponent, Skeleton, SkeletonTableComponent, SkeletonDonutComponent, SkeletonListComponent],
     providers: [CurrencyPipe],
     templateUrl: './home.html'
 })
@@ -122,14 +123,27 @@ export class HomeDashboardOgp {
     ];
 
     selectedPeriod = signal<PeriodValue>(6);
-    customRange = signal<Date[] | null>(null);
+    dateDebutInput = signal<Date | null>(null);
+    dateFinInput = signal<Date | null>(null);
+    private appliedCustom = signal<{ dateDebut: Date; dateFin: Date } | null>(null);
+
+    /** Applique la plage saisie (bouton « Rechercher »). Sans plage appliquée, on retombe sur 6 mois. */
+    search() {
+        const debut = this.dateDebutInput();
+        const fin = this.dateFinInput();
+        if (!debut || !fin || debut > fin) {
+            this.appliedCustom.set(null);
+            return;
+        }
+        this.appliedCustom.set({ dateDebut: debut, dateFin: fin });
+    }
 
     monthsCount = computed(() => {
         const period = this.selectedPeriod();
         if (period === 'custom') {
-            const range = this.customRange();
-            if (range?.[0] && range?.[1]) {
-                return Math.max(1, differenceInCalendarMonths(range[1], range[0]) + 1);
+            const range = this.appliedCustom();
+            if (range) {
+                return Math.max(1, differenceInCalendarMonths(range.dateFin, range.dateDebut) + 1);
             }
             return 6;
         }
@@ -144,8 +158,8 @@ export class HomeDashboardOgp {
     private readonly dateDebut = computed(() => {
         const period = this.selectedPeriod();
         if (period === 'custom') {
-            const range = this.customRange();
-            if (range?.[0]) return format(range[0], 'yyyy-MM-dd');
+            const range = this.appliedCustom();
+            if (range) return format(range.dateDebut, 'yyyy-MM-dd');
         }
         return format(this.months()[0], 'yyyy-MM-dd');
     });
@@ -153,8 +167,8 @@ export class HomeDashboardOgp {
     private readonly dateFin = computed(() => {
         const period = this.selectedPeriod();
         if (period === 'custom') {
-            const range = this.customRange();
-            if (range?.[1]) return format(range[1], 'yyyy-MM-dd');
+            const range = this.appliedCustom();
+            if (range) return format(range.dateFin, 'yyyy-MM-dd');
         }
         return format(new Date(), 'yyyy-MM-dd');
     });
@@ -245,9 +259,9 @@ export class HomeDashboardOgp {
         const period = this.selectedPeriod();
         const preset = this.periods.find((p) => p.value === period);
         if (period !== 'custom') return preset?.label ?? '';
-        const range = this.customRange();
-        if (range?.[0] && range?.[1]) {
-            return `${format(range[0], 'dd/MM/yyyy')} – ${format(range[1], 'dd/MM/yyyy')}`;
+        const range = this.appliedCustom();
+        if (range) {
+            return `${format(range.dateDebut, 'dd/MM/yyyy')} – ${format(range.dateFin, 'dd/MM/yyyy')}`;
         }
         return 'Choisir une période';
     });

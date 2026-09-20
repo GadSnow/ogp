@@ -23,3 +23,14 @@ body {
 a {
     text-decoration: none;
 }
+
+/* ══════════════════════════════════
+   DatePicker : popup compacte sur les formulaires Campagne
+   PrimeNG dimensionne la popup à la largeur de l'input ; on la ramène à la
+   taille naturelle du calendrier (comme au niveau du dashboard).
+   ══════════════════════════════════ */
+.p-datepicker-panel.campagne-datepicker-panel {
+    width: auto !important;
+    min-width: 15rem !important;
+    max-width: 20rem !important;
+}

@@ -62,7 +62,7 @@
                     <!-- Date Début -->
                     <div class="flex flex-col gap-2">
                         <label for="dateDebut">Date de Début</label>
-                        <p-datepicker id="dateDebut" formControlName="dateDebut" [showIcon]="true" styleClass="w-full" [class.ng-invalid]="isInvalid('dateDebut')" [class.ng-dirty]="isInvalid('dateDebut')"></p-datepicker>
+                        <p-datepicker id="dateDebut" formControlName="dateDebut" [showIcon]="true" styleClass="w-full" panelStyleClass="campagne-datepicker-panel" [class.ng-invalid]="isInvalid('dateDebut')" [class.ng-dirty]="isInvalid('dateDebut')"></p-datepicker>
                         @if (isInvalid('dateDebut')) { <small class="p-error">La date de début est obligatoire.</small> }
                     </div>
 
@@ -72,7 +72,7 @@
                             Date de Fin
                             <span class="text-xs text-surface-400 font-normal italic">(calculée automatiquement)</span>
                         </label>
-                        <p-datepicker id="dateFin" formControlName="dateFin" [showIcon]="true" styleClass="w-full opacity-60" [disabled]="true"></p-datepicker>
+                        <p-datepicker id="dateFin" formControlName="dateFin" [showIcon]="true" styleClass="w-full opacity-60" panelStyleClass="campagne-datepicker-panel" [disabled]="true"></p-datepicker>
                     </div>
 
                     <!-- Panneaux MultiSelect -->

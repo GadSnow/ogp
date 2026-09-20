@@ -8,7 +8,16 @@
         <div class="flex flex-wrap items-center gap-3">
             <p-select [options]="periods" optionLabel="label" optionValue="value" [(ngModel)]="selectedPeriod" class="w-52" />
             @if (selectedPeriod() === 'custom') {
-            <p-datepicker [(ngModel)]="customRange" selectionMode="range" [showIcon]="true" placeholder="Choisir une plage de dates" [readonlyInput]="true" />
+            <label class="flex items-center gap-2">
+                <span class="text-sm text-surface-500">Du</span>
+                <p-datepicker [(ngModel)]="dateDebutInput" [showIcon]="true" placeholder="Date de début" [readonlyInput]="true" />
+            </label>
+            <span class="text-surface-400 hidden sm:block">—</span>
+            <label class="flex items-center gap-2">
+                <span class="text-sm text-surface-500">Au</span>
+                <p-datepicker [(ngModel)]="dateFinInput" [showIcon]="true" placeholder="Date de fin" [readonlyInput]="true" />
+            </label>
+            <p-button icon="pi pi-search" severity="primary" [rounded]="true" ariaLabel="Rechercher" (onClick)="search()" />
             }
         </div>
     </div>
