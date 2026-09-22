@@ -9,23 +9,15 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
     const router = inject(Router);
 
     const token = localStorage.getItem('token');
+    // FormData (upload de justificatif) : le navigateur doit fixer lui-même le
+    // Content-Type avec sa boundary, un `multipart/form-data` forcé ici casserait le parsing.
+    const isFormData = request.body instanceof FormData;
 
-    let authRequest = request;
+    const headers: Record<string, string> = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    if (!isFormData) headers['Content-Type'] = 'application/json';
 
-    if (token) {
-        authRequest = request.clone({
-            setHeaders: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-    } else {
-        authRequest = request.clone({
-            setHeaders: {
-                'Content-Type': 'application/json'
-            }
-        });
-    }
+    const authRequest = request.clone({ setHeaders: headers });
 
     return next(authRequest).pipe(
         tap((response: any) => {

@@ -227,7 +227,7 @@ export class DetailCampagne {
         this.isFactureLoading.set(true);
         const idRegie = this.typeFacture() === 'regie' ? this.campagne()?.regies?.id : undefined;
         this.factureService
-            .addFacture(idCampagne, idRegie ? undefined : this.remiseFacture()?.id, idRegie)
+            .addFacture({ idCampagne, idRemise: idRegie ? undefined : this.remiseFacture()?.id, idRegie })
             .pipe(
                 finalize(() => this.isFactureLoading.set(false)),
                 takeUntilDestroyed(this.destroyRef)

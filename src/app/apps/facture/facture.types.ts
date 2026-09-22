@@ -2,6 +2,9 @@ import { Campagne } from '@/app/apps/campagne/campagne.types';
 import { Remise } from '@/app/apps/remise/remise.types';
 import { Regie } from '@/app/apps/regie/regie.types';
 
+/** Type de facture renvoyé par le backend sur toute réponse Facture. */
+export type TypeFacture = 'campagne' | 'autorisation' | 'redevance';
+
 export interface Facture {
     id: string;
     dtCreated?: string;
@@ -17,11 +20,21 @@ export interface Facture {
     remise?: Remise | null;
     campagne?: Campagne;
     /**
-     * Renseigné pour une « facture de régie » (somme des prix par défaut, sans
-     * remise), null pour une « facture historique » liée à une campagne.
+     * Renseigné pour une facture de régie (autorisation ou redevance),
+     * null pour une facture liée uniquement à une campagne.
      */
     regies?: Regie | null;
+    typeFacture?: TypeFacture;
 }
 
-/** Type de facture, déduit du champ `regies` : régie si présent, sinon historique. */
-export type TypeFacture = 'regie' | 'historique';
+/**
+ * Paramètres de POST /facture/add. `idCampagne` est facultatif : sans lui, il
+ * s'agit d'une facture de redevance et `idRegie` + `montantBrute` sont requis.
+ */
+export interface AddFactureParams {
+    idCampagne?: string;
+    idRemise?: string;
+    idRegie?: string;
+    /** Montant saisi à la main, requis pour une facture de redevance (sans campagne). */
+    montantBrute?: number;
+}

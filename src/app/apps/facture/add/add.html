@@ -1,0 +1,57 @@
+<p-toast />
+
+<div class="flex justify-center mt-4 mb-4">
+    <div class="w-full md:w-4/5">
+        <div class="card p-6 flex flex-col gap-5">
+            <div class="text-base font-semibold text-surface-900 dark:text-surface-0 pb-3 border-b">Nouvelle facture de redevance</div>
+            <p class="text-xs text-surface-400 -mt-3">Sans campagne ni remise : choisissez la régie et saisissez le montant à facturer.</p>
+
+            <form [formGroup]="form">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Régie -->
+                    <div class="flex flex-col gap-2">
+                        <label for="idRegie">Régie</label>
+                        @if (loadingRegies()) {
+                        <p-skeleton width="100%" height="3rem"></p-skeleton>
+                        } @else {
+                        <p-select
+                            id="idRegie"
+                            [options]="regies"
+                            optionLabel="denomination"
+                            optionValue="id"
+                            formControlName="idRegie"
+                            class="w-full"
+                            placeholder="Sélectionner une régie"
+                            [class.ng-invalid]="isInvalid('idRegie')"
+                            [class.ng-dirty]="isInvalid('idRegie')"
+                        ></p-select>
+                        } @if (isInvalid('idRegie')) { <small class="p-error">La régie est obligatoire.</small> }
+                    </div>
+
+                    <!-- Montant -->
+                    <div class="flex flex-col gap-2">
+                        <label for="montantBrute">Montant</label>
+                        <p-inputnumber
+                            id="montantBrute"
+                            formControlName="montantBrute"
+                            [min]="1"
+                            mode="currency"
+                            currency="GNF"
+                            locale="fr-FR"
+                            class="w-full"
+                            [class.ng-invalid]="isInvalid('montantBrute')"
+                            [class.ng-dirty]="isInvalid('montantBrute')"
+                        ></p-inputnumber>
+                        @if (isInvalid('montantBrute')) { <small class="p-error">Le montant est obligatoire.</small> }
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex justify-end gap-3 mt-8">
+                    <p-button label="Annuler" severity="secondary" [outlined]="true" [routerLink]="['/ogp/facture']" />
+                    <p-button label="Enregistrer" severity="primary" (onClick)="submit()" [disabled]="form.invalid || isLoading()" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -9,13 +9,14 @@ import { Tooltip } from 'primeng/tooltip';
 import { finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FactureService } from '@/app/apps/facture/facture.service';
-import { Facture, TypeFacture } from '@/app/apps/facture/facture.types';
+import { Facture } from '@/app/apps/facture/facture.types';
 import { SkeletonTableComponent } from '@/app/shared/utils/components/skeleton-table/skeleton-table.component';
 import { CustomCard } from '@/app/layout/components/ui/customcard';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
 import { EmptyStateComponent } from '@/app/shared/utils/components/empty-state/empty-state.component';
+import { getFactureTypeLabel, getFactureTypeSeverity } from '@/app/shared/utils/statuts';
 
 @Component({
     selector: 'app-home-facture',
@@ -40,17 +41,12 @@ export class HomeFacture {
         this.showDetail.set(true);
     }
 
-    /** Deux types de factures, distingués par le champ `regies`. */
-    typeFacture(facture: Facture): TypeFacture {
-        return facture.regies ? 'regie' : 'historique';
-    }
-
     getTypeLabel(facture: Facture): string {
-        return this.typeFacture(facture) === 'regie' ? 'Régie' : 'Historique';
+        return getFactureTypeLabel(facture.typeFacture);
     }
 
-    getTypeSeverity(facture: Facture): 'info' | 'secondary' {
-        return this.typeFacture(facture) === 'regie' ? 'info' : 'secondary';
+    getTypeSeverity(facture: Facture) {
+        return getFactureTypeSeverity(facture.typeFacture);
     }
 
     private loadFactures() {

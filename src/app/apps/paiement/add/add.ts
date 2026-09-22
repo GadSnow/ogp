@@ -37,25 +37,82 @@ export class AddPaiement implements OnInit {
 
     form: FormGroup;
 
+    /** Nom du fichier sélectionné, affiché sous le champ. */
+    fichierChoisi = signal<string | null>(null);
+
     constructor() {
         this.form = this.fb.group({
             referenceFacture: ['', Validators.required],
             montant: [null, [Validators.required, Validators.min(1)]],
             modePaiement: ['', Validators.required],
-            message: ['']
+            message: [''],
+            justificatif: [null]
         });
+
+        this.form
+            .get('modePaiement')!
+            .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((mode) => {
+                const control = this.form.get('justificatif')!;
+                if (this.justificatifRequis(mode)) {
+                    control.setValidators([Validators.required]);
+                } else {
+                    control.setValidators([]);
+                    control.setValue(null);
+                    this.fichierChoisi.set(null);
+                }
+                control.updateValueAndValidity();
+            });
     }
 
     ngOnInit() {
         this.loadModes();
     }
 
+    /** Chèque / Virement exigent un justificatif ; Cash et le reste, non. */
+    justificatifRequis(mode: string | null | undefined): boolean {
+        const normalise = (mode ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+        return normalise.includes('cheque') || normalise.includes('virement');
+    }
+
+    onFichierChange(event: Event): void {
+        const input = event.target as HTMLInputElement;
+        this.setFichier(input.files?.[0] ?? null);
+    }
+
+    onFichierDepose(event: DragEvent): void {
+        event.preventDefault();
+        this.setFichier(event.dataTransfer?.files?.[0] ?? null);
+    }
+
+    onSurvolFichier(event: DragEvent): void {
+        event.preventDefault();
+    }
+
+    retirerFichier(input: HTMLInputElement): void {
+        input.value = '';
+        this.setFichier(null);
+    }
+
+    private setFichier(fichier: File | null): void {
+        this.form.get('justificatif')!.setValue(fichier);
+        this.form.get('justificatif')!.markAsDirty();
+        this.fichierChoisi.set(fichier?.name ?? null);
+    }
+
     loadModes() {
         this.loadingModes.set(true);
         this.modePaiementService
             .getModesPaiement()
-            .pipe(finalize(() => this.loadingModes.set(false)), takeUntilDestroyed(this.destroyRef))
-            .subscribe({ next: (res) => { this.modes = res.data ?? []; } });
+            .pipe(
+                finalize(() => this.loadingModes.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe({
+                next: (res) => {
+                    this.modes = res.data ?? [];
+                }
+            });
     }
 
     isInvalid(field: string): boolean {
@@ -77,7 +134,10 @@ export class AddPaiement implements OnInit {
 
         this.paiementService
             .addPaiement(this.form.value)
-            .pipe(finalize(() => this.isLoading.set(false)), takeUntilDestroyed(this.destroyRef))
+            .pipe(
+                finalize(() => this.isLoading.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
             .subscribe({
                 next: () => {
                     this.messageService.add({ severity: 'success', summary: 'Message', detail: 'Paiement enregistré avec succès' });

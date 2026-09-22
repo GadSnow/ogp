@@ -13,6 +13,10 @@ export interface Paiement {
     modePaiement?: ModePaiement;
     facture?: Facture;
     user?: any;
+    /** Nom d'origine du justificatif (Chèque / Virement) ; absent sinon. */
+    justificatifNomFichier?: string | null;
+    /** Type MIME du justificatif, pour l'affichage/téléchargement. */
+    justificatifTypeMime?: string | null;
 }
 
 export interface AddPaiement {
@@ -20,4 +24,6 @@ export interface AddPaiement {
     montant: number;
     modePaiement: string;
     message?: string | null;
+    /** Obligatoire si `modePaiement` vaut Chèque ou Virement. */
+    justificatif?: File | null;
 }

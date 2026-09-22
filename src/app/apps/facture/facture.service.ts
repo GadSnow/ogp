@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@/environments/environment';
 import { Observable } from 'rxjs';
-import { Facture } from '@/app/apps/facture/facture.types';
+import { AddFactureParams, Facture } from '@/app/apps/facture/facture.types';
 import { ApiResponse } from '@/app/core/models/api-response.interface';
 
 @Injectable({
@@ -27,11 +27,17 @@ export class FactureService {
         });
     }
 
-    addFacture(idCampagne: string, idRemise?: string, idRegie?: string): Observable<ApiResponse<Facture>> {
-        const params: Record<string, string> = { idCampagne };
-        if (idRemise) params['idRemise'] = idRemise;
-        if (idRegie) params['idRegie'] = idRegie;
-        return this.httpClient.post<ApiResponse<Facture>>(`${this.apiUrl}/facture/add`, null, { params });
+    /**
+     * `idCampagne` est facultatif : sans lui, il s'agit d'une facture de redevance
+     * et le backend exige alors `idRegie` + `montantBrute` (montant saisi à la main).
+     */
+    addFacture(params: AddFactureParams): Observable<ApiResponse<Facture>> {
+        const httpParams: Record<string, string> = {};
+        if (params.idCampagne) httpParams['idCampagne'] = params.idCampagne;
+        if (params.idRemise) httpParams['idRemise'] = params.idRemise;
+        if (params.idRegie) httpParams['idRegie'] = params.idRegie;
+        if (params.montantBrute != null) httpParams['montantBrute'] = String(params.montantBrute);
+        return this.httpClient.post<ApiResponse<Facture>>(`${this.apiUrl}/facture/add`, null, { params: httpParams });
     }
 
     /**

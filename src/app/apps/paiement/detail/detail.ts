@@ -5,21 +5,27 @@ import { Tag } from 'primeng/tag';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 import { PaiementService } from '@/app/apps/paiement/paiement.service';
 import { Paiement } from '@/app/apps/paiement/paiement.types';
 import { getPaiementStatutLabel, getPaiementStatutSeverity } from '@/app/shared/utils/statuts';
+import { telechargerBlob } from '@/app/shared/utils/telecharger-blob';
 
 @Component({
     selector: 'app-detail-paiement',
-    imports: [RouterLink, Skeleton, Tag, DatePipe, CurrencyPipe],
-    templateUrl: './detail.html'
+    imports: [RouterLink, Skeleton, Tag, DatePipe, CurrencyPipe, ToastModule],
+    templateUrl: './detail.html',
+    providers: [MessageService]
 })
 export class DetailPaiement {
     private paiementService = inject(PaiementService);
     private route = inject(ActivatedRoute);
     private destroyRef = inject(DestroyRef);
+    private messageService = inject(MessageService);
 
     isLoading = signal(true);
+    telechargementEnCours = signal(false);
     paiement: Paiement | null = null;
 
     constructor() {
@@ -50,5 +56,22 @@ export class DetailPaiement {
 
     getStatutLabel(statut?: string) {
         return getPaiementStatutLabel(statut);
+    }
+
+    telechargerJustificatif(): void {
+        const paiement = this.paiement;
+        if (!paiement?.justificatifNomFichier) return;
+
+        this.telechargementEnCours.set(true);
+        this.paiementService
+            .telechargerJustificatif(paiement.id)
+            .pipe(
+                finalize(() => this.telechargementEnCours.set(false)),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe({
+                next: (blob) => telechargerBlob(blob, paiement.justificatifNomFichier!),
+                error: () => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Impossible de télécharger le justificatif.' })
+            });
     }
 }

@@ -17,7 +17,7 @@ function humanize(value?: string | null): string {
 }
 
 /** Severities acceptées par <p-tag>. */
-type TagSeverity = 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast';
+export type TagSeverity = 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast';
 
 const LIBELLES_STATUT_CAMPAGNE: Record<string, string> = {
     proposition: 'Proposition',
@@ -101,4 +101,25 @@ export function getPaiementStatutLabel(statut?: string | null): string {
 
 export function getPaiementStatutSeverity(statut?: string | null): TagSeverity {
     return SEVERITE_STATUT_TRANSACTION[statut?.toLowerCase() ?? ''] ?? 'info';
+}
+
+/** Type d'une facture : liée à une campagne, à une autorisation, ou de redevance (montant saisi à la main). */
+const LIBELLES_TYPE_FACTURE: Record<string, string> = {
+    campagne: 'Campagne',
+    autorisation: 'Autorisation',
+    redevance: 'Redevance'
+};
+
+const SEVERITE_TYPE_FACTURE: Record<string, TagSeverity> = {
+    campagne: 'secondary',
+    autorisation: 'info',
+    redevance: 'warn'
+};
+
+export function getFactureTypeLabel(type?: string | null): string {
+    return LIBELLES_TYPE_FACTURE[type?.toLowerCase() ?? ''] ?? humanize(type);
+}
+
+export function getFactureTypeSeverity(type?: string | null): TagSeverity {
+    return SEVERITE_TYPE_FACTURE[type?.toLowerCase() ?? ''] ?? 'secondary';
 }

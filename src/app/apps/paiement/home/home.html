@@ -1,3 +1,5 @@
+<p-toast />
+
 <div custom-card>
     <h3 card-title>Gestion des Paiements</h3>
     <div card-action>
@@ -44,7 +46,26 @@
                     <td>{{ p.facture?.campagne?.nomCampagne ?? '—' }}</td>
                     <td>{{ p.facture?.campagne?.client?.denomination ?? '—' }}</td>
                     <td>{{ p.montant | currency:'GNF':'symbol':'1.0-0' }}</td>
-                    <td>{{ p.modePaiement?.mode ?? '—' }}</td>
+                    <td>
+                        <div class="flex flex-col items-start gap-1 leading-tight">
+                            <span class="font-medium">{{ p.modePaiement?.mode ?? '—' }}</span>
+                            @if (p.justificatifNomFichier) {
+                            <button
+                                type="button"
+                                (click)="telechargerJustificatif(p)"
+                                [disabled]="telechargementEnCours() === p.id"
+                                class="inline-flex max-w-[10rem] items-center gap-1 rounded-full bg-surface-100 px-2 py-0.5 text-xs text-surface-600 transition-colors hover:bg-primary-50 hover:text-primary disabled:cursor-wait disabled:opacity-60 dark:bg-surface-700 dark:text-surface-300"
+                            >
+                                @if (telechargementEnCours() === p.id) {
+                                <i class="pi pi-spin pi-spinner text-xs"></i>
+                                } @else {
+                                <i class="pi pi-paperclip text-xs"></i>
+                                }
+                                <span class="truncate">{{ p.justificatifNomFichier }}</span>
+                            </button>
+                            }
+                        </div>
+                    </td>
                     <td><p-tag [value]="getStatutLabel(p.statut)" [severity]="getSeverity(p.statut)" /></td>
                     <td>{{ p.dtCreated | date:'dd/MM/yyyy HH:mm' }}</td>
                     <td>

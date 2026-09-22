@@ -77,6 +77,9 @@
 
 <div custom-card>
     <h3 card-title>Gestion des Factures</h3>
+    <div card-action>
+        <p-button label="Facture de redevance" size="small" icon="pi pi-plus" [routerLink]="['/ogp/facture/add']" />
+    </div>
 
     <div>
         @if (isLoading()) {
@@ -88,7 +91,7 @@
                 <input pInputText type="text" class="w-full" placeholder="Rechercher" (input)="dt.filterGlobal($event.target.value, 'contains')" />
             </p-iconfield>
         </div>
-        <p-table #dt [value]="factures" [rows]="10" [paginator]="true" [responsiveLayout]="'scroll'" [globalFilterFields]="['reference', 'campagne.nomCampagne', 'campagne.client.denomination', 'regies.denomination']">
+        <p-table #dt [value]="factures" [rows]="10" [paginator]="true" [responsiveLayout]="'scroll'" [globalFilterFields]="['reference', 'typeFacture', 'campagne.nomCampagne', 'campagne.client.denomination', 'regies.denomination']">
             <ng-template pTemplate="header">
                 <tr>
                     <th>#</th>
